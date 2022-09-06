@@ -1,4 +1,4 @@
-class CreateReviewMetrics < ActiveRecord::Migration[5.2]
+class CreateReviewMetrics < ActiveRecord::Migration[5.1]
   def self.up
     create_table :review_metrics do |t|
       t.string :name

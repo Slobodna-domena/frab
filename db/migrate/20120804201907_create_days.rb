@@ -1,4 +1,4 @@
-class CreateDays < ActiveRecord::Migration
+class CreateDays < ActiveRecord::Migration[5.1]
   def up
     create_table :days do |t|
       t.integer  :conference_id

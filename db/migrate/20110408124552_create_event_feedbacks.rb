@@ -1,4 +1,4 @@
-class CreateEventFeedbacks < ActiveRecord::Migration
+class CreateEventFeedbacks < ActiveRecord::Migration[5.1]
   def self.up
     create_table :event_feedbacks do |t|
       t.integer :event_id

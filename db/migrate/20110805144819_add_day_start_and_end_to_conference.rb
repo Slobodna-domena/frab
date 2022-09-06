@@ -1,4 +1,4 @@
-class AddDayStartAndEndToConference < ActiveRecord::Migration
+class AddDayStartAndEndToConference < ActiveRecord::Migration[5.1]
   def self.up
     add_column :conferences, :day_start, :time, null: false, default: "08:00"
     add_column :conferences, :day_end, :time, null: false, default: "20:00"

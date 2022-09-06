@@ -1,4 +1,4 @@
-class CreateMailTemplates < ActiveRecord::Migration[4.2]
+class CreateMailTemplates < ActiveRecord::Migration[5.1]
   def change
     create_table :mail_templates do |t|
       t.references :conference
@@ -8,6 +8,6 @@ class CreateMailTemplates < ActiveRecord::Migration[4.2]
 
       t.timestamps
     end
-    add_index :mail_templates, :conference_id
+    #add_index :mail_templates, :conference_id
   end
 end

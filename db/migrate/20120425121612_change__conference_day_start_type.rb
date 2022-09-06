@@ -1,4 +1,4 @@
-class ChangeConferenceDayStartType < ActiveRecord::Migration
+class ChangeConferenceDayStartType < ActiveRecord::Migration[5.1]
   def up
     starts = Array.new
     ends = Array.new
@@ -6,8 +6,8 @@ class ChangeConferenceDayStartType < ActiveRecord::Migration
       starts << Time.at(conference.day_start).hour
       ends << Time.at(conference.day_end).hour
     end
-    change_column :conferences, :day_start, :integer, default: "8", null: false
-    change_column :conferences, :day_end, :integer, default: "20", null: false
+    #change_column :conferences, :day_start, :integer, default: "8", null: false
+    #change_column :conferences, :day_end, :integer, default: "20", null: false
     # do conversion
     Conference.all.each_with_index do |conference,i|
       conference.update_attribute :day_start, starts[i]

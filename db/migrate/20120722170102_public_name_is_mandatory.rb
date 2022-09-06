@@ -1,4 +1,4 @@
-class PublicNameIsMandatory < ActiveRecord::Migration
+class PublicNameIsMandatory < ActiveRecord::Migration[5.1]
   def up
     change_column :people, :first_name, :string, default: "", null: true
     change_column :people, :last_name, :string, default: "", null: true

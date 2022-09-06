@@ -1,4 +1,4 @@
-class CreateRooms < ActiveRecord::Migration
+class CreateRooms < ActiveRecord::Migration[5.1]
   def self.up
     create_table :rooms do |t|
       t.integer :conference_id, null: false

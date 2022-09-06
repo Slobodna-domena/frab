@@ -1,4 +1,4 @@
-class CreateAverageReviewScores < ActiveRecord::Migration[5.2]
+class CreateAverageReviewScores < ActiveRecord::Migration[5.1]
   def change
     create_table :average_review_scores do |t|
       t.references :event, foreign_key: true

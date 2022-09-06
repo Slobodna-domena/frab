@@ -1,4 +1,4 @@
-class ConvertEventStates < ActiveRecord::Migration
+class ConvertEventStates < ActiveRecord::Migration[5.1]
   def self.up
     # Undefined method? Event.disable_auditing
     Event.all.each do |event|

@@ -1,4 +1,4 @@
-class AddTechRiderToEvent < ActiveRecord::Migration[4.2]
+class AddTechRiderToEvent < ActiveRecord::Migration[5.1]
   def change
     add_column :events, :tech_rider, :text
   end

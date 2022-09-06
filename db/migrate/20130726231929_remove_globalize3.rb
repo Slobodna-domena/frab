@@ -1,4 +1,4 @@
-class RemoveGlobalize3 < ActiveRecord::Migration
+class RemoveGlobalize3 < ActiveRecord::Migration[5.1]
   def up
     # remove notifications
     # rename notification_translations -> notifications

@@ -1,4 +1,4 @@
-class MakeTicketAssociationPolymorphic < ActiveRecord::Migration[4.2]
+class MakeTicketAssociationPolymorphic < ActiveRecord::Migration[5.1]
   def up
     rename_column :tickets, :event_id, :object_id
     add_column :tickets, :object_type, :string

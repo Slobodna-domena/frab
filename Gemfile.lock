@@ -539,7 +539,7 @@ DEPENDENCIES
   omniauth-rails_csrf_protection
   omniauth_openid_connect
   paper_trail
-  pg
+  pg (>= 0.18, < 2.0)
   prawn (< 1.0)
   prawn_rails
   pry-byebug
@@ -568,6 +568,9 @@ DEPENDENCIES
   webdrivers
   will_paginate
   yard
+
+RUBY VERSION
+   ruby 2.7.6p219
 
 BUNDLED WITH
    2.2.22

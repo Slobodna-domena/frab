@@ -1,4 +1,4 @@
-class AddAttachmentLogoToConferences < ActiveRecord::Migration[5.0]
+class AddAttachmentLogoToConferences < ActiveRecord::Migration[5.1]
   def self.up
     change_table :conferences do |t|
       t.attachment :logo

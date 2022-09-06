@@ -1,4 +1,4 @@
-class AddAllowedEventTimeslotsToConferences < ActiveRecord::Migration[5.2]
+class AddAllowedEventTimeslotsToConferences < ActiveRecord::Migration[5.1]
   def up
 
     # An old version of this migration might leave the DB in an unhealthy state

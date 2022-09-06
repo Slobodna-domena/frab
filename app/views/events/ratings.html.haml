@@ -28,7 +28,8 @@
           = @events_no_review
     .row
       .span16
-        = render 'shared/simple_search', path: request.path          
+        = render 'shared/simple_search', path: request.path
+        = render 'shared/ratings_filter', path: request.path
     .row
       .span16
         - if @events.empty?

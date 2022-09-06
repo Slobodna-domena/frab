@@ -1,4 +1,4 @@
-class AddAverageRatingToEvent < ActiveRecord::Migration
+class AddAverageRatingToEvent < ActiveRecord::Migration[5.1]
   def self.up
     add_column :events, :average_rating, :float
     # Undefined method? Event.disable_auditing

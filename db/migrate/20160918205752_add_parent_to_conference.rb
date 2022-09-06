@@ -1,4 +1,4 @@
-class AddParentToConference < ActiveRecord::Migration[4.2]
+class AddParentToConference < ActiveRecord::Migration[5.1]
   def change
     add_reference :conferences, :parent, index: true
   end

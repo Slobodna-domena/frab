@@ -1,4 +1,4 @@
-class CreateConferenceDateConversions < ActiveRecord::Migration
+class CreateConferenceDateConversions < ActiveRecord::Migration[5.1]
   def up
     # convert conferences
     Conference.all.each do |conference|

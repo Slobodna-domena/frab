@@ -1,4 +1,4 @@
-class CreateVideos < ActiveRecord::Migration
+class CreateVideos < ActiveRecord::Migration[5.1]
   def change
     create_table :videos do |t|
       t.references :event
@@ -7,6 +7,6 @@ class CreateVideos < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :videos, :event_id
+    #add_index :videos, :event_id
   end
 end

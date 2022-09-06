@@ -1,4 +1,4 @@
-class CreatePhoneNumbers < ActiveRecord::Migration
+class CreatePhoneNumbers < ActiveRecord::Migration[5.1]
   def self.up
     create_table :phone_numbers do |t|
       t.integer :person_id

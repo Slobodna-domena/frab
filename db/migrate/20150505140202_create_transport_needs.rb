@@ -1,4 +1,4 @@
-class CreateTransportNeeds < ActiveRecord::Migration[4.2]
+class CreateTransportNeeds < ActiveRecord::Migration[5.1]
   def change
     create_table :transport_needs do |t|
       t.references :person
@@ -11,7 +11,7 @@ class CreateTransportNeeds < ActiveRecord::Migration[4.2]
 
       t.timestamps
     end
-    add_index :transport_needs, :person_id
-    add_index :transport_needs, :conference_id
+    #add_index :transport_needs, :person_id
+    #add_index :transport_needs, :conference_id
   end
 end

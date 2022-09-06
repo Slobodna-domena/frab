@@ -1,4 +1,4 @@
-class CreateExpenses < ActiveRecord::Migration[4.2]
+class CreateExpenses < ActiveRecord::Migration[5.1]
   def change
     create_table :expenses do |t|
       t.string :name
@@ -9,7 +9,7 @@ class CreateExpenses < ActiveRecord::Migration[4.2]
 
       t.timestamps
     end
-    add_index :expenses, :person_id
-    add_index :expenses, :conference_id
+    #add_index :expenses, :person_id
+    #add_index :expenses, :conference_id
   end
 end

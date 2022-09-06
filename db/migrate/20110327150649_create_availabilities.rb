@@ -1,4 +1,4 @@
-class CreateAvailabilities < ActiveRecord::Migration
+class CreateAvailabilities < ActiveRecord::Migration[5.1]
   def self.up
     create_table :availabilities do |t|
       t.integer :person_id

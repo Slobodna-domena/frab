@@ -1,4 +1,4 @@
-class CreateConferenceExports < ActiveRecord::Migration
+class CreateConferenceExports < ActiveRecord::Migration[5.1]
   def change
     create_table :conference_exports do |t|
       t.string :locale
@@ -9,6 +9,6 @@ class CreateConferenceExports < ActiveRecord::Migration
       t.datetime :tarball_updated_at
       t.timestamps
     end
-    add_index :conference_exports, :conference_id
+    #add_index :conference_exports, :conference_id
   end
 end

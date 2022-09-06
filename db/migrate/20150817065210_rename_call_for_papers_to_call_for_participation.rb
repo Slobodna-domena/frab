@@ -1,4 +1,4 @@
-class RenameCallForPapersToCallForParticipation < ActiveRecord::Migration[4.2]
+class RenameCallForPapersToCallForParticipation < ActiveRecord::Migration[5.1]
   def up
     rename_table :call_for_papers, :call_for_participations
   end

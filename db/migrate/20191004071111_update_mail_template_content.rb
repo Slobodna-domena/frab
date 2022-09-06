@@ -1,4 +1,4 @@
-class UpdateMailTemplateContent < ActiveRecord::Migration[5.2]
+class UpdateMailTemplateContent < ActiveRecord::Migration[5.1]
   MIGRATION = { '#first_name' => '%{forename}',
                 '#last_name' => '%{surname}',
                 '#public_name' => '%{public_name}' }

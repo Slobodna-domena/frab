@@ -1,0 +1,6 @@
+<%= form_tag path, method: :get do %>
+  <p> Filter by average rating
+    <%= select_tag :operator, options_for_select([["=",1],[">",2],["<",3],["<=",4],[">=",5]], params[:operator]), include_blank: true%>
+    <%= number_field_tag :rating, params[:rating], min: 1, max: 10, step: 0.01 %> <%= link_to t('clear'),  path %>
+  </p>
+<% end %>

@@ -1,4 +1,4 @@
-class CreateEventTitleAndSubtitleAndAbstractAndDescriptionTranslationsForMobilityTableBackend < ActiveRecord::Migration[5.2]
+class CreateEventTitleAndSubtitleAndAbstractAndDescriptionTranslationsForMobilityTableBackend < ActiveRecord::Migration[5.1]
   def change
     create_table :event_translations do |t|
 

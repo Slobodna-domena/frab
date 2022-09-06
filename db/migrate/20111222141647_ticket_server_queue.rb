@@ -1,4 +1,4 @@
-class TicketServerQueue < ActiveRecord::Migration
+class TicketServerQueue < ActiveRecord::Migration[5.1]
   def up
     add_column :ticket_servers, :queue, :string
   end

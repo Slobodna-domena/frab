@@ -1,4 +1,4 @@
-class CreateReviewScores < ActiveRecord::Migration[5.2]
+class CreateReviewScores < ActiveRecord::Migration[5.1]
   def change
     create_table :review_scores do |t|
       t.references :event_rating, foreign_key: true

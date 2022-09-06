@@ -1,4 +1,4 @@
-class AddUrlAndEmailToCfp < ActiveRecord::Migration
+class AddUrlAndEmailToCfp < ActiveRecord::Migration[5.1]
   def self.up
     add_column :call_for_papers, :info_url, :string
     add_column :call_for_papers, :contact_email, :string

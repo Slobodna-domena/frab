@@ -114,8 +114,7 @@
           %b= t('col_classifiers')
           - @event.event_classifiers.each do |ec|
             %p
-              %meter{ min: 0, max: 100, value: ec.value, class: 'classifier-meter' }
-              = ec.classifier.name + ": " + ec.value.to_s + " %"
+              = ec.classifier.name
   .row
     .span16
       %h2= t('notes')

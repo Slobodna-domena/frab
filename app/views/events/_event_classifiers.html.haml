@@ -13,7 +13,6 @@
           'data-association-insertion-method': 'append'
           = check_box_tag("classifier-checkbox-"+classifier.id.to_s, 0, event_has_this_classifier, class: 'classifier-checkbox pull-left', autocomplete: 'off')
 %fieldset.inputs
-  %div{class: 'classifier', id: 'classifier_sliders'}
+  %div{class: 'classifier', id: 'classifier_sliders', style: 'display: none'}
     = f.simple_fields_for :event_classifiers do |association_form|
       = render '/events/event_classifier_fields', f: association_form, the_cat: association_form.object.classifier
-

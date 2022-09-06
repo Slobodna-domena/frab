@@ -318,6 +318,7 @@ class EventsController < BaseConferenceController
 
     respond_to do |format|
       if @event.save
+        create_coauthors
         format.html { redirect_to(@event, notice: t('cfp.event_created_notice')) }
       else
         @start_time_options = @conference.start_times_by_day
@@ -332,6 +333,7 @@ class EventsController < BaseConferenceController
 
     respond_to do |format|
       if @event.update(event_params)
+        create_coauthors
         format.html { redirect_to(@event, notice: t('cfp.event_updated_notice')) }
         format.js   { head :ok }
       else
@@ -423,12 +425,16 @@ class EventsController < BaseConferenceController
       end
     end
     filter = filter.associated_with(current_user.person) if helpers.showing_my_events?
+    if params[:operator] && params[:rating] && (1..5).include?(params[:operator].to_i) && (1..10).include?(params[:rating].to_f)
+      filter = filter_by_rating(params[:rating],params[:operator],filter)
+    end
     @search = perform_search(filter, params, %i(title_cont description_cont abstract_cont track_name_cont event_type_is id_in))
     if params.dig('q', 's')&.match('track_name')
       @search.result
     else
       @search.result(distinct: true)
     end
+
   end
 
   def criteria_from_param(f)
@@ -454,7 +460,7 @@ class EventsController < BaseConferenceController
     }.flatten
 
     params.require(:event).permit(
-      :id, :title, :subtitle, :event_type, :time_slots, :state, :start_time, :public, :language, :abstract, :description, :logo, :track_id, :room_id, :note, :submission_note, :do_not_record, :recording_license, :tech_rider,
+      :id, :title, :subtitle, :event_type, :coauthors, :time_slots, :state, :start_time, :public, :language, :abstract, :description, :logo, :track_id, :room_id, :note, :submission_note, :do_not_record, :recording_license, :tech_rider,
       *translated_params,
       event_attachments_attributes: %i(id title attachment public _destroy),
       ticket_attributes: %i(id remote_ticket_id),
@@ -462,5 +468,63 @@ class EventsController < BaseConferenceController
       event_classifiers_attributes: %i(id classifier_id value _destroy),
       event_people_attributes: %i(id person_id event_role role_state notification_subject notification_body _destroy)
     )
+  end
+
+  def create_coauthors
+    coauthors = @event.coauthors.split(";")
+    submitters = @event.event_people.where(event_role: "submitter").map{|ep| ep.person_id}
+    @event.event_people.where(event_role: "speaker").where.not(person_id: submitters).delete_all
+    if !coauthors.blank?
+      coauthors.each do |ca|
+        user = User.find_by(email: ca)
+        if user
+          if !@event.speakers.include?(user.person)
+            EventPerson.create!(event_id: @event.id, event_role: "speaker",role_state: "confirmed",person_id: user.person.id)
+          end
+        else
+          person = Person.create!(
+            email: ca,
+            first_name: ca,
+            last_name: '',
+            public_name: ca
+          )
+
+          password = SecureRandom.urlsafe_base64(32)
+          user = User.new(
+            email: person.email,
+            password: password,
+            password_confirmation: password
+          )
+          user.person = person
+          user.role = 'submitter'
+          user.confirmed_at = Time.now
+          user.save!
+          EventPerson.create!(event_id: @event.id, event_role: "speaker", role_state: "confirmed", person_id: person.id)
+        end
+      end
+    end
+    @event.people.each do |p|
+      Availability.build_for(@event.conference).each do |a|
+        a.person_id = p.id
+        a.save!
+      end
+    end
+  end
+
+  def filter_by_rating(rating,operator,result)
+    case operator.to_i
+    when 1
+      return result.where("average_rating = #{rating.to_f}")
+    when 2
+      return result.where("average_rating > #{rating.to_f}")
+    when 3
+      return result.where("average_rating < #{rating.to_f}")
+    when 4
+      return result.where("average_rating <= #{rating.to_f}")
+    when 5
+      return result.where("average_rating >= #{rating.to_f}")
+    else
+      return
+    end
   end
 end

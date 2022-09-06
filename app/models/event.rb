@@ -20,6 +20,7 @@ class Event < ApplicationRecord
   has_many :event_classifiers, dependent: :destroy
   has_many :links, as: :linkable, dependent: :destroy
   has_many :people, through: :event_people
+  has_one :paper
 
   belongs_to :conference
   belongs_to :track, optional: true
@@ -66,6 +67,16 @@ class Event < ApplicationRecord
     end
     e
   }
+
+  after_create do |resource|
+    Paper.create(event_id: resource.id)
+    resource.people.each do |p|
+      Availability.build_for(resource.conference).each do |a|
+        a.person_id = p.id
+        a.save!
+      end
+    end
+  end
 
   def self.ransackable_attributes(auth_object = nil)
     column_names + ReviewMetric.all.map(&:safe_name)
@@ -257,9 +268,25 @@ class Event < ApplicationRecord
   end
 
   def average_of_nonzeros(list)
-    return nil unless list
-    list=list.select{ |x| x && x>0 }
-    return nil if list.empty?
-    list.reduce(:+).to_f / list.size
+    if self.event_type == "academic"
+      peer = self.event_ratings.select{|er| !["crew","admin"].include?(er.person.user.role)}
+      pro = self.event_ratings.select{|er| ["crew","admin"].include?(er.person.user.role)}
+      peer = peer.map{|p| p.rating}
+      pro = pro.map{|p| p.rating}
+      peers = peer.reduce(:+).to_f / peer.size
+      pros = pro.reduce(:+).to_f / pro.size
+      if peer.size == 0
+        return pros
+      elsif pro.size == 0
+        return peers
+      else
+        return ((peers+pros)/2.0).to_f
+      end
+    else
+      return nil unless list
+      list=list.select{ |x| x && x>0 }
+      return nil if list.empty?
+      list.reduce(:+).to_f / list.size
+    end
   end
 end

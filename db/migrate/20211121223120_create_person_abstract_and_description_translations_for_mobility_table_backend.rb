@@ -1,4 +1,4 @@
-class CreatePersonAbstractAndDescriptionTranslationsForMobilityTableBackend < ActiveRecord::Migration[5.2]
+class CreatePersonAbstractAndDescriptionTranslationsForMobilityTableBackend < ActiveRecord::Migration[5.1]
   def change
     create_table :person_translations do |t|
 

@@ -9,9 +9,9 @@ install_if -> { RbConfig::CONFIG['target_os'] =~ /(?i-mx:bsd|dragonfly)/ } do
 end
 
 
-if ENV['CUSTOM_RUBY_VERSION']
-  ruby ENV['CUSTOM_RUBY_VERSION'] # i.e.: '2.3'
-end
+
+ruby '2.7.6'
+
 
 gem 'rails', '~> 6.1'
 
@@ -23,7 +23,7 @@ gem 'uglifier'
 gem 'coffee-rails'
 
 gem 'mysql2', group: :mysql
-gem 'pg', group: :postgresql
+gem 'pg', '>= 0.18', '< 2.0'
 gem 'sqlite3', group: :sqlite3
 
 # Use Puma as the app server

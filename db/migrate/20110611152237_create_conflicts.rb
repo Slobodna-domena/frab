@@ -1,4 +1,4 @@
-class CreateConflicts < ActiveRecord::Migration
+class CreateConflicts < ActiveRecord::Migration[5.1]
   def self.up
     create_table :conflicts do |t|
       t.integer :event_id

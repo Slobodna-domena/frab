@@ -1,4 +1,4 @@
-class EventTitleNullable < ActiveRecord::Migration[5.2]
+class EventTitleNullable < ActiveRecord::Migration[5.1]
   def up
     change_column :events, :title, :string, null: true
   end

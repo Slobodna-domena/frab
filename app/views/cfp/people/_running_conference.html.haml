@@ -9,12 +9,12 @@
     .clear
   %p=t("cfp.input_appreciation")
   = action_button "success", t("cfp.submit_another_event"), new_cfp_event_path
-  = action_button "success", t("cfp.join_event"), cfp_events_join_path
+  =# action_button "success", t("cfp.join_event"), cfp_events_join_path
 
 - else
   %p=t("cfp.take_time_to_submit")
   = action_button "success", t("cfp.submit_new_event"), new_cfp_event_path
-  = action_button "success", t("cfp.join_event"), cfp_events_join_path
+  =# action_button "success", t("cfp.join_event"), cfp_events_join_path
   .clear
   %br
   %p=t("cfp.not_forget_personal_details")

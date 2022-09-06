@@ -1,4 +1,4 @@
-class CreateTrackNameTranslationsForMobilityTableBackend < ActiveRecord::Migration[5.2]
+class CreateTrackNameTranslationsForMobilityTableBackend < ActiveRecord::Migration[5.1]
   def change
     create_table :track_translations do |t|
 

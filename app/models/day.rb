@@ -16,6 +16,19 @@ class Day < ApplicationRecord
   validate :start_date_before_end_date
   validate :does_not_overlap
 
+
+  after_create do |resource|
+    resource.conference.events.each do |e|
+      e.people.each do |p|
+        p.availabilities.destroy_all
+        Availability.build_for(resource.conference).each do |a|
+          a.person_id = p.id
+          a.save!
+        end
+      end
+    end
+  end
+
   def start_date_before_end_date
     return if start_date.nil? || end_date.nil?
     errors.add(:end_date, 'should be after start date') if start_date >= end_date

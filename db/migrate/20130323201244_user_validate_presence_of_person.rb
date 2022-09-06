@@ -1,4 +1,4 @@
-class UserValidatePresenceOfPerson < ActiveRecord::Migration
+class UserValidatePresenceOfPerson < ActiveRecord::Migration[5.1]
   def up
     users = User.all.select { |u| u.person.nil? }
     users.each { |user|

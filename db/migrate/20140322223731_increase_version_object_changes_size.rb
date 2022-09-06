@@ -1,4 +1,4 @@
-class IncreaseVersionObjectChangesSize < ActiveRecord::Migration
+class IncreaseVersionObjectChangesSize < ActiveRecord::Migration[5.1]
   def up
     change_column :versions, :object_changes, :text, limit: 4.megabytes
   end
