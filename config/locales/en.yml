@@ -65,7 +65,7 @@ en:
         end_date: End date
         start_date: start
       event:
-        abstract: Summary
+        abstract: Abstract
         average_feedback: Average feedback
         average_rating: Average rating
         description: Description

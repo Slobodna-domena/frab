@@ -460,7 +460,7 @@ class EventsController < BaseConferenceController
     }.flatten
 
     params.require(:event).permit(
-      :id, :title, :subtitle, :event_type, :coauthors, :time_slots, :state, :start_time, :public, :language, :abstract, :description, :logo, :track_id, :room_id, :note, :submission_note, :do_not_record, :recording_license, :tech_rider,
+      :id, :title, :subtitle, :event_type, :coauthors, :coauthor_1,:coauthor_2,:coauthor_3,:coauthor_4,:coauthor_5, :time_slots, :state, :start_time, :public, :language, :abstract, :description, :logo, :track_id, :room_id, :note, :submission_note, :do_not_record, :recording_license, :tech_rider,
       *translated_params,
       event_attachments_attributes: %i(id title attachment public _destroy),
       ticket_attributes: %i(id remote_ticket_id),
@@ -471,7 +471,7 @@ class EventsController < BaseConferenceController
   end
 
   def create_coauthors
-    coauthors = @event.coauthors.split(";")
+    coauthors = [@event.coauthor_1,@event.coauthor_2,@event.coauthor_3,@event.coauthor_4,@event.coauthor_5].select{|a| !a.blank? && a =~ URI::MailTo::EMAIL_REGEXP}
     submitters = @event.event_people.where(event_role: "submitter").map{|ep| ep.person_id}
     @event.event_people.where(event_role: "speaker").where.not(person_id: submitters).delete_all
     if !coauthors.blank?

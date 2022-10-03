@@ -152,7 +152,7 @@ class Cfp::EventsController < ApplicationController
   end
 
   def create_coauthors
-    coauthors = @event.coauthors.split(";")
+    coauthors = [@event.coauthor_1,@event.coauthor_2,@event.coauthor_3,@event.coauthor_4,@event.coauthor_5].select{|a| !a.blank? && a =~ URI::MailTo::EMAIL_REGEXP}
     submitters = @event.event_people.where(event_role: "submitter").map{|ep| ep.person_id}
     @event.event_people.where(event_role: "speaker").where.not(person_id: submitters).delete_all
     if !coauthors.blank?
@@ -193,7 +193,7 @@ class Cfp::EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(
-      :title, :subtitle, :event_type, :time_slots, :coauthors,:language, :abstract, :description, :logo, :track_id, :submission_note, :tech_rider,
+      :title, :subtitle, :event_type, :time_slots, :coauthors, :coauthor_1,:coauthor_2,:coauthor_3,:coauthor_4,:coauthor_5,:language, :abstract, :description, :logo, :track_id, :submission_note, :tech_rider,
       event_attachments_attributes: %i(id title attachment public _destroy),
       event_classifiers_attributes: %i(id classifier_id value _destroy),
       links_attributes: %i(id title url _destroy)

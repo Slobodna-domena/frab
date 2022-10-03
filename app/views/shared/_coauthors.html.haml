@@ -1,4 +1,9 @@
 %legend Coauthors
 %br
-%p{style: "margin-left: 150px; margin-right: 200px;"} You can add coauthors to your paper by writting down their email(s). Please use ';' as the divider between multiple authors. Authors that already have an account on FRAB will automatically be added to the event. Authors that don't have an account will have their email linked to a new account.
-= f.input :coauthors
+%p{style: "margin-left: 150px; margin-right: 200px; font-size: 17px"} You can add up to 5 coauthors to your paper. Authors that already have an account will automatically be added to the event. Authors that don't have an account will have their email linked to a new account. Please use valid emails for each coauthor.
+= f.input :coauthor_1, label: "Coauthor #1"
+= f.input :coauthor_2, label: "Coauthor #2"
+= f.input :coauthor_3, label: "Coauthor #3"
+= f.input :coauthor_4, label: "Coauthor #4"
+= f.input :coauthor_5, label: "Coauthor #5"
+%hr

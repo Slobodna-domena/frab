@@ -84,6 +84,15 @@ class Person < ApplicationRecord
     public_name
   end
 
+  def own_papers(conf)
+    self.events.where(conference_id: conf.id).select{|event| !event.event_people.where(person_id: self.id).where(event_role: "submitter").blank? }
+  end
+
+  def coauthored_papers(conf)
+    self.events.where(conference_id: conf.id)
+      .select{|event| !event.event_people.where(person_id: self.id).where(event_role: "speaker").blank? && event.event_people.where(person_id: self.id).where(event_role: "submitter").blank?}
+  end
+
   def full_name
     if first_name.blank? or last_name.blank?
       public_name

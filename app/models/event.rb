@@ -7,6 +7,9 @@ class Event < ApplicationRecord
 
   before_create :generate_guid
 
+  PRACTICAL_CONST = ["Practical 1", "Practical 2", "practical"]
+  ACADEMIC_CONST = ["Oral Presentation", "Special Session"]
+
   TYPES = %w(lecture workshop podium lightning_talk meeting film concert djset performance other).freeze
   ACCEPTED = %w(accepting unconfirmed confirmed scheduled).freeze
 
@@ -45,8 +48,15 @@ class Event < ApplicationRecord
 
   validates_attachment_content_type :logo, content_type: [/jpg/, /jpeg/, /png/, /gif/]
 
-  validates :title, :time_slots, presence: true
+  validates :title, :time_slots, :abstract, presence: true
   validates :title, length: { maximum: 255 }
+
+  validates_format_of :coauthor_1,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
+  validates_format_of :coauthor_2,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
+  validates_format_of :coauthor_3,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
+  validates_format_of :coauthor_4,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
+  validates_format_of :coauthor_5,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
+
 
   scope :accepted, -> { where(arel_table[:state].in(ACCEPTED)) }
   scope :associated_with, ->(person) { joins(:event_people).where("event_people.person_id": person.id) }
@@ -70,11 +80,28 @@ class Event < ApplicationRecord
 
   after_create do |resource|
     Paper.create(event_id: resource.id)
+    if resource.event_type.in?(ACADEMIC_CONST)
+      timeslot = resource.event_type == "Oral Presentation" ? 1 : 6
+      resource.update_column(:time_slots, timeslot)
+    elsif resouurce.event_type.in?(PRACTICAL_CONST)
+      timeslot = resource.event_type == "Practical 1" ? 1 : 6
+      resource.update_column(:time_slots, timeslot)
+    end
     resource.people.each do |p|
       Availability.build_for(resource.conference).each do |a|
         a.person_id = p.id
         a.save!
       end
+    end
+  end
+
+  after_update do |resource|
+    if resource.event_type.in?(ACADEMIC_CONST)
+      timeslot = resource.event_type == "Oral Presentation" ? 1 : 6
+      resource.update_column(:time_slots, timeslot)
+    elsif resouurce.event_type.in?(PRACTICAL_CONST)
+      timeslot = resource.event_type == "Practical 1" ? 1 : 6
+      resource.update_column(:time_slots, timeslot)
     end
   end
 

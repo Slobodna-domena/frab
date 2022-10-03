@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_02_102530) do
+ActiveRecord::Schema.define(version: 2022_10_02_195802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -243,6 +243,11 @@ ActiveRecord::Schema.define(version: 2022_09_02_102530) do
     t.string "invite_token"
     t.string "video_url", limit: 255
     t.text "coauthors"
+    t.string "coauthor_1"
+    t.string "coauthor_2"
+    t.string "coauthor_3"
+    t.string "coauthor_4"
+    t.string "coauthor_5"
     t.index ["conference_id"], name: "index_events_on_conference_id"
     t.index ["event_type"], name: "index_events_on_type"
     t.index ["guid"], name: "index_events_on_guid", unique: true
