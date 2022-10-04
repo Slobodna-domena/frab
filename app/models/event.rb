@@ -83,7 +83,7 @@ class Event < ApplicationRecord
     if resource.event_type.in?(ACADEMIC_CONST)
       timeslot = resource.event_type == "Oral Presentation" ? 1 : 6
       resource.update_column(:time_slots, timeslot)
-    elsif resouurce.event_type.in?(PRACTICAL_CONST)
+    elsif resource.event_type.in?(PRACTICAL_CONST)
       timeslot = resource.event_type == "Practical 1" ? 1 : 6
       resource.update_column(:time_slots, timeslot)
     end
@@ -99,7 +99,7 @@ class Event < ApplicationRecord
     if resource.event_type.in?(ACADEMIC_CONST)
       timeslot = resource.event_type == "Oral Presentation" ? 1 : 6
       resource.update_column(:time_slots, timeslot)
-    elsif resouurce.event_type.in?(PRACTICAL_CONST)
+    elsif resource.event_type.in?(PRACTICAL_CONST)
       timeslot = resource.event_type == "Practical 1" ? 1 : 6
       resource.update_column(:time_slots, timeslot)
     end
@@ -295,7 +295,7 @@ class Event < ApplicationRecord
   end
 
   def average_of_nonzeros(list)
-    if self.event_type == "academic"
+    if self.event_type.in?(ACADEMIC_CONST)
       peer = self.event_ratings.select{|er| !["crew","admin"].include?(er.person.user.role)}
       pro = self.event_ratings.select{|er| ["crew","admin"].include?(er.person.user.role)}
       peer = peer.map{|p| p.rating}
