@@ -1,5 +1,6 @@
 class Day < ApplicationRecord
   include HumanizedDateRange
+  prepend DayModule
 
   after_commit :update_conference_date
   after_destroy :update_conference_date
@@ -15,19 +16,6 @@ class Day < ApplicationRecord
   validates :end_date, presence: true
   validate :start_date_before_end_date
   validate :does_not_overlap
-
-
-  after_create do |resource|
-    resource.conference.events.each do |e|
-      e.people.each do |p|
-        p.availabilities.destroy_all
-        Availability.build_for(resource.conference).each do |a|
-          a.person_id = p.id
-          a.save!
-        end
-      end
-    end
-  end
 
   def start_date_before_end_date
     return if start_date.nil? || end_date.nil?

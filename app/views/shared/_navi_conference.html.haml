@@ -1,6 +1,9 @@
 - if policy(@conference).manage?
   %li= link_to t("people", default: "People"), url_for(action: 'index', controller: 'people')
-%li= link_to t("events", default: "Events"), events_path
+- if current_user && !current_user.conference_users.where(conference_id: @conference.id).where(role: "reviewer").blank?
+  %li= link_to t("events", default: "Events"), ratings_events_path
+- else
+  %li= link_to t("events", default: "Events"), events_path
 - if policy(@conference).orga?
   %li= link_to t("reports", default: "Reports"), reports_path
 %li

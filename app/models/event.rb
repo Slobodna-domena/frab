@@ -4,11 +4,9 @@ class Event < ApplicationRecord
   include ActionView::Helpers::TextHelper
   include EventState
   include HasEventConflicts
+  prepend EventModule
 
   before_create :generate_guid
-
-  PRACTICAL_CONST = ["Practical 1", "Practical 2", "practical"]
-  ACADEMIC_CONST = ["Oral Presentation", "Special Session"]
 
   TYPES = %w(lecture workshop podium lightning_talk meeting film concert djset performance other).freeze
   ACCEPTED = %w(accepting unconfirmed confirmed scheduled).freeze
@@ -23,7 +21,6 @@ class Event < ApplicationRecord
   has_many :event_classifiers, dependent: :destroy
   has_many :links, as: :linkable, dependent: :destroy
   has_many :people, through: :event_people
-  has_one :paper
 
   belongs_to :conference
   belongs_to :track, optional: true
@@ -48,15 +45,8 @@ class Event < ApplicationRecord
 
   validates_attachment_content_type :logo, content_type: [/jpg/, /jpeg/, /png/, /gif/]
 
-  validates :title, :time_slots, :abstract, presence: true
+  validates :title, :time_slots, presence: true
   validates :title, length: { maximum: 255 }
-
-  validates_format_of :coauthor_1,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
-  validates_format_of :coauthor_2,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
-  validates_format_of :coauthor_3,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
-  validates_format_of :coauthor_4,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
-  validates_format_of :coauthor_5,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
-
 
   scope :accepted, -> { where(arel_table[:state].in(ACCEPTED)) }
   scope :associated_with, ->(person) { joins(:event_people).where("event_people.person_id": person.id) }
@@ -77,33 +67,6 @@ class Event < ApplicationRecord
     end
     e
   }
-
-  after_create do |resource|
-    Paper.create(event_id: resource.id)
-    if resource.event_type.in?(ACADEMIC_CONST)
-      timeslot = resource.event_type == "Oral Presentation" ? 1 : 6
-      resource.update_column(:time_slots, timeslot)
-    elsif resource.event_type.in?(PRACTICAL_CONST)
-      timeslot = resource.event_type == "Practical 1" ? 1 : 6
-      resource.update_column(:time_slots, timeslot)
-    end
-    resource.people.each do |p|
-      Availability.build_for(resource.conference).each do |a|
-        a.person_id = p.id
-        a.save!
-      end
-    end
-  end
-
-  after_update do |resource|
-    if resource.event_type.in?(ACADEMIC_CONST)
-      timeslot = resource.event_type == "Oral Presentation" ? 1 : 6
-      resource.update_column(:time_slots, timeslot)
-    elsif resource.event_type.in?(PRACTICAL_CONST)
-      timeslot = resource.event_type == "Practical 1" ? 1 : 6
-      resource.update_column(:time_slots, timeslot)
-    end
-  end
 
   def self.ransackable_attributes(auth_object = nil)
     column_names + ReviewMetric.all.map(&:safe_name)
@@ -295,25 +258,9 @@ class Event < ApplicationRecord
   end
 
   def average_of_nonzeros(list)
-    if self.event_type.in?(ACADEMIC_CONST)
-      peer = self.event_ratings.select{|er| !["crew","admin"].include?(er.person.user.role)}
-      pro = self.event_ratings.select{|er| ["crew","admin"].include?(er.person.user.role)}
-      peer = peer.map{|p| p.rating}
-      pro = pro.map{|p| p.rating}
-      peers = peer.reduce(:+).to_f / peer.size
-      pros = pro.reduce(:+).to_f / pro.size
-      if peer.size == 0
-        return pros
-      elsif pro.size == 0
-        return peers
-      else
-        return ((peers+pros)/2.0).to_f
-      end
-    else
-      return nil unless list
-      list=list.select{ |x| x && x>0 }
-      return nil if list.empty?
-      list.reduce(:+).to_f / list.size
-    end
+    return nil unless list
+    list=list.select{ |x| x && x>0 }
+    return nil if list.empty?
+    list.reduce(:+).to_f / list.size
   end
 end

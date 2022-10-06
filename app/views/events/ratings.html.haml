@@ -1,7 +1,7 @@
 %section
   .page-header
     .pull-right
-      = action_button "primary", t('ratings_module.start_reviewing'), start_review_events_path, hint: t('ratings_module.start_reviewing_hint'), disabled: @events_no_review == 0
+      =# action_button "primary", t('ratings_module.start_reviewing'), start_review_events_path, hint: t('ratings_module.start_reviewing_hint'), disabled: @events_no_review == 0
     %h1= t('titles.event_ratings')
   = render partial: "event_list_tabs"
   - if not @conference.events.any?
@@ -11,25 +11,27 @@
           %p= t('ratings_module.no_event')
   - else
     = render partial: 'filters', locals: { params: params }
-    .row
-      .span16
-        %h2= t('ratings_module.statistics')
-        %p
-          %b= t('ratings_module.total_number_of_events')
-          = @events_total
-          %br/
-          %b= t('ratings_module.total_number_of_events_no_review')
-          = @events_no_review_total
-          %br/
-          %b= t('ratings_module.total_number_of_reviewed')
-          = @events_reviewed
-          %br/
-          %b= t('ratings_module.total_number_of_not_reviewed')
-          = @events_no_review
+    - if current_user && current_user.conference_users.where(conference_id: @conference.id).where(role: "reviewer").blank?
+      .row
+        .span16
+          %h2= t('ratings_module.statistics')
+          %p
+            %b= t('ratings_module.total_number_of_events')
+            = @events_total
+            %br/
+            %b= t('ratings_module.total_number_of_events_no_review')
+            = @events_no_review_total
+            %br/
+            %b= t('ratings_module.total_number_of_reviewed')
+            = @events_reviewed
+            %br/
+            %b= t('ratings_module.total_number_of_not_reviewed')
+            = @events_no_review
     .row
       .span16
         = render 'shared/simple_search', path: request.path
-        = render 'shared/ratings_filter', path: request.path
+        = render 'shared/ratings_filter', path: request.path, locals: {conference: @conference}
+        =# render 'shared/categories_filter', path: request.path
     .row
       .span16
         - if @events.empty?
@@ -55,12 +57,6 @@
                   = sort_link @search, :average_rating, term: params[:term]
                   = filter_link('average_rating')
                 %th
-                  = sort_link @search, :event_ratings_count, term: params[:term]
-                  = filter_link('event_ratings_count')
-                - review_metrics.each do |review_metric|
-                  %th
-                    = sort_link @search, review_metric.safe_name, review_metric.name, term: params[:term]
-                    = filter_link(review_metric.safe_name)
                 %th
             %tbody
               - @events.includes(:track).each do |event|
@@ -77,12 +73,9 @@
                   %td
                     - if event.average_rating
                       = link_to_unless params[:average_rating].present?, raty_for("event_rating_#{event.id}", event.average_rating), request.query_parameters.merge(:average_rating => "≥#{event.average_rating}")
-                  %td= link_to_unless params[:event_ratings_count].present?, event.event_ratings_count, request.query_parameters.merge(:event_ratings_count => "≥#{event.event_ratings_count}")
-                  - review_metrics.each do |review_metric|
-                    - avg = event[review_metric.safe_name]
-                    %td
-                      - unless avg.nil?
-                        = link_to_unless params[review_metric.safe_name].present?, avg.round(2), request.query_parameters.merge(review_metric.safe_name => "≥#{avg}")
+                  %td
+                    - if !event.event_ratings.select{|er| er.peer == false && er.person_id == current_user.person.id}.blank?
+                      You have reviewed this paper
                   %td
                     = link_to t('ratings_module.show_ratings'), event_event_rating_path(event), class: "btn small"
           = actions_bar do

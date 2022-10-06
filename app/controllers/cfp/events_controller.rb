@@ -46,7 +46,6 @@ class Cfp::EventsController < ApplicationController
 
     respond_to do |format|
       if @event.save
-        create_coauthors
         format.html { redirect_to(cfp_person_path, notice: t('cfp.event_created_notice')) }
       else
         format.html { render action: 'new' }
@@ -60,7 +59,6 @@ class Cfp::EventsController < ApplicationController
 
     respond_to do |format|
       if @event.update(event_params)
-        create_coauthors
         format.html { redirect_to(cfp_person_path, notice: t('cfp.event_updated_notice')) }
       else
         flash_model_errors(@event)
@@ -151,49 +149,9 @@ class Cfp::EventsController < ApplicationController
     end
   end
 
-  def create_coauthors
-    coauthors = [@event.coauthor_1,@event.coauthor_2,@event.coauthor_3,@event.coauthor_4,@event.coauthor_5].select{|a| !a.blank? && a =~ URI::MailTo::EMAIL_REGEXP}
-    submitters = @event.event_people.where(event_role: "submitter").map{|ep| ep.person_id}
-    @event.event_people.where(event_role: "speaker").where.not(person_id: submitters).delete_all
-    if !coauthors.blank?
-      coauthors.each do |ca|
-        user = User.find_by(email: ca)
-        if user
-          if !@event.speakers.include?(user.person)
-            EventPerson.create!(event_id: @event.id, event_role: "speaker",role_state: "confirmed",person_id: user.person.id)
-          end
-        else
-          person = Person.create!(
-            email: ca,
-            first_name: ca,
-            last_name: '',
-            public_name: ca
-          )
-          password = SecureRandom.urlsafe_base64(32)
-          user = User.new(
-            email: person.email,
-            password: password,
-            password_confirmation: password
-          )
-          user.person = person
-          user.role = 'submitter'
-          user.confirmed_at = Time.now
-          user.save!
-          EventPerson.create!(event_id: @event.id, event_role: "speaker", role_state: "confirmed", person_id: person.id)
-        end
-      end
-    end
-    @event.people.each do |p|
-      Availability.build_for(@event.conference).each do |a|
-        a.person_id = p.id
-        a.save!
-      end
-    end
-  end
-
   def event_params
     params.require(:event).permit(
-      :title, :subtitle, :event_type, :time_slots, :coauthors, :coauthor_1,:coauthor_2,:coauthor_3,:coauthor_4,:coauthor_5,:language, :abstract, :description, :logo, :track_id, :submission_note, :tech_rider,
+      :title, :subtitle, :event_type, :time_slots,:language, :abstract, :description, :logo, :track_id, :submission_note, :tech_rider,
       event_attachments_attributes: %i(id title attachment public _destroy),
       event_classifiers_attributes: %i(id classifier_id value _destroy),
       links_attributes: %i(id title url _destroy)
