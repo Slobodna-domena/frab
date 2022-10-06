@@ -1,0 +1,8 @@
+-if !@conference.conference_users.where(user_id: current_user.id).where(role: "reviewer").blank? && @conference.call_for_participation.hard_deadline_over?
+  %br
+  %h2 Expert review
+  =link_to("Start expert review here", events_path())
+- elsif !@conference.conference_users.where(user_id: current_user.id).where(role: "reviewer").blank?
+  %br
+  %h2 Expert review
+  %p Expert review will become available once the call for participation has ended.

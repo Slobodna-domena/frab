@@ -24,14 +24,7 @@
       - elsif !@conference.in_the_past?
         = render 'running_conference'
 
-      -if !@conference.conference_users.where(user_id: current_user.id).where(role: "reviewer").blank? && @conference.call_for_participation.hard_deadline_over?
-        %br
-        %h2 Expert review
-        =link_to("Start expert review here", events_path())
-      - elsif !@conference.conference_users.where(user_id: current_user.id).where(role: "reviewer").blank?
-        %br
-        %h2 Expert review
-        %p Expert review will become available once the call for participation has ended.
+      = render 'expert_review'
     .span8
       %h2=t("cfp.information_headline")
       - if @conference.call_for_participation.info_url.present?
@@ -45,21 +38,7 @@
         %h2=t("cfp.contact_headline")
         %p=t("cfp.contact_description_html", mail_to: mail_to(@conference.call_for_participation.contact_email))
 
-    - if @conference.call_for_participation.hard_deadline_over?
-      - if @conference && (!@person.own_papers(@conference).blank? || !@person.coauthored_papers(@conference).blank?)
-        .span8
-          %h2 Peer review
-          - if !@person.own_papers(@conference).blank?
-            %p{style: "font-weight: bold"}="You have submitted #{@person.own_papers(@conference).size} papers so far. You need to peer review #{@person.own_papers(@conference).size*3} papers."
-          - if !@person.coauthored_papers(@conference).blank?
-            %br
-            %p= "You have been named coauthor in #{@person.coauthored_papers(@conference).size} papers so far. You can peer review #{@person.coauthored_papers(@conference).size*3} papers. This step is not mandatory and you can skip it but we encourage you to peer review papers."
-          %p Please follow the link below and read instructions on how to peer review papers.
-          = link_to "Peer review","http://localhost:3001/users/login?q=#{rand(36**15).to_s(36)}#{current_user.id}&r=#{rand(36**20).to_s(36)}#{current_user.id%2}&t=#{rand(36**15).to_s(36)}#{current_user.id%3}", target: :blank
-    - else
-      .span8
-        %h2 Peer review
-        %p Peer review will become available once the call for participation has ended. You will need to peer review 3 other papers for each paper you have submitted. You cannot peer review your own papers. You're not obligated to peer review papers if you have coauthored a paper.
+    = render 'peer_review'
   .row
     .span16
       - if @person.events_in(@conference).size > 0

@@ -268,7 +268,6 @@ end
 
 Event.class_eval do
   has_one :paper
-
   validates_format_of :coauthor_1,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
   validates_format_of :coauthor_2,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
   validates_format_of :coauthor_3,:with => URI::MailTo::EMAIL_REGEXP, :allow_blank => true, :allow_nil => true
