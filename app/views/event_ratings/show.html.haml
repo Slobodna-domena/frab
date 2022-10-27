@@ -4,7 +4,9 @@
       - if @next_event
         = actions_block do
           = action_button "primary", t('events_module.rate_next') , event_event_rating_path(@next_event), hint: "Proceed to rate the next event."
+    =link_to("Back to list of all submitted sessions",ratings_events_path)
     %h1= t('titles.event', event: @event.title)
+
   = render 'shared/events_tabs'
   .row
     .span16
@@ -90,38 +92,39 @@
           = f.button :submit,  class: 'primary'
           - if @rating.persisted?
             = action_button "small danger", t('events_module.delete_rating'), event_event_rating_path(@event), data: { confirm: t('are_you_sure')}, method: :delete
-  .row
-    .span16
-      %h2= t('events_module.all_rating')
-      - if @event_ratings.nil? or @event_ratings.count == 0
-        .blank-slate
-          %p= t('events_module.no_ratings')
+  - if (current_user.role == 'admin' || current_user.role == 'crew') && current_user.conference_users.where(conference_id: @conference.id).where(role: "reviewer").blank?
+    .row
+      .span16
+        %h2= t('events_module.all_rating')
+        - if @event_ratings.nil? or @event_ratings.count == 0
+          .blank-slate
+            %p= t('events_module.no_ratings')
 
-      - else
-        %p
-          %b= t('col_total')
-          %span#total_rating
-            = raty_for("total_rating", @event.average_rating)
-        - if @event_ratings.count >= 1
-          %table.zebra-striped
-            %thead
-              %tr
-                %th
-                %th= t('user')
-                %th= t('rating')
-                - @conference.review_metrics.each do |review_metric|
-                  %th=review_metric.name
-                %th= t('comment')
-            %tbody
-              - @event_ratings.each do |event_rating|
-                - if policy(@conference).manage?
-                  - event_rating.person = Person.new if event_rating.person.nil?
-                  %tr
-                    %td=image_box event_rating.person.avatar, :small
-                    %td=event_rating.person.full_name
-                    %td
-                      = raty_for("event_rating_#{event_rating.id}", event_rating.rating)
-                    - @conference.review_metrics.each do |review_metric|
-                      - score=event_rating.review_scores.find_by(review_metric: review_metric)&.score
-                      %td=score if score and score>0
-                    %td=event_rating.comment
+        - else
+          %p
+            %b= t('col_total')
+            %span#total_rating
+              = raty_for("total_rating", @event.average_rating)
+          - if @event_ratings.count >= 1
+            %table.zebra-striped
+              %thead
+                %tr
+                  %th
+                  %th= t('user')
+                  %th= t('rating')
+                  - @conference.review_metrics.each do |review_metric|
+                    %th=review_metric.name
+                  %th= t('comment')
+              %tbody
+                - @event_ratings.each do |event_rating|
+                  - if policy(@conference).manage?
+                    - event_rating.person = Person.new if event_rating.person.nil?
+                    %tr
+                      %td=image_box event_rating.person.avatar, :small
+                      %td=event_rating.person.full_name
+                      %td
+                        = raty_for("event_rating_#{event_rating.id}", event_rating.rating)
+                      - @conference.review_metrics.each do |review_metric|
+                        - score=event_rating.review_scores.find_by(review_metric: review_metric)&.score
+                        %td=score if score and score>0
+                      %td=event_rating.comment

@@ -8,10 +8,18 @@ body {
 
 .topbar .fill {
   padding: 0 1em;
+  background-color: #30b14a;
+  background-image: none;
 }
-
+.topbar div > ul a, .nav a {
+  color: white;
+}
 .topbar .container {
   width: 100%;
+}
+
+h1 {
+  color: #30b14a;
 }
 
 .main-content {
@@ -261,7 +269,7 @@ span.event-tag {
     vertical-align: middle;
 }
 span.event-tag.small {
-    font-size: 8px; 
+    font-size: 8px;
 }
 span.after-deadline.soft {
     background-color: orange;

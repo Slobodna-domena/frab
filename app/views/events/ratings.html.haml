@@ -72,7 +72,7 @@
                     %td= link_to_unless params[:event_state].present?, event.state, request.query_parameters.merge(:event_state => event.state)
                   %td
                     - if event.average_rating
-                      = link_to_unless params[:average_rating].present?, raty_for("event_rating_#{event.id}", event.average_rating), request.query_parameters.merge(:average_rating => "≥#{event.average_rating}")
+                      = event.average_rating
                   %td
                     - if !event.event_ratings.select{|er| er.peer == false && er.person_id == current_user.person.id}.blank?
                       You have reviewed this paper

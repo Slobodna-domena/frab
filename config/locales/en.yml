@@ -2,7 +2,7 @@
 en:
   ability:
     denied: This action is not allowed.
-  accepted_event_durations: Accepted event durations
+  accepted_event_durations: Accepted session durations
   accepted_only: Accepted only
   actions: Actions
   activemodel:
@@ -29,7 +29,7 @@ en:
         name: Name
       conference:
         acronym: Acronym
-        allowed_event_types_as_list: Allowed event types
+        allowed_event_types_as_list: Allowed session types
         attachment_title_is_freeform: Attachment title is freeform
         bcc_address: BCC address
         bulk_notification_enabled: Bulk notifications
@@ -37,7 +37,7 @@ en:
         default_recording_license: Default recording license
         default_timeslots: default timeslots
         email: E-Mail
-        event_state_visible: Event state visible
+        event_state_visible: Session state visible
         expenses_enabled: Expense tracking
         feedback_enabled: Feedback
         max_timeslots: Max. timeslots
@@ -59,7 +59,7 @@ en:
         role: Role
       conflict:
         conflict_type: Conflict type
-        conflicting_event_id: Conflicting event
+        conflicting_event_id: Conflicting session
         severity: Severity
       day:
         end_date: End date
@@ -71,8 +71,8 @@ en:
         description: Description
         do_not_record: Do not record
         event_feedback_count: Event feedback count
-        event_ratings_count: Event ratings count
-        event_type: Event type
+        event_ratings_count: Session review count
+        event_type: Session type
         guid: GUID
         invite_token: Invite token
         language: Language
@@ -89,7 +89,7 @@ en:
         tech_rider: Tech rider
         time_slots: Duration
         title: Title
-        track: Track
+        track: Theme
       event_attachment:
         attachment: file
         public: Public
@@ -102,7 +102,7 @@ en:
         rating: evaluation
       event_rating:
         comment: Comment
-        rating: Rating
+        rating: Review
       expense:
         name: Name
         reimbursed: Reimbursed
@@ -188,16 +188,16 @@ en:
           other: 'Could not save %{model}: %{count} error.'
     models:
       call_for_participation: Call for Participation
-      classifier: classifier
+      classifier: keyword
       conference: conference
       conference_user: conference user
       day: day
-      event: event
+      event: session
       event_attachment: file
-      event_classifier: category
+      event_classifier: keyword
       event_feedback: feedback
       event_person: person
-      event_rating: rating
+      event_rating: review
       im_account: IM account
       language: language
       link: link
@@ -206,7 +206,7 @@ en:
       phone_number: phone number
       review_metric: Review metric
       room: room
-      track: track
+      track: theme
   add: Add
   add_association: Add %{name}
   additional_resources: Additional Resources
@@ -217,8 +217,8 @@ en:
     update_failed: Failed to update
     update_successful: Changes saved successfully!
   all: All
-  allowed_event_types: Allowed event types
-  allowed_event_types_extras: Additional allowed event types
+  allowed_event_types: Allowed sesssion types
+  allowed_event_types_extras: Additional allowed session types
   apply_filter: Apply filter
   are_you_sure: Are you sure?
   attachments_overview_module:
@@ -271,7 +271,7 @@ en:
     contact_data: Contact data
     contact_description_html: If anything goes wrong with your submission or if you have any question, please do not hesitate to contact us at %{mail_to}
     contact_headline: Contact
-    create_event_headline: Create a new event
+    create_event_headline: Create a new session
     current_password_hint: we need your current password to confirm your changes
     deadline_description: Please make sure to submit your proposal until **%{date}**
     description_hint: A longer description of yourself. Use this to give additional details that did not fit in the abstract. (HTML)
@@ -280,7 +280,7 @@ en:
     edit_availability: Edit availability
     edit_availability_description: Please let us know when you will be available to hold the events you submit. We will try our best to incorporate these wishes when planning the schedule.
     edit_availability_headline: Edit availability
-    edit_event_headline: Editing event
+    edit_event_headline: Editing session
     edit_profile: Edit your personal profile
     email_accept_upcoming_infos: Do you want to receive information about upcoming conferences by mail?
     email_hint: Please enter the email address that we should use as our main means of contacting you.
@@ -288,22 +288,22 @@ en:
     error_confirming: There was an error confirming your account. Please make sure that you have pasted the full link from the email and that you have not confirmed the account before.
     error_sending_confirmation_instructions: Could not send confirmation instructions. Please make sure you entered the correct email address and that your account is not confirmed already.
     event_abstract_hint: One short paragraph that succinctly describes the event. (HTML)
-    event_confirmed: Event confirmed
-    event_created_notice: Event was successfully created.
-    event_description_hint: A longer description of the event. Use this to give additional details that did not fit in the abstract. Both, abstract and description, will be shown on the conference website. (HTML)
-    event_time_slots_hint: Length of your event in hours and minutes. For regular talks etc. just use the default.
-    event_updated_notice: Event was successfully updated.
+    event_confirmed: Session confirmed
+    event_created_notice: Session was successfully created.
+    event_description_hint: A longer description of the session. Use this to give additional details that did not fit in the abstract. Both, abstract and description, will be shown on the conference website. (HTML)
+    event_time_slots_hint: Length of your session in hours and minutes. For regular talks etc. just use the default.
+    event_updated_notice: Session was successfully updated.
     event_withdrawn_notice: Your submission has been withdrawn.
-    events_submitted: 'Events you already submitted:'
+    events_submitted: 'Sessions you already submitted:'
     fail_layout_use: DO NOT USE CONFERENCE LAYOUT WITHOUT A CONFERENCE
     forgot_password_button: Request a new password
     forgot_password_description: Been here before, but don't remember your password? We know how it is, so please feel free to
     forgot_password_headline: Forgot your password?
-    hard_deadline_over: Sorry, the deadline for submitting events is over.
+    hard_deadline_over: Sorry, the deadline for submitting sessions is over.
     im_accounts: Instant messaging accounts
     info_url_description_html: 'Unsure what to submit? Read all about the Call for Participation at: %{link}'
     information_headline: Information
-    input_appreciation: 'We really appreciate your input so far. Feel free to submit or join another event:'
+    input_appreciation: 'We really appreciate your input so far. Feel free to submit or join another session:'
     inputs:
       hints:
         contact_email: An email address where participants can contact you in case they have any questions.
@@ -314,17 +314,17 @@ en:
         welcome_text: Enter a welcome message or additional instructions you want to display to participants. (HTML)
     join_alternative: 'Or lookup another invitation token:'
     join_as: Join as a
-    join_as_hint: If you join this event as a speaker, we'll try to take into account your availability when scheduling this event.
+    join_as_hint: If you join this session as a speaker, we'll try to take into account your availability when scheduling this session.
     join_confirm: Do you want to accept the invitation?
-    join_description: 'With the token provided you can join this event:'
-    join_event: Join event
-    join_submitters_hint: Share this token with people you want to join this event. After they have created an account, they can use the token in the 'Join event' interface and join as speakers or as assistants.
-    join_success: You have been added to this event.
-    join_token_already_used: You already joined this event.
-    join_token_link: This link directly leads to the 'Join event' page for this event.
+    join_description: 'With the token provided you can join this session:'
+    join_event: Join session
+    join_submitters_hint: Share this token with people you want to join this session. After they have created an account, they can use the token in the 'Join event' interface and join as speakers or as assistants.
+    join_success: You have been added to this session.
+    join_token_already_used: You already joined this session.
+    join_token_link: This link directly leads to the 'Join session' page for this session.
     join_token_lookup: Lookup token
-    join_token_lookup_description: Enter the token that you were given in order to join an event.
-    join_token_lookup_hint: 'Hint: The token can be viewed by the original submitter in the event''s edit view.'
+    join_token_lookup_description: Enter the token that you were given in order to join an session.
+    join_token_lookup_hint: 'Hint: The token can be viewed by the original submitter in the session''s edit view.'
     join_token_unknown: Token %{token} unknown.
     languages_spoken: Languages spoken
     links: Links
@@ -333,16 +333,16 @@ en:
     login_existing_headline: Log in with an existing account
     login_required: After signing in you can enter your submission.
     login_required_title: Sign In To Participate
-    logo_hint: A logo for the event / logo of the organization
+    logo_hint: A logo for the session / logo of the organization
     looking_for_login_form: Are you looking for the login of submitters?
-    no_confirmation_token: Your confirmation key is not valid. Please check your event status in the call for participation interface.
+    no_confirmation_token: Your confirmation key is not valid. Please check your session status in the call for participation interface.
     not_forget_personal_details: And do not forget to fill out your personal details if you have not done so already. Please remember that you can always go back and edit your profile using the button in the right sidebar.
     notifications:
       launched: Launched Call for Participation.
     pages:
       conference_open_mode: The conference is in open mode. Self scheduling is allowed
       event_confirm_attendence: Confirm attendance
-      event_confirmation_request: 'Your confirmation is required for the event: ** %{event} **.'
+      event_confirmation_request: 'Your confirmation is required for the session: ** %{event} **.'
       not_started_cfp: |
         Unfortunately, the Call for Participation has not yet started. Please bear with us
         and leave us a little more time for our preparations.
@@ -376,24 +376,24 @@ en:
       deadline_passed: The hard cfp deadline has passed, no submissions are possible.
       edit_cfp_hint: Edit this Call for Participation's data
       empty_description: The call for participation is running, but the "Welcome Text" is empty. frab won't link to the cfp.
-      new_events_by_day: New events by day
+      new_events_by_day: New sessions by day
       submitters_interface_link: 'The interface for submitters is available at:'
-      total_event_count: Total event count
+      total_event_count: Total session count
     sign_in: Sign In
     sign_up: Sign Up
     sign_up_description: If you are new to %{title}, please take the time to create an account. It is really easy and quick.
     sign_up_headline: Sign up for a new account
     signed_up: You have signed up successfully. An email with confirmation instructions has been sent to the address you provided. Please follow these instructions to complete your registration.
-    specify_availability: 'Please let us know, at what times you would be available to hold your event:'
+    specify_availability: 'Please let us know, at what times you would be available to hold your session:'
     submission_note_hint: Visible for admins and users, contains additional information.
-    submit_another_event: Submit another event
-    submit_new_event: Submit a new event
+    submit_another_event: Submit another session
+    submit_new_event: Submit a new session
     successfully_confirmed: Your account has been successfully confirmed. Thank you for signing up!
-    take_time_to_submit: 'Please take the time to submit your proposal or join an existing event:'
+    take_time_to_submit: 'Please take the time to submit your proposal or join an existing session:'
     thanks_for_confirmation: Thank you for confirming your participation.
     thanks_for_interest: Thank you for your interest in participating in %{title}.
     to: to
-    track_hint: The event is to be assigned to the following category in the program.
+    track_hint: The session is to be assigned to the following category in the program.
     update: Update
     update_availability_notice: Thank you for specifying your availability.
     updated: Successfully updated. New email addresses have to reconfirmed.
@@ -401,27 +401,27 @@ en:
     welcome: Welcome
     welcome_text: Welcome to the Call for Participation. To create or review your submissions you need to login. If you are new to %{title} you need to sign up for an account.
     withdraw: withdraw
-    withdrawal_confirmation: Really withdraw this event from the Call for Participation?
-  classifiers: Classifiers
+    withdrawal_confirmation: Really withdraw this session from the Call for Participation?
+  classifiers: Keywords
   classifiers_module:
-    current_classifiers: 'The currently configured classifiers are:'
+    current_classifiers: 'The currently configured keywords are:'
     empty_classifiers: |
-      Here you can create and edit the classifiers which submitters
-      can give to their events
+      Here you can create and edit the keywords which submitters
+      can give to their sessions
     modify_classifier_with_parent: |
-      The classifiers for this conference can only be modified with
+      The keywords for this conference can only be modified with
       administration rights for the parent conference %{parent}
   clear: Clear
   col_abstract: 'Summary:'
   col_availability: 'Availability:'
   col_avg_audience_feedback: 'Average audience feedback:'
-  col_classifiers: 'Classifiers:'
+  col_classifiers: 'Keywords:'
   col_col_template: "%{data}:"
   col_conference: 'Conference:'
   col_description: 'Description:'
   col_email: 'Email:'
   col_email_for_login: 'Email for login:'
-  col_event_state: Event State
+  col_event_state: Session State
   col_files: 'Files:'
   col_filters: 'Filters:'
   col_first_name: 'First name:'
@@ -446,8 +446,8 @@ en:
   col_ticket: 'Ticket:'
   col_time_slots: 'Duration:'
   col_total: 'Total:'
-  col_track: 'Track:'
-  col_tracks: 'Tracks:'
+  col_track: 'Theme:'
+  col_tracks: 'Themes:'
   col_type: 'Type:'
   comment: Comment
   comments: Comments
@@ -468,22 +468,22 @@ en:
       hints:
         accepted_event_durations: |
           Use the checkboxes above to determine which options are presented to
-          submitters for indicating the duration of their proposed event.
+          submitters for indicating the duration of their proposed session.
           Submitters will be able to pick one of the values you checked here.
-          As conference crew, you will be able to later change events to any
+          As conference crew, you will be able to later change sessions to any
           duration, not only those checked here.
         acronym: |
           A short and unique handle for your conference, using only lower-case
           letters, numbers and underscores. This will be used to identify your
           conference in URLs etc. Example: 'froscon2011'
         allowed_event_types: |
-          Here you can pick which types of events are accepted as submissions to
+          Here you can pick which types of session are accepted as submissions to
           this conference. This list affects only new submissions. Existing submissions
           will not be modified if you alter this list.
         allowed_event_types_extras: |
-          If you want the conference to accept event submissions with other types
-          than the ones available above, write the event types here. Separate different
-          event types with semicolon. Example: 'game;discussion panel'
+          If you want the conference to accept session submissions with other types
+          than the ones available above, write the session types here. Separate different
+          session types with semicolon. Example: 'game;discussion panel'
         attachment_title_is_freeform: |
           If this option is selected, submitters can provide any title they want
           for files they upload as attachments. If this option is deselected, they
@@ -498,13 +498,13 @@ en:
         color: You may define a color for your conference.
         default_recording_license: Default recording license for all talks
         default_timeslots: |
-          What is the default length of your events? Example: If you chose
+          What is the default length of your sessions? Example: If you chose
           a timeslot duration of 15 minutes to account for breaks, but your
           talks are usually 1 hour long, select 4, because 4 times 15 minutes is one hour.
         email: |
           Contact email address for your conference. Will be used as reply-to
           address in emails sent out by the system.
-        event_languages: Choose which languages events in this conference can be held in.
+        event_languages: Choose which languages sessions in this conference can be held in.
         event_state_visible: |
           If you enable this, speakers will be able to look up the state
           of their submission in the cfp interface and confirm their attendance
@@ -512,8 +512,8 @@ en:
         expenses_enabled: If you enable this, frab will allow you to track expenses of people.
         feedback_enabled: |
           If you enable this, your program export will include links to a feedback
-          form where attendees can rate an event.
-        max_timeslots: What is the maximum length of a single event (e.g. a single talk)?
+          form where attendees can rate an session.
+        max_timeslots: What is the maximum length of a single session (e.g. a single talk)?
         timeslot_duration: |
           How long do you want the smallest timeslots to be? This essentially
           defines the grid on which you can plan your program. WARNING: This
@@ -528,7 +528,7 @@ en:
           down to 5 is fine, while going down to 10 minutes will not work.
         timezone: |
           Please select in what time zone your conference will take place.
-          This is needed to correctly display times for your events.
+          This is needed to correctly display times for your sessions.
         title: |
           The name of your conference as it shall appear throughout the site.
           Example: 'FrOSCon'
@@ -552,7 +552,7 @@ en:
       There is not a single conference yet.
       Start adding a conference by clicking on the
       button on the right.
-    notice_bulk_notification_queued: Bulk notifications for events in %{notification} enqueued.
+    notice_bulk_notification_queued: Bulk notifications for sessions in %{notification} enqueued.
     notice_conference_created: Conference was successfully created.
     notice_conference_not_updated: Conference was not updated.
     notice_conference_updated: Conference was successfully updated.
@@ -571,9 +571,9 @@ en:
     search: Search
     search_hint: Search conferences
     show_no_event: |
-      This conference does not yet have any events.
+      This conference does not yet have any sessions.
       (Note that throughout the application, the
-      generic term 'event' is used to refer to all
+      generic term 'session' is used to refer to all
       sessions within your conference, no matter if
       they are talks, workshops, panels or something
       else entirely).
@@ -598,19 +598,19 @@ en:
     variables:
       conference: Conference name
       date: Date of presentation
-      duration: Event duration
-      event: Event title
-      event_id: Internal event id
+      duration: Session duration
+      event: Session title
+      event_id: Internal session id
       forename: Speaker forename
-      joinlink: Link for joining event
+      joinlink: Link for joining session
       link: Confirmation link
       public_name: Speaker public name
       room: Room of presentation
       subtitle: Subtitle
       surname: Speaker surname
       time: Time of presentation
-      track: Track name
-      type: Event type
+      track: Theme name
+      type: Session type
     version: Version %{version}
     withdrawn: Withdrawn
   conflict:
@@ -847,11 +847,11 @@ en:
   edit: edit
   edit_account: Edit account
   edit_conference: Edit conference
-  edit_conference_classifiers: Edit conference classifiers
+  edit_conference_classifiers: Edit conference keywords
   edit_conference_days: Edit conference days
   edit_conference_rooms: Edit conference rooms
   edit_conference_schedule: Edit conference schedule
-  edit_conference_tracks: Edit conference tracks
+  edit_conference_tracks: Edit conference themes
   edit_person: Edit person
   edit_profile: Profile
   edit_ticket_server: Edit ticket server
@@ -918,22 +918,22 @@ en:
     error_missing_conference_email: 'Cannot send mails: Please specify an email address for this conference.'
     error_missing_notification_text: |
       No notification text present. Please change the default text for your
-      needs, before accepting/ rejecting events.
+      needs, before accepting/ rejecting sessions.
     error_missing_speaker_email: 'Cannot send mails: Not all speakers have email addresses.'
     error_state_update: Cannot update state.
     error_state_update_ex: 'Cannot update state: %{ex}.'
     error_template_add_failed: Mail template creation failed.
     error_unnotifiable_state: Event not in a notifiable state.
     filters:
-      all_speakers_in_confirmed_events: All speakers involved in all confirmed events
-      all_speakers_in_scheduled_event: All speakers involved in all scheduled events
-      all_speakers_in_unconfirmed_events: All speakers involved in all unconfirmed events
+      all_speakers_in_confirmed_events: All speakers involved in all confirmed sessions
+      all_speakers_in_scheduled_event: All speakers involved in all scheduled sessions
+      all_speakers_in_unconfirmed_events: All speakers involved in all unconfirmed sessions
     mail_subject: Subject
     mail_template_hint: |
-      Use this mail template to send a mail to all people involved in the events
+      Use this mail template to send a mail to all people involved in the sessions
       of this conference.
     new_mail_template: New mail template
-    notice_event_updated: Event was successfully updated.
+    notice_event_updated: Session was successfully updated.
     notice_mails_delivered: Mails delivered.
     notice_mails_queued: Mail deliveries queued.
     notice_template_added: Mail template was successfully added.
@@ -995,54 +995,54 @@ en:
       header:
         one: 1 error prohibited this %{model} from being saved
         other: "%{count} errors prohibited this %{model} from being saved"
-  event: Event
-  event_languages: Event languages
-  events: Events
-  events_in: Events in
+  event: Session
+  event_languages: Session languages
+  events: Sessions
+  events_in: Sessions in
   events_module:
-    accept_event: Accept event
+    accept_event: Accept session
     accept_event_hint: |
-      Accept this event. The speaker(s) will be notified of the acceptance via
+      Accept this session. The speaker(s) will be notified of the acceptance via
       email. If they have access to the call for participation system, they will
       receive a link to confirm their attendance as well.
-    accept_event_no_email: Accept event (no email)
-    accept_event_no_email_hint: Accept this event without sending an automated email.
-    add_event: Add event
-    add_event_at: Add event at %{time}
-    add_event_hint: Add a new event.
+    accept_event_no_email: Accept session (no email)
+    accept_event_no_email_hint: Accept this session without sending an automated email.
+    add_event: Add session
+    add_event_at: Add session at %{time}
+    add_event_hint: Add a new session.
     add_ticket: Add Ticket
-    add_ticket_hint: Create a ticket for this event.
+    add_ticket_hint: Create a ticket for this session.
     ago: "%{time_ago} ago"
-    all_events: All events
-    all_rating: All ratings
+    all_events: All sessions
+    all_rating: All reviews
     attachments_overview: Attachments
     average_feedback: 'Average Feedback:'
     average_speaker_feedback: 'Average feedback as speaker:'
     bulk_edit:
       add_person: Add person
       add_person_confirm:
-        one: Are you sure you want to add a person to this event?
-        other: Are you sure you want to add a person to all %{count} events?
+        one: Are you sure you want to add a person to this session?
+        other: Are you sure you want to add a person to all %{count} sessions?
       set_duration: Set duration
       set_duration_confirm:
-        one: Are you sure you want to change duration for this event?
-        other: Are you sure you want to change duration for all %{count} events?
+        one: Are you sure you want to change duration for this session?
+        other: Are you sure you want to change duration for all %{count} sessions?
       set_events_confirm:
-        one: you sure you want to change state for this event?
-        other: Are you sure you want to change state for all %{count} events?
+        one: you sure you want to change state for this session?
+        other: Are you sure you want to change state for all %{count} sessions?
       set_events_type_confirm:
-        one: Are you sure you want to modify this event's type?
-        other: Are you sure you want to modify the type for all %{count} events?
-      set_new_event_type: Change event type
+        one: Are you sure you want to modify this session's type?
+        other: Are you sure you want to modify the type for all %{count} sessions?
+      set_new_event_type: Change session type
       set_new_state: Assign state
-      set_new_track: Assign track
+      set_new_track: Assign theme
       set_track_confirm:
-        one: Are you sure you want to change the track of this event?
-        other: Are you sure you want to change the track of all %{count} events?
-      show: Edit these events
+        one: Are you sure you want to change the theme of this session?
+        other: Are you sure you want to change the theme of all %{count} sessions?
+      show: Edit these sessions
       title:
-        one: 'Edit %{count} event:'
-        other: 'Edit %{count} events:'
+        one: 'Edit %{count} session:'
+        other: 'Edit %{count} sessions:'
       update_failed:
         one: "%{count} edit failed."
         other: "%{count} edits failed."
@@ -1052,18 +1052,18 @@ en:
       update_successful:
         one: "%{count} edit completed successfully."
         other: "%{count} edits completed successfully."
-    cancel_event: Cancel event
-    cancel_event_hint: Mark this event as cancelled. Usually this means that the speakers had to cancel their appearance.
+    cancel_event: Cancel session
+    cancel_event_hint: Mark this session as cancelled. Usually this means that the speakers had to cancel their appearance.
     col_toggle_rooms: 'Toggle rooms:'
-    confirm_event: Confirm event
-    confirm_event_hint: Confirm that the speaker(s) will be present and that the event will actually take place.
+    confirm_event: Confirm session
+    confirm_event_hint: Confirm that the speaker(s) will be present and that the session will actually take place.
     custom_notification: Custom notification
     custom_notification_hint: Add custom notifications for all speakers. These will be sent instead of the default notification on next bulk notification run. Modify them in 'Edit people' tab.
     delete_rating: Delete rating
-    edit_event: Edit Event
-    edit_event_hint: Edit this event's data.
+    edit_event: Edit session
+    edit_event_hint: Edit this session's data.
     edit_people: Edit people
-    edit_people_hint: Add or remove people from this event.
+    edit_people_hint: Add or remove people from this session.
     error_no_day: |
       Before you can schedule any events, you need
       to have at least one day defined for this
@@ -1081,16 +1081,16 @@ en:
       conference. Go to _Settings_
       above to enter a room.
     event_attachments: Uploaded files
-    event_classifiers: Event classifiers
-    event_details: Event details
-    event_feedbacks: Event Feedbacks
-    event_ratings: Event ratings
-    event_type_select: filter by event type
-    events_by_gender: Events by gender
-    events_by_language: Events by language
-    events_by_state: Events by state
-    events_in_current_conference: Events in current conference
-    events_in_other_conferences: Events in other conferences
+    event_classifiers: Session keywords
+    event_details: Session details
+    event_feedbacks: Session Feedbacks
+    event_ratings: Session reviews
+    event_type_select: filter by session type
+    events_by_gender: Sessions by gender
+    events_by_language: Sessions by language
+    events_by_state: Session by state
+    events_in_current_conference: Sessions in current conference
+    events_in_other_conferences: Sessions in other conferences
     feedback_not_enabled: The feedback system is not enabled.
     filter_modal:
       at_least: at least
@@ -1107,36 +1107,36 @@ en:
         submitted_after_soft_deadline: LATE
     inputs:
       hints:
-        do_not_record: Will this event be recorded?
+        do_not_record: Will this session be recorded?
         note: 'visibility: admin only.'
-        public: Is this event visible in the public schedule?
+        public: Is this session visible in the public schedule?
         recording_license: Recording license for this talk
         submission_note: 'visibiliy: admin and user; additional information.'
-        tech_rider: What is needed for this event?
+        tech_rider: What is needed for this session?
     listing_n_events:
-      one: Listing %{n} of %{count} event.
-      other: Listing %{n} of %{count} events.
-    my_events: My Events
-    my_rating: My rating
-    my_ratings: My ratings
+      one: Listing %{n} of %{count} session.
+      other: Listing %{n} of %{count} sessions.
+    my_events: My Sessions
+    my_rating: My review
+    my_ratings: My reviews
     no_attende_more_infos: |
       Enable attendee feedback in the conference
       settings and the web program schedule will include a
       form for your attendees to provide feedback. This
       feedback will appear here.
-    no_attendee: There is no attendee feedback for this event yet.
+    no_attendee: There is no attendee feedback for this session yet.
     no_events: |
       This conference does not yet have any events. Start adding events by clicking on the
       button on the right. Or start a call for participation, to allow others to submit events for
       you to review.
     no_ratings: |
-      No one has entered a rating for this event yet. Be the first
+      No one has entered a rating for this session yet. Be the first
       and rate the event using the form above.
     not_applicable: N/A
     not_involved: |
-      You are not yet involved in any event in this
-      conference. Add yourself to an event in whatever
-      role you like and the event will appear in this
+      You are not yet involved in any session in this
+      conference. Add yourself to an session in whatever
+      role you like and the session will appear in this
       list.
     predefined_title_types:
       handouts: handouts
@@ -1148,21 +1148,21 @@ en:
       video: video
     print_accepted_cards: Print cards (accepted only)
     print_accepted_cards_hint: |
-      Download a PDF with only the accepted events as cards (four cards per page).
+      Download a PDF with only the accepted sessions as cards (four cards per page).
       Especially useful to plan your program schedule offline.
     print_cards: Print cards
     print_cards_hint: |
-      Download a PDF with all events as cards (four cards per page). Print this
+      Download a PDF with all sessions as cards (four cards per page). Print this
       out to take your planning offline.
     public_attachment_hint: Is this attachment visible to the public?
-    rate_next: Rate next event
-    reject_event: Reject event
-    reject_event_hint: Reject this event. The speaker(s) will be notified of the rejection via email.
-    reject_event_no_email: Reject event (no email)
-    reject_event_no_email_hint: Reject this event without sending an automated email.
+    rate_next: Rate next sessionSession
+    reject_event: Reject sessionSession
+    reject_event_hint: Reject this sessionSession. The speaker(s) will be notified of the rejection via email.
+    reject_event_no_email: Reject sessionSession (no email)
+    reject_event_no_email_hint: Reject this sessionSession without sending an automated email.
     toggle_description: Toggle Description >>
     toggle_send_bulk_mail: Send mail to all these people >>
-    track_select: filter by track
+    track_select: filter by theme
   expenses: Expenses
   expenses_module:
     error_person_have_no_expense: "%{person} does not currently have any expenses."
@@ -1744,7 +1744,7 @@ en:
   navigation:
     back: Back
     conferences: Conferences
-    event: Event Details
+    event: Session Details
     feedbacks: Feedbacks
     history: History
     more: More >>
@@ -1762,19 +1762,19 @@ en:
   notifications_module:
     edit_send_notifications: Edit and send notifications
     event_without_ticket_warning:
-      one: 'Attention : 1 event without ticket:'
-      other: 'Attention : %{count} events without ticket:'
+      one: 'Attention : 1 session without ticket:'
+      other: 'Attention : %{count} sessions without ticket:'
     inputs:
       hints:
         locale: Available locales for this conference and its speakers
     missing_locale: 'Can not send bulk notifications: Notification for locales %{locales} missing'
     n_events:
-      one: 1 event
-      other: "%{count} events"
+      one: 1 session
+      other: "%{count} sessions"
     n_events_in_state_x:
-      one: 1 event in state %{state}
-      other: "%{count} events in state %{state}"
-    no_events_tickets: No events with tickets
+      one: 1 session in state %{state}
+      other: "%{count} sessions in state %{state}"
+    no_events_tickets: No sessions with tickets
     notif:
       acceptance: acceptance
       rejection: rejection
@@ -1782,17 +1782,17 @@ en:
     possible_variables: Possible variables
     send_notification: send %{name} notifications to %{speakers} in %{count}
     send_notification_confirm:
-      one: Are you sure you want to send %{name} notifications for 1 event?
-      other: Are you sure you want to send %{name} notifications for %{count} events?
+      one: Are you sure you want to send %{name} notifications for 1 session?
+      other: Are you sure you want to send %{name} notifications for %{count} sessions?
     send_notification_to_subscribers:
-      one: Send %{name} notifications to 1 person involved in %{event}
-      other: Send %{name} notifications to %{count} people involved in %{event}
+      one: Send %{name} notifications to 1 person involved in %{session}
+      other: Send %{name} notifications to %{count} people involved in %{session}
     send_unspecified_notification_confirm:
-      one: Are you sure you want to send e-mails for %{count} event?
-      other: Are you sure you want to send e-mails for %{count} events?
+      one: Are you sure you want to send e-mails for %{count} session?
+      other: Are you sure you want to send e-mails for %{count} sessions?
     warning_events_without_speakers:
-      one: 'Warning: 1 event without speakers:'
-      other: 'Warning: %{count} events without speakers:'
+      one: 'Warning: 1 session without speakers:'
+      other: 'Warning: %{count} sessions without speakers:'
   number:
     currency:
       format:
@@ -1935,8 +1935,8 @@ en:
       hints:
         event_role: |
           Coordinators are part of the conference team, they coordinate speaker
-          attendance and events. Submitters answer the cfp to enter events into frab.
-          Speakers take part in events, their availability matters. Moderators take
+          attendance and sessions. Submitters answer the cfp to enter sessions into frab.
+          Speakers take part in sessions, their availability matters. Moderators take
           part in panel discussions, their availability matters. Assistants have the
           same permissions as submitters, and will be notified of any updates; but
           their availabilities is never taken into account.
@@ -1951,10 +1951,10 @@ en:
     no_people_data: |
       You do not have any data on people yet. Use the button on the right to
       start adding people. Please note that they will not appear here right
-      away, unless they are involved in any of this conference's events. Use the
+      away, unless they are involved in any of this conference's sessions. Use the
       _All people_ tab above to see all people across all your conferences.
     no_people_in_event: |
-      There are no people associated with this event yet.
+      There are no people associated with this session yet.
       Use the button on the right to add people. Please
       note that you can only add people that are already
       in the system. If the person you would like to add
@@ -1963,7 +1963,7 @@ en:
     no_people_involved: |
       There are no people associated with this conference yet. People will
       start appearing here, once they take on a role in any of this
-      conference's events.
+      conference's sessions.
     no_user_account: Person has no user account yet and cannot login. Click on the user tab to create an account.
     no_user_account_for_person: |
       %{person} does not currently have a user account and thus cannot login.
@@ -1977,54 +1977,54 @@ en:
     feedback:
       new:
         feedback_for: 'Feedback for: %{title}'
-        how_would_you_rate: How would you rate this event? 5 is the best rating and 1 is the worst.
-        please_let_us_know: 'Please let us know how you liked this event:'
+        how_would_you_rate: How would you rate this session? 5 is the best rating and 1 is the worst.
+        please_let_us_know: 'Please let us know how you liked this session:'
         submit_feedback: Submit feedback
-        what_did_you_like: What did you like? What did you not like? How could this event be improved? Please share your thoughts.
+        what_did_you_like: What did you like? What did you not like? How could this session be improved? Please share your thoughts.
       thank_you:
         return: Return to the schedule
         thank_you: Thank you!
-        thank_you_for_helping_us: Thanks for helping us improve our events. Please rate as many events that you attended as possible. If you watched the streams, tell us about the quality.
+        thank_you_for_helping_us: Thanks for helping us improve our sessions. Please rate as many sessions that you attended as possible. If you watched the streams, tell us about the quality.
     schedule:
       booklet:
-        events: Events
+        events: Session
       day:
         schedule: Schedule – %{label}
         schedule_for_day: Schedule for day %{index} – %{label}
       event:
-        concurrent_events: Concurrent Events
+        concurrent_events: Concurrent Sessions
         day: Day
         duration: Duration
         feedback: Feedback
-        feedback_link: Click here to let us know how you liked this event.
+        feedback_link: Click here to let us know how you liked this session.
         files: Files
         info: Info
         language: Language
         links: Links
-        no_recording: This event is not going to be recorded
+        no_recording: This session is not going to be recorded
         room: Room
         speakers: Speakers
         start_time: Start time
-        track: Track
+        track: Theme
       events:
-        events: Events
+        events: Sessions
         speakers: Speakers
         title: Title
-        track: Track
+        track: Theme
       events_by_track:
-        events: Events by track
+        events: Sessions by theme
       index:
         booklet: book
         day: Day %{index} – %{label}
-        events: Events
-        events_by_track: Events by track
+        events: Sessions
+        events_by_track: Sessions by theme
         schedule: Schedule – %{label}
         schedule_index: Schedule overview
         speakers: Speakers
         timeline: Timeline
       nav:
         day: Day %{index}
-        events: Events
+        events: Sessions
         index: Overview
         qrcode: QR-Code
         schedule: Schedule
@@ -2036,30 +2036,30 @@ en:
       speaker:
         contact: Contact
         email: E-Mail
-        events_in_this_conference: Events in this conference
+        events_in_this_conference: Sessions in this conference
         links: Links
         speaker: Speaker
       speakers:
-        events: Events
+        events: Sessions
         name: Name
         speakers: Speakers
       timeline:
-        events: Events
+        events: Sessions
       title: Schedule %{title}
   public_name: Public name
   rating: Rating
   ratings: Ratings
   ratings_module:
-    error_creating: 'Failed to create event rating: %{error}'
-    error_updating: Failed to update event rating
+    error_creating: 'Failed to create session rating: %{error}'
+    error_updating: Failed to update session rating
     no_event: |
-      There are no events in this conference yet. Once
-      you add events, they will appear here together
+      There are no sessions in this conference yet. Once
+      you add sessions, they will appear here together
       with their current ratings. You can edit your
-      rating by clicking on an event, or you can use
+      rating by clicking on an session, or you can use
       the "Start reviewing" button on the right, to
-      rate a whole batch of events in a row.
-    notice_already_rated_everything: 'You have already reviewed all events:'
+      rate a whole batch of sessions in a row.
+    notice_already_rated_everything: 'You have already reviewed all sessions:'
     notice_rating_created: Rating saved successfully.
     notice_rating_deleted: Rating deleted successfully.
     notice_rating_saved: Rating updated successfully.
@@ -2068,14 +2068,14 @@ en:
     show_ratings: Show Ratings
     start_reviewing: Start reviewing
     start_reviewing_hint: |
-      Review a batch of events in a row. You will be presented with the event
+      Review a batch of sessions in a row. You will be presented with the session
       that has the least ratings first and can easily navigate to the next
-      event in the row.
+      session in the row.
     statistics: Statistics
-    total_number_of_events: 'Total number of events:'
-    total_number_of_events_no_review: 'Total number of events without review:'
-    total_number_of_not_reviewed: 'Events you haven''t reviewed:'
-    total_number_of_reviewed: 'Events you have reviewed:'
+    total_number_of_events: 'Total number of sessions:'
+    total_number_of_events_no_review: 'Total number of sessions without review:'
+    total_number_of_not_reviewed: 'Sessions you haven''t reviewed:'
+    total_number_of_reviewed: 'Sessions you have reviewed:'
   remove: Remove
   remove_association: Remove %{name}
   reports: Reports
@@ -2083,21 +2083,21 @@ en:
     all: overview on transport needs
     all_transportation_needs: overview of transport needs
     available_reports: Available Reports
-    confirmed_events_by_track: confirmed event numbers by track
+    confirmed_events_by_track: confirmed session numbers by theme
     do_not_record_events: events with 'do not record' flag set
     event_timeslot_deviation: list all lectures with non default timeslots
     event_timeslot_sum: used timeslots (hours)
-    events_by_track: event numbers by track
-    events_not_public: events that are not public
-    events_that_are_no_lectures: events that are neither lectures nor workshops
+    events_by_track: session numbers by theme
+    events_not_public: sessions that are not public
+    events_that_are_no_lectures: sessions that are neither lectures nor workshops
     events_that_are_workshops: list of all workshops
-    events_with_a_note: events with a note
-    events_with_more_than_one_speaker: events with more than one speaker
-    events_with_tech_rider: list all scheduled events with tech riders
-    events_with_unusual_state_speakers: events with speakers in a problematic state
-    events_without_abstract: events without abstract
-    events_without_speaker: events without speaker
-    events_without_subtitle: events without subtitle
+    events_with_a_note: sessions with a note
+    events_with_more_than_one_speaker: sessions with more than one speaker
+    events_with_tech_rider: list all scheduled sessions with tech riders
+    events_with_unusual_state_speakers: sessions with speakers in a problematic state
+    events_without_abstract: sessions without abstract
+    events_without_speaker: sessions without speaker
+    events_without_subtitle: sessions without subtitle
     expected_speakers: missing speakers for the next 4 hours
     found_x_results: Found %{nb} results.
     lectures_not_confirmed: lectures that are new or review
@@ -2138,7 +2138,7 @@ en:
     configured_rooms: 'The currently configured room are:'
     empty_rooms: |
       Here you can create and edit the rooms in which
-      your events take place. Please enter at least one
+      your sessions take place. Please enter at least one
       room. This is needed to determine the number of
       columns in your program schedule.
     modify_room_with_parent: |
@@ -2161,7 +2161,7 @@ en:
     create_static_export: Create static schedule export
     download_static_export: Download static schedule export
     error_day_not_found: Failed to find day.
-    error_event_not_public: No events are public and scheduled.
+    error_event_not_public: No sessions are public and scheduled.
     html_exports: HTML Exports
     inputs:
       hints:
@@ -2233,7 +2233,7 @@ en:
     inputs:
       hints:
         password: Password or API access key used to log into ticket system
-        queue: Name of this events queue
+        queue: Name of this sessions queue
         url: URL of your ticket system, for example https://localhost/otrs/
         user: Username used to create tickets
   time:
@@ -2271,34 +2271,34 @@ en:
     edit_people_for_event: Editing People for "%{event}"
     edit_person: 'Edit Person: %{person}'
     event: 'Event: %{event}'
-    event_list: List of events
-    event_ratings: Event Ratings
+    event_list: List of sessions
+    event_ratings: Session Reviews
     forgot_your_password: Forgot your password?
     frab: frab - Conference Management
     frab_conference: "%{conference} - Conference Management"
     list_mail_templates: List of mail templates
-    new_event: New event
+    new_event: New session
     person: 'Person: %{person}'
     resend_confirmation_instructions: Resend confirmation instructions
     session_login: Log in
     session_signup: Create a new account
     unlock_instructions: Unlock instructions
   total: Total
-  track: Track
-  tracks: Tracks
+  track: Theme
+  tracks: Themes
   tracks_module:
-    configured_tracks: 'The currently configured tracks are:'
+    configured_tracks: 'The currently configured themes are:'
     empty_tracks: |
-      If you organize your conference into different tracks,
+      If you organize your conference into different themes,
       this is the place to create them. Even if you do not
-      have more than one track, go ahead and enter this
-      one track.
+      have more than one theme, go ahead and enter this
+      one theme.
     empty_tracks_more_infos: |
-      Tracks have a name and a color. The color is used in
+      Themes have a name and a color. The color is used in
       the web based program, so feel free to customize it
       as much as you wish.
     modify_track_with_parent: |
-      The tracks for this conference can only be modified with
+      The themes for this conference can only be modified with
       administration rights for the parent conference %{parent}
   transport_needs: Transport needs
   transport_needs_module:
