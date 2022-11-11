@@ -276,17 +276,17 @@ Event.class_eval do
 
   validates :abstract, presence: true
 
-  PRACTICAL_CONST = ["Practical 1", "Practical 2", "practical"]
-  ACADEMIC_CONST = ["Oral Presentation", "Special Session"]
+  PRACTICAL_CONST = ["Session"]
+  ACADEMIC_CONST = ["Paper Presentation", "Special Session"]
 
 
   after_create do |resource|
     Paper.create(event_id: resource.id)
     if resource.event_type.in?(ACADEMIC_CONST)
-      timeslot = resource.event_type == "Oral Presentation" ? 1 : 6
+      timeslot = resource.event_type == "Paper Presentation" ? 1 : 6
       resource.update_column(:time_slots, timeslot)
     elsif resource.event_type.in?(PRACTICAL_CONST)
-      timeslot = resource.event_type == "Practical 1" ? 1 : 6
+      timeslot = 6
       resource.update_column(:time_slots, timeslot)
     end
     resource.people.each do |p|
@@ -299,10 +299,10 @@ Event.class_eval do
 
   after_update do |resource|
     if resource.event_type.in?(ACADEMIC_CONST)
-      timeslot = resource.event_type == "Oral Presentation" ? 1 : 6
+      timeslot = resource.event_type == "Paper Presentation" ? 1 : 6
       resource.update_column(:time_slots, timeslot)
     elsif resource.event_type.in?(PRACTICAL_CONST)
-      timeslot = resource.event_type == "Practical 1" ? 1 : 6
+      timeslot = 6
       resource.update_column(:time_slots, timeslot)
     end
   end
@@ -311,8 +311,8 @@ end
 
 module EventModule
 
-  PRACTICAL_CONST = ["Practical 1", "Practical 2", "practical"]
-  ACADEMIC_CONST = ["Oral Presentation", "Special Session"]
+  PRACTICAL_CONST = ["Session"]
+  ACADEMIC_CONST = ["Paper Presentation", "Special Session"]
 
   def average_of_nonzeros(list)
     if self.event_type.in?(ACADEMIC_CONST)
