@@ -8,6 +8,8 @@
         %p{style: "padding-top: 0.5em;"}
           %b=@event.speakers.map(&:public_name).join(", ").html_safe
     = render partial: 'shared/coauthors', locals: {f: f}
+    %div.input PLACEHOLDER: Link to the public website where different types of events are explained.
+    %br
     = f.input :event_type, collection: translated_options(@conference.allowed_event_types_as_list)
     = f.association :track, collection: @conference.tracks
     - if timeslots_for_cfp.length() > 1
