@@ -1,5 +1,7 @@
-- if @conference.call_for_participation.hard_deadline_over?
-  - if @conference && (!@person.own_papers(@conference).blank? || !@person.coauthored_papers(@conference).blank?)
+-# if @conference.call_for_participation.hard_deadline_over?
+- if true
+  -# if @conference && (!@person.own_papers(@conference).blank? || !@person.coauthored_papers(@conference).blank?)
+  - if true
     .span8
       %h2 Peer review
       - if !@person.own_papers(@conference).blank?

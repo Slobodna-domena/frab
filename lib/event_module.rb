@@ -276,7 +276,7 @@ Event.class_eval do
 
   validates :abstract, presence: true
 
-  PRACTICAL_CONST = ["Session"]
+  PRACTICAL_CONST = ["Non-academic Session"]
   ACADEMIC_CONST = ["Paper Presentation", "Special Session"]
 
 
@@ -311,7 +311,7 @@ end
 
 module EventModule
 
-  PRACTICAL_CONST = ["Session"]
+  PRACTICAL_CONST = ["Non-academic Session"]
   ACADEMIC_CONST = ["Paper Presentation", "Special Session"]
 
   def average_of_nonzeros(list)
