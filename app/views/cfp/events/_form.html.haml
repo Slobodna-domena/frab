@@ -10,7 +10,7 @@
     = render partial: 'shared/coauthors', locals: {f: f}
     %div.input PLACEHOLDER: Link to the public website where different types of events are explained.
     %br
-    = f.input :event_type, collection: translated_options(@conference.allowed_event_types_as_list)
+    = f.input :event_type, label: "Submission type", collection: translated_options(@conference.allowed_event_types_as_list)
     = f.association :track, collection: @conference.tracks
     - if timeslots_for_cfp.length() > 1
       =# f.input :time_slots, as: :select, collection: timeslots_for_cfp, hint: t("cfp.event_time_slots_hint")
