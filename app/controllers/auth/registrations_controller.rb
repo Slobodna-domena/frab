@@ -44,7 +44,7 @@ class Auth::RegistrationsController < Devise::RegistrationsController
     # devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute])
 
     devise_parameter_sanitizer.permit(:sign_up) do |user|
-      user.permit(:email, :password, :password_confirmation, person_attributes: [
+      user.permit(:email, :password, :gdpr, :password_confirmation, person_attributes: [
         :first_name, :last_name, :public_name, :gender
       ])
     end

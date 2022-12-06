@@ -8,7 +8,9 @@
         %p{style: "padding-top: 0.5em;"}
           %b=@event.speakers.map(&:public_name).join(", ").html_safe
     = render partial: 'shared/coauthors', locals: {f: f}
-    %div.input PLACEHOLDER: Link to the public website where different types of events are explained.
+    %div.input
+      Find out more about submission types on
+      = link_to "http://odrast.hr/call-for-proposals/", "http://odrast.hr/call-for-proposals/", target: "_blank"
     %br
     = f.input :event_type, label: "Submission type", collection: translated_options(@conference.allowed_event_types_as_list)
     = f.association :track, collection: @conference.tracks

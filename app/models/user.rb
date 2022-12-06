@@ -26,6 +26,7 @@ class User < ApplicationRecord
   attr_accessor :remember_me
 
   after_initialize :setup_default_values
+  validates :gdpr, inclusion: [true]
 
   validates :person, presence: true
   validates :email, presence: true

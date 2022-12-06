@@ -110,12 +110,13 @@ EventsController.class_eval do
             EventPerson.create!(event_id: @event.id, event_role: "speaker",role_state: "confirmed",person_id: user.person.id)
           end
         else
-          person = Person.create!(
+          person = Person.new(
             email: ca,
-            first_name: ca,
+            first_name: '',
             last_name: '',
-            public_name: ca
+            public_name: ca,
           )
+          person.save!(:validate => false)
 
           password = SecureRandom.urlsafe_base64(32)
           user = User.new(
@@ -126,7 +127,8 @@ EventsController.class_eval do
           user.person = person
           user.role = 'submitter'
           user.confirmed_at = Time.now
-          user.save!
+          user.gdpr = true
+          user.save!(:validate => false)
           EventPerson.create!(event_id: @event.id, event_role: "speaker", role_state: "confirmed", person_id: person.id)
         end
       end
@@ -237,12 +239,14 @@ Cfp::EventsController.class_eval do
             EventPerson.create!(event_id: @event.id, event_role: "speaker",role_state: "confirmed",person_id: user.person.id)
           end
         else
-          person = Person.create!(
+          person = Person.new(
             email: ca,
-            first_name: ca,
+            first_name: '',
             last_name: '',
-            public_name: ca
+            public_name: ca,
           )
+          person.save!(:validate => false)
+
           password = SecureRandom.urlsafe_base64(32)
           user = User.new(
             email: person.email,
@@ -252,7 +256,8 @@ Cfp::EventsController.class_eval do
           user.person = person
           user.role = 'submitter'
           user.confirmed_at = Time.now
-          user.save!
+          user.gdpr = true
+          user.save!(:validate => false)
           EventPerson.create!(event_id: @event.id, event_role: "speaker", role_state: "confirmed", person_id: person.id)
         end
       end
@@ -318,8 +323,9 @@ module EventModule
     if self.event_type.in?(ACADEMIC_CONST)
       peer = self.event_ratings.where(peer: true)
       pro = self.event_ratings.where(peer: false)
+      review_metrics = self.review_scores.pluck(:score)
       peer = peer.map{|p| p.rating}
-      pro = pro.map{|p| p.rating}
+      pro = pro.map{|p| p.rating} + review_metrics
       peers = peer.reduce(:+).to_f / peer.size
       pros = pro.reduce(:+).to_f / pro.size
       if peer.size == 0

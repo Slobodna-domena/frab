@@ -22,9 +22,10 @@
             = f.input :password, autocomplete: 'off'
 
           = f.input :password_confirmation, autocomplete: 'off'
-
         = f.simple_fields_for :person do |f|
           = render partial: 'shared/people_registration_fields', locals: { person: resource.person, f: f }
+
+        = render partial: "shared/gdpr", locals: {f: f}
 
         .actions
           = f.button :submit, class: 'primary', value: t('session.signup')

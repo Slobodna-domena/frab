@@ -8,6 +8,8 @@
           = f.input :email,                                      disabled: !@user.credentials_editable?
           = f.input :password, hint: t("cfp.password_hint"),     disabled: !@user.credentials_editable?
           = f.input :password_confirmation,                      disabled: !@user.credentials_editable?
+          = render partial: 'shared/gdpr', locals: {f: f}
+
         .actions
           = f.button :submit, t("cfp.update"), class: 'primary', disabled: !@user.credentials_editable?
           = link_to t("cfp.back"), :back, class: "btn"
