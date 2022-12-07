@@ -75,7 +75,7 @@
       %h2= t('events_module.my_rating')
       = simple_form_for @rating, url: event_event_rating_path do |f|
         %fieldset.inputs
-          = f.input :rating, as: :rating
+          =# f.input :rating, as: :rating
           = f.input :comment, input_html: {rows: 3}
           = f.simple_fields_for :review_scores do |ff|
             = ff.input :score,

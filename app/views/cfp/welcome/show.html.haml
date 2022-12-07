@@ -1,5 +1,5 @@
 %section
-  .page-header
+  .page-header{ :style => "border-bottom: none"}
     .pull-right
       - if available_conference_locales.size > 1
         %ul.pills
@@ -13,14 +13,14 @@
       .span16
         .alert-message.block-message
           %h1=t("cfp.login_required_title")
-          %p
+          %p{ :style => "margin-bottom: 20px"}
             =t("cfp.login_required")
             = action_button "small primary", t("cfp.login"), new_user_session_path
             - if Devise.mappings[:user].registerable?
               = action_button "small", t("cfp.sign_up"), new_user_registration_path
 
   .row
-    .span16
+    .span16.welcome_text_p
       - if @conference.call_for_participation.welcome_text.present?
         =render 'welcome_text'
 

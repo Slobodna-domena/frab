@@ -323,9 +323,9 @@ module EventModule
     if self.event_type.in?(ACADEMIC_CONST)
       peer = self.event_ratings.where(peer: true)
       pro = self.event_ratings.where(peer: false)
-      review_metrics = self.review_scores.pluck(:score)
+      #review_metrics = self.review_scores.pluck(:score)
       peer = peer.map{|p| p.rating}
-      pro = pro.map{|p| p.rating} + review_metrics
+      pro = pro.map{|p| p.rating}# + review_metrics
       peers = peer.reduce(:+).to_f / peer.size
       pros = pro.reduce(:+).to_f / pro.size
       if peer.size == 0

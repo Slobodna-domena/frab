@@ -2426,8 +2426,15 @@ button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
   background-color: #46a546;
 }
 .label.notice {
-  background-color: #62cffc;
+  background-color: #30B14A;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  padding-left: 15px;
 }
+.label.notice p {
+  font-size: 15px;
+}
+
 .media-grid {
   margin-left: -20px;
   margin-bottom: 0;
