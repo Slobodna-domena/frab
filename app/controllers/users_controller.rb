@@ -71,7 +71,7 @@ class UsersController < BaseCrewController
   private
 
   def user_params
-    params.require(:user).permit(:id, :role, :email, :password, :password_confirmation,
+    params.require(:user).permit(:id, :role, :gdpr, :email, :password, :password_confirmation,
       conference_users_attributes: %i(id role conference_id _destroy))
   end
 

@@ -56,11 +56,13 @@
                 %th.nowrap
                   = sort_link @search, :average_rating, term: params[:term]
                   = filter_link('average_rating')
+                %th.nowrap
+                  = "Number of reviews"
                 %th
                 %th
             %tbody
               - @events.includes(:track).each do |event|
-                %tr
+                %tr{ :class => ("warning" if event.weird_rating) }
                   %td= image_box event.logo, :small
                   %td
                     = link_to event.title, event
@@ -73,6 +75,8 @@
                   %td
                     - if event.average_rating
                       = event.average_rating
+                  %td
+                    = event.event_ratings.size
                   %td
                     - if !event.event_ratings.select{|er| er.peer == false && er.person_id == current_user.person.id}.blank?
                       You have reviewed this paper

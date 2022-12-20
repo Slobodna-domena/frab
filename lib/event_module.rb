@@ -70,7 +70,7 @@ EventsController.class_eval do
     }.flatten
 
     params.require(:event).permit(
-      :id, :title, :subtitle, :event_type, :coauthors, :coauthor_1,:coauthor_2,:coauthor_3,:coauthor_4,:coauthor_5, :time_slots, :state, :start_time, :public, :language, :abstract, :description, :logo, :track_id, :room_id, :note, :submission_note, :do_not_record, :recording_license, :tech_rider,
+      :id, :title, :subtitle, :event_type,:coauthor_1_name,:coauthor_2_name,:coauthor_3_name,:coauthor_4_name,:coauthor_5_name,:coauthor_1_last_name,:coauthor_2_last_name,:coauthor_3_last_name,:coauthor_4_last_name,:coauthor_5_last_name, :coauthors, :coauthor_1,:coauthor_2,:coauthor_3,:coauthor_4,:coauthor_5, :time_slots, :state, :start_time, :public, :language, :abstract, :description, :logo, :track_id, :room_id, :note, :submission_note, :do_not_record, :recording_license, :tech_rider,
       *translated_params,
       event_attachments_attributes: %i(id title attachment public _destroy),
       ticket_attributes: %i(id remote_ticket_id),
@@ -220,7 +220,7 @@ Cfp::EventsController.class_eval do
 
   def event_params
     params.require(:event).permit(
-      :title, :subtitle, :event_type, :time_slots, :coauthors, :coauthor_1,:coauthor_2,:coauthor_3,:coauthor_4,:coauthor_5,:language, :abstract, :description, :logo, :track_id, :submission_note, :tech_rider,
+      :title, :subtitle, :event_type, :time_slots,:coauthor_1_name,:coauthor_2_name,:coauthor_3_name,:coauthor_4_name,:coauthor_5_name,:coauthor_1_last_name,:coauthor_2_last_name,:coauthor_3_last_name,:coauthor_4_last_name,:coauthor_5_last_name, :coauthors, :coauthor_1,:coauthor_2,:coauthor_3,:coauthor_4,:coauthor_5,:language, :abstract, :description, :logo, :track_id, :submission_note, :tech_rider,
       event_attachments_attributes: %i(id title attachment public _destroy),
       event_classifiers_attributes: %i(id classifier_id value _destroy),
       links_attributes: %i(id title url _destroy)
@@ -318,6 +318,22 @@ module EventModule
 
   PRACTICAL_CONST = ["Non-academic Session"]
   ACADEMIC_CONST = ["Paper Presentation", "Special Session"]
+
+
+  def weird_rating
+    return false if self.event_ratings.blank?
+    all_ratings = self.event_ratings.pluck(:rating)
+    max = all_ratings.max
+    min = all_ratings.min
+    if max && min
+      if max - min > 3.5
+        return true
+      else
+        return false
+      end
+    end
+    return false
+  end
 
   def average_of_nonzeros(list)
     if self.event_type.in?(ACADEMIC_CONST)

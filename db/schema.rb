@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_05_133527) do
+ActiveRecord::Schema.define(version: 2022_12_20_141958) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -249,6 +249,16 @@ ActiveRecord::Schema.define(version: 2022_12_05_133527) do
     t.string "coauthor_3"
     t.string "coauthor_4"
     t.string "coauthor_5"
+    t.string "coauthor_1_name"
+    t.string "coauthor_1_last_name"
+    t.string "coauthor_2_name"
+    t.string "coauthor_2_last_name"
+    t.string "coauthor_3_name"
+    t.string "coauthor_3_last_name"
+    t.string "coauthor_4_name"
+    t.string "coauthor_4_last_name"
+    t.string "coauthor_5_name"
+    t.string "coauthor_5_last_name"
     t.index ["conference_id"], name: "index_events_on_conference_id"
     t.index ["event_type"], name: "index_events_on_type"
     t.index ["guid"], name: "index_events_on_guid", unique: true
