@@ -53,7 +53,7 @@ EventsController.class_eval do
 
 
     if !current_user.conference_users.where(conference_id: @conference).blank? && current_user.conference_users.where(conference_id: @conference.id).first.role == "reviewer" && Event::ACADEMIC_CONST.size >= 1
-      @events = Event.where(id: @events.where(event_type: Event::ACADEMIC_CONST).where.not(state: "rejected").select{|event| !event.in?(current_user.person.own_papers(@conference)) && !event.in?(current_user.person.coauthored_papers(@conference)) && event.event_ratings.where(peer: true).blank? && (event.event_ratings.where(peer: false).blank? || !event.event_ratings.select{|er| er.person_id == current_user.person.id}.blank?)}.map{|e| e.id}).paginate page: page_param
+      @events = Event.where(id: @events.where(event_type: Event::ACADEMIC_CONST).where.not(state: "rejected").select{|event| !event.in?(current_user.person.own_papers(@conference)) && !event.in?(current_user.person.coauthored_papers(@conference))}.map{|e| e.id}).paginate page: page_param
     end
 
     @num_of_matching_events = result.reorder('').pluck(:id).count
