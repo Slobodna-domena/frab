@@ -26,15 +26,17 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    supported_languages = Language::SUPPORTED
-    if supported_languages.include?(params[:locale])
-      I18n.locale = params[:locale]
-    else
-      preferred_language = http_accept_language.preferred_language_from(supported_languages) || I18n.default_locale
-
-      I18n.locale     = preferred_language
-      params[:locale] = preferred_language
-    end
+    I18n.locale = :en
+    params[:locale] = :en
+    # supported_languages = Language::SUPPORTED
+    # if supported_languages.include?(params[:locale])
+    #   I18n.locale = params[:locale]
+    # else
+    #   preferred_language = http_accept_language.preferred_language_from(supported_languages) || I18n.default_locale
+    #
+    #   I18n.locale     = preferred_language
+    #   params[:locale] = preferred_language
+    # end
   end
 
   def load_conference
