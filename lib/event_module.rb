@@ -1,5 +1,48 @@
 EventsController.class_eval do
 
+
+  # batch actions
+  def batch_actions
+    if params[:bulk_email]
+      bulk_send_email(params[:email_type])
+    elsif params[:bulk_set]
+      bulk_set
+    elsif params[:bulk_add_person]
+      bulk_add_person
+    else
+      redirect_to events_path, alert: :illegal
+    end
+  end
+
+  def bulk_send_email(type)
+    authorize @conference, :orga?
+
+    mail_template = @conference.mail_templates.find_by(name: params[:template_name])
+    redirect_back(alert: t('ability.denied'), fallback_location: root_path) and return if mail_template.blank?
+
+    events = search @conference.events_with_review_averages.includes(:track)
+    event_people = EventPerson.where(event_id: events.to_a.pluck(:id))
+
+    if type == "1"
+      event_people = event_people.where(event_role: "submitter")
+    elsif type == "2"
+      all_coauthors = events.pluck(:coauthor_1,:coauthor_2,:coauthor_3,:coauthor_4,:coauthor_5).flatten.uniq
+      coauthor_ids = event_people.select{|p| p.person && !p.person.email.blank? && p.person.email.in?(all_coauthors) }
+      if coauthor_ids
+        event_people = EventPerson.where(id: coauthor_ids)
+      end
+    end
+    if Rails.env.production?
+      SendBulkMailJob.new.async.perform(mail_template, event_people)
+      redirect_back(notice: t('emails_module.notice_mails_queued'), fallback_location: root_path)
+    else
+      SendBulkMailJob.new.perform(mail_template, event_people)
+      redirect_back(notice: t('emails_module.notice_mails_delivered'), fallback_location: root_path)
+    end
+  end
+
+
+
   # show event ratings
   def ratings
     authorize @conference, :read?

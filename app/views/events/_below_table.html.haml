@@ -7,6 +7,7 @@
       #send_bulk_mail_form{style: "display:none;"}
         = simple_form_for(:batch_actions, url: batch_actions_events_path(request.query_parameters), method: :post) do |f|
           .actions
+            = select_tag :email_type, options_for_select([["Everyone on the list",0],["Only submitters",1],["Only coauthors",2]]), style: "width:400px"
             = select_tag :template_name, options_for_select(@conference.mail_templates.pluck(:name)), include_blank: t('select_one'), style: "width:400px"
             = f.button :submit,
                        t('send'),

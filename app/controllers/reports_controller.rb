@@ -116,6 +116,10 @@ class ReportsController < BaseConferenceController
         .where('event_people.event_role': EventPerson::SPEAKERS)
         .where('event_people.role_state': [ 'confirmed', 'scheduled' ])
         .where(availabilities: { person_id: nil })
+    when 'all_submitters'
+      r = Person.joins(events: :conference)
+        .where('conferences.id': @conference.id)
+        .where('event_people.event_role': 'submitter')
     end
 
     unless r.nil? or r.empty?
@@ -128,7 +132,7 @@ class ReportsController < BaseConferenceController
       format.json
     end
   end
-  
+
   def show_statistics
     @report_type = params[:id]
     @search_count = 0
@@ -189,9 +193,9 @@ class ReportsController < BaseConferenceController
       format.json { render json: @transport_needs.to_json }
     end
   end
-  
+
   protected
-  
+
   def statistics_for_events_by_track(events)
     @data = []
     row = []
@@ -203,7 +207,7 @@ class ReportsController < BaseConferenceController
     if number_of_trackless > 0
       @labels << t('not_specified')
       row << number_of_trackless
-    end  
+    end
     @data << row
     @search_count = row.inject(0, :+)
   end

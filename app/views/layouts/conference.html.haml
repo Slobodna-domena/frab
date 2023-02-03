@@ -14,7 +14,8 @@
           - fail t('cfp.fail_layout_use') unless @conference
           = link_to @conference.acronym, conference_path(conference_acronym: @conference.acronym), class: "brand"
           %ul.nav.pull-left
-            %li= link_to t('home'), root_path
+            - if @conference.conference_users.where(user_id: current_user.id).where(role: "reviewer").blank?
+              %li= link_to t('home'), root_path
           %ul.nav
             = render 'shared/navi_conference'
           %ul.nav.secondary-nav.pull-right

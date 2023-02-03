@@ -24,7 +24,7 @@
       - elsif !@conference.in_the_past?
         = render 'running_conference'
 
-      = render 'expert_review'
+      =# render 'expert_review'
     .span8
       %h2=t("cfp.information_headline")
       - if @conference.call_for_participation.info_url.present?

@@ -1155,11 +1155,11 @@ en:
       Download a PDF with all sessions as cards (four cards per page). Print this
       out to take your planning offline.
     public_attachment_hint: Is this attachment visible to the public?
-    rate_next: Rate next sessionSession
-    reject_event: Reject sessionSession
-    reject_event_hint: Reject this sessionSession. The speaker(s) will be notified of the rejection via email.
-    reject_event_no_email: Reject sessionSession (no email)
-    reject_event_no_email_hint: Reject this sessionSession without sending an automated email.
+    rate_next: Rate next session
+    reject_event: Reject session
+    reject_event_hint: Reject this session. The speaker(s) will be notified of the rejection via email.
+    reject_event_no_email: Reject session (no email)
+    reject_event_no_email_hint: Reject this session without sending an automated email.
     toggle_description: Toggle Description >>
     toggle_send_bulk_mail: Send mail to all these people >>
     track_select: filter by theme

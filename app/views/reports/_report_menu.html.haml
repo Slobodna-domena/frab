@@ -25,6 +25,7 @@
     %li= link_to t('reports_module.people_with_non_reimbursed_expenses'), report_on_people_path("people_with_non_reimbursed_expenses")
   %li= link_to t('non_attending_speakers'), report_on_people_path("non_attending_speakers")
   %li= link_to t('speakers_without_availabilities'), report_on_people_path("speakers_without_availabilities")
+  %li= link_to 'All submitters', report_on_people_path("all_submitters")
 %p= t('ratings_module.statistics')
 %ul
   %li= link_to t('reports_module.event_timeslot_sum'), report_on_statistics_path("event_timeslot_sum")
