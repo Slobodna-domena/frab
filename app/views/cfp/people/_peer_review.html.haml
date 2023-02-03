@@ -7,8 +7,9 @@
       - if !@person.coauthored_papers(@conference).blank?
         %br
         %p= "You have been named coauthor in #{@person.coauthored_papers(@conference).size} papers so far."
-      %p Please follow the link below and read instructions on how to peer review papers.
-      = link_to "Peer review","https://peer.odrast.hr/users/login?q=#{rand(36**15).to_s(36)}#{current_user.id}&r=#{rand(36**20).to_s(36)}#{current_user.id%2}&t=#{rand(36**15).to_s(36)}#{current_user.id%3}", target: :blank
+      - if !@person.own_papers(@conference).blank?
+        %p Please follow the link below and read instructions on how to peer review papers.
+        = link_to "Peer review","https://peer.odrast.hr/users/login?q=#{rand(36**15).to_s(36)}#{current_user.id}&r=#{rand(36**20).to_s(36)}#{current_user.id%2}&t=#{rand(36**15).to_s(36)}#{current_user.id%3}", target: :blank
   - else
     .span8
       %h2 Peer review
