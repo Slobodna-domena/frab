@@ -1,6 +1,5 @@
 EventsController.class_eval do
 
-
   # batch actions
   def batch_actions
     if params[:bulk_email]
@@ -51,9 +50,9 @@ EventsController.class_eval do
     @events = result.paginate page: page_param
     clean_events_attributes
 
-
     if !current_user.conference_users.where(conference_id: @conference).blank? && current_user.conference_users.where(conference_id: @conference.id).first.role == "reviewer" && Event::ACADEMIC_CONST.size >= 1
-      @events = Event.where(id: @events.where(event_type: Event::ACADEMIC_CONST).where.not(state: "rejected").select{|event| !event.in?(current_user.person.own_papers(@conference)) && !event.in?(current_user.person.coauthored_papers(@conference))}.map{|e| e.id}).paginate page: page_param
+      res = Event.where(id: result.where(event_type: Event::ACADEMIC_CONST).where.not(state: "rejected").select{|event| !event.in?(current_user.person.own_papers(@conference)) && !event.in?(current_user.person.coauthored_papers(@conference)) && event.event_ratings.where(peer: true).blank? && (event.event_ratings.where(peer: false).blank? || !event.event_ratings.select{|er| er.person_id == current_user.person.id}.blank?)}.map{|e| e.id})
+      @events = res.paginate page: page_param
     end
 
     @num_of_matching_events = result.reorder('').pluck(:id).count
@@ -228,7 +227,16 @@ end
 
 Cfp::EventsController.class_eval do
 
-
+  # GET /cfp/events/1/edit
+  def edit
+    conference = @event.conference
+    if conference.call_for_participation&.hard_deadline_over? && !(current_user.role == "admin" || (current_user.role == "crew" && !Conference.all.map{|c| c.conference_users}.flatten.select{|cu| cu.role == "orga" && cu.user_id == self.id}.blank?))
+      redirect_to cfp_person_path
+    end
+    if redirect_submitter_to_edit?
+      flash[:alert] = "#{view_context.link_to(t('users_module.error_invalid_public_name'), edit_cfp_person_path)}".html_safe
+    end
+  end
     # POST /cfp/events
     def create
       @event = Event.new(event_params.merge(recording_license: @conference.default_recording_license))
