@@ -76,7 +76,7 @@
                     - if event.average_rating
                       = event.average_rating
                   %td
-                    = event.event_ratings.size
+                    = event.event_ratings.where(peer: false).size
                   %td
                     - if !event.event_ratings.select{|er| er.peer == false && er.person_id == current_user.person.id}.blank?
                       You have reviewed this paper
