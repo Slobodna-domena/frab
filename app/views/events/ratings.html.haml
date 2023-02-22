@@ -57,7 +57,7 @@
                   = sort_link @search, :average_rating, term: params[:term]
                   = filter_link('average_rating')
                 %th.nowrap
-                  = "Number of reviews"
+                  = "Number of expert reviews"
                 %th
                 %th
             %tbody
@@ -74,7 +74,7 @@
                     %td= link_to_unless params[:event_state].present?, event.state, request.query_parameters.merge(:event_state => event.state)
                   %td
                     - if event.average_rating
-                      = event.average_rating
+                      = event.average_rating.round(2)
                   %td
                     = event.event_ratings.where(peer: false).size
                   %td
