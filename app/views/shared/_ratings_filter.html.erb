@@ -8,7 +8,7 @@
   <div>
     <% @conference.classifiers.each do |classifier| %>
       <input type="checkbox" id="<%= classifier.name %>" name="<%= classifier.name %>" value="<%= classifier.name %>" <% if !params[classifier.name].blank? %> checked <% end %>>
-      <label style="float:none" for="<%= classifier.name %>"><%= classifier.name %> (<%= Event.all.select{|event| event.event_classifiers.map{|evc| evc.classifier}.flatten.uniq.include?(classifier) && event.event_ratings.where(peer: false).blank?}.size %> left)</label><br>
+      <label style="float:none" for="<%= classifier.name %>"><%= classifier.name %> (<%= Event.where(event_type: Event::ACADEMIC_CONST).select{|event| event.event_classifiers.map{|evc| evc.classifier}.flatten.uniq.include?(classifier) && event.event_ratings.where(peer: false).blank?}.size %> left)</label><br>
     <% end %>
   </div>
   <br>
