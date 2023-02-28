@@ -48,11 +48,11 @@ class ReportsController < BaseConferenceController
     when 'do_not_record_events'
       r = conference_events.where(do_not_record: true)
     when 'accepted_special_sessions'
-      r = conference_events.where(Event.arel_table[:event_type].eq('Special Session')).and(Event.arel_table[:state].eq('accepting')))
+      r = conference_events.where(Event.arel_table[:event_type].eq('Special Session').and(Event.arel_table[:state].eq('accepting')))
     when 'accepted_paper_presentations'
       r = conference_events.where(Event.arel_table[:event_type].eq('Paper Presentation').and(Event.arel_table[:state].eq('accepting')))
     when 'accepted_non-academic_sessions'
-      r = conference_events.where(Event.arel_table[:event_type].eq('Non-academic Session')).and(Event.arel_table[:state].eq('accepting')))
+      r = conference_events.where(Event.arel_table[:event_type].eq('Non-academic Session').and(Event.arel_table[:state].eq('accepting')))
     when 'events_with_tech_rider'
       r = conference_events
         .scheduled
