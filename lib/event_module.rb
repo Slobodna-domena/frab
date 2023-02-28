@@ -381,8 +381,6 @@ module EventModule
       if max && min
         if max - min > 3.5
           return "warning"
-        else
-          return ""
         end
       end
     end
