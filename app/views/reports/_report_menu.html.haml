@@ -15,6 +15,9 @@
   %li= link_to t('reports_module.events_with_more_than_one_speaker'), report_on_events_path("events_with_more_than_one_speaker")
   %li= link_to t('reports_module.event_timeslot_deviation'), report_on_events_path('event_timeslot_deviation')
   %li= link_to t('reports_module.events_with_tech_rider'), report_on_events_path('events_with_tech_rider')
+  %li= link_to "Accepted Special Sessions ", report_on_events_path('accepted_special_sessions')
+  %li= link_to "Accepted Non-Academic Sessions", report_on_events_path('accepted_non-academic_sessions')
+  %li= link_to "Accepted Paper Presentations", report_on_events_path('accepted_paper_presentations')
 %p Query Speakers
 %ul
   %li= link_to t('reports_module.expected_speakers'), report_on_people_path("expected_speakers")

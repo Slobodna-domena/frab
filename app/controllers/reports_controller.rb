@@ -47,6 +47,12 @@ class ReportsController < BaseConferenceController
       r = conference_events.joins(:event_people).where(event_people: { role_state: [:canceled, :declined, :idea, :offer, :unclear], event_role: [:moderator, :speaker] })
     when 'do_not_record_events'
       r = conference_events.where(do_not_record: true)
+    when 'accepted_special_sessions'
+      r = conference_events.where(Event.arel_table[:event_type].eq('Special Session'))
+    when 'accepted_paper_presentations'
+      r = conference_events.where(Event.arel_table[:event_type].eq('Paper Presentation').and(Event.arel_table[:state].eq('accepting')))
+    when 'accepted_non-academic_sessions'
+      r = conference_events.where(Event.arel_table[:event_type].eq('Non-academic Session'))
     when 'events_with_tech_rider'
       r = conference_events
         .scheduled
