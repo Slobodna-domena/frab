@@ -62,7 +62,7 @@
                 %th
             %tbody
               - @events.includes(:track).each do |event|
-                %tr{ :class => ("warning" if event.weird_rating) }
+                %tr{ :class => ("#{event.weird_rating}") }
                   %td= image_box event.logo, :small
                   %td
                     = link_to event.title, event

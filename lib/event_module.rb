@@ -185,25 +185,25 @@ EventsController.class_eval do
 
   def filter_by_rating(rating,operator,result,params)
     event = result.first
-    if event
-      contains = false
-      conference = event.conference
-      temp_ids = []
-      classifiers = conference.classifiers
-      classifiers.each do |classifier|
-        if params.has_key?(classifier.name)
-          contains = true
-          temp_ids << classifier.event_classifiers.map{|ec| ec.event}.select{|e| e.in?(result)}
-          temp_ids = temp_ids.uniq.flatten
-        end
-      end
-    end
-
-    if contains
-      result = Event.where(id: temp_ids.map{|e| e.id})
-    else
-      result = result
-    end
+    # if event
+    #   contains = false
+    #   conference = event.conference
+    #   temp_ids = []
+    #   classifiers = conference.classifiers
+    #   classifiers.each do |classifier|
+    #     if params.has_key?(classifier.name)
+    #       contains = true
+    #       temp_ids << classifier.event_classifiers.map{|ec| ec.event}.select{|e| e.in?(result)}
+    #       temp_ids = temp_ids.uniq.flatten
+    #     end
+    #   end
+    # end
+    #
+    # if contains
+    #   result = Event.where(id: temp_ids.map{|e| e.id})
+    # else
+    #   result = result
+    # end
     if operator && rating && (1..5).include?(operator.to_i) && (1..10).include?(rating.to_f)
       case operator.to_i
       when 1
@@ -372,18 +372,35 @@ module EventModule
 
 
   def weird_rating
-    return false if self.event_ratings.blank?
-    all_ratings = self.event_ratings.pluck(:rating)
-    max = all_ratings.max
-    min = all_ratings.min
-    if max && min
-      if max - min > 3.5
-        return true
-      else
-        return false
+
+    #divergent event rating - yellow
+    if self.event_ratings.size > 1
+      all_ratings = self.event_ratings.pluck(:rating)
+      max = all_ratings.max
+      min = all_ratings.min
+      if max && min
+        if max - min > 3.5
+          return "warning"
+        else
+          return ""
+        end
       end
     end
-    return false
+
+    #submitter has not finished peer review
+    self.event_people.where(event_role: "submitter").each do |event_person|
+      if event_person.person.event_ratings.where(peer: true).size < 3
+        return "red-warning"
+      else
+        return ""
+      end
+    end
+
+    #paper doesnt have at least 1 peer and 1 expert review
+    return "green-warning" if self.event_ratings.where(peer: false).size > 1 && self.event_ratings.where(peer: true).size > 1
+
+
+    return ""
   end
 
   def average_of_nonzeros(list)

@@ -34,6 +34,14 @@ h1 {
 tr.warning td{
   background-color: #cdf296 !important;
 }
+
+tr.red-warning td{
+  background-color: #f29696 !important;
+}
+
+tr.green-warning td{
+  background-color: #f292da !important;
+}
 .gdpr {
   margin-left: 80px;
   margin-right: 80px;
