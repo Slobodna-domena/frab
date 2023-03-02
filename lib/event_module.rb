@@ -351,13 +351,13 @@ Event.class_eval do
   end
 
   after_update do |resource|
-    if resource.event_type.in?(ACADEMIC_CONST)
-      timeslot = resource.event_type == "Paper Presentation" ? 1 : 6
-      resource.update_column(:time_slots, timeslot)
-    elsif resource.event_type.in?(PRACTICAL_CONST)
-      timeslot = 6
-      resource.update_column(:time_slots, timeslot)
-    end
+    # if resource.event_type.in?(ACADEMIC_CONST)
+    #   timeslot = resource.event_type == "Paper Presentation" ? 1 : 6
+    #   resource.update_column(:time_slots, timeslot)
+    # elsif resource.event_type.in?(PRACTICAL_CONST)
+    #   timeslot = 6
+    #   resource.update_column(:time_slots, timeslot)
+    # end
   end
 end
 
