@@ -230,9 +230,6 @@ Cfp::EventsController.class_eval do
   # GET /cfp/events/1/edit
   def edit
     conference = @event.conference
-    if conference.call_for_participation&.hard_deadline_over? && !(current_user.role == "admin" || (current_user.role == "crew" && !Conference.all.map{|c| c.conference_users}.flatten.select{|cu| cu.role == "orga" && cu.user_id == self.id}.blank?))
-      redirect_to cfp_person_path
-    end
     if redirect_submitter_to_edit?
       flash[:alert] = "#{view_context.link_to(t('users_module.error_invalid_public_name'), edit_cfp_person_path)}".html_safe
     end

@@ -38,7 +38,7 @@
         %h2=t("cfp.contact_headline")
         %p=t("cfp.contact_description_html", mail_to: mail_to(@conference.call_for_participation.contact_email))
 
-    = render 'peer_review'
+    =# render 'peer_review'
   .row
     .span16
       - if @person.events_in(@conference).size > 0
