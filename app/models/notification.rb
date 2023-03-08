@@ -29,7 +29,8 @@ class Notification < ApplicationRecord
     'date'        => I18n.t('conferences_module.variables.date'),
     'time'        => I18n.t('conferences_module.variables.time'),
     'duration'    => I18n.t('conferences_module.variables.duration'),
-    'room'        => I18n.t('conferences_module.variables.room')
+    'room'        => I18n.t('conferences_module.variables.room'),
+    'user_id'     => 'User ID',
   }.freeze
 
   def default_text=(locale = self.locale)

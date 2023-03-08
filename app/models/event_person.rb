@@ -74,7 +74,7 @@ class EventPerson < ApplicationRecord
 
     substitute_variables(string)
   end
-  
+
   def substitute_variables(s)
     locale = person.locale_for_mailing(event.conference)
     string = s.gsub '%{conference}', conference.title
@@ -87,32 +87,32 @@ class EventPerson < ApplicationRecord
     string.gsub! '%{forename}', person.first_name.presence || ''
     string.gsub! '%{surname}', person.last_name.presence || ''
     string.gsub! '%{public_name}', person.public_name.presence || ''
-
+    string.gsub! '%{user_id}', person.user.id.to_s || ''
     string.gsub! '%{room}', event.room.name if event.room.present?
     if event.start_time.present?
       string.gsub! '%{date}', event.start_time.in_time_zone(conference&.timezone).strftime('%F')
       string.gsub! '%{time}', event.start_time.in_time_zone(conference&.timezone).strftime('%H:%M %z %Z')
     end
-    
-    
+
+
     joinlink = cfp_events_join_url(token: event.invite_token, locale: locale) if event.invite_token.present?
     string.gsub! '%{joinlink}',  joinlink || '-'
 
     conflink = cfp_event_confirm_by_token_url(id: event.id, token: confirmation_token, locale: locale) if confirmation_token.present?
     string.gsub! '%{link}', conflink || '-'
-    
+
     return string
-    
+
   end
 
   def default_url_options
     result = { protocol: ENV.fetch('FRAB_PROTOCOL'),
-               host: ENV.fetch('FRAB_HOST'), 
+               host: ENV.fetch('FRAB_HOST'),
                port: ENV['FRAB_PORT'].presence }
     result[:conference_acronym] = conference.acronym if conference
     result
   end
-  
+
   def to_s
     "#{model_name.human}: #{person.full_name} (#{event_role})"
   end
