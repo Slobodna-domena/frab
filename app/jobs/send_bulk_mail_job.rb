@@ -33,7 +33,7 @@ class SendBulkMailJob
     ep_ids = (1..295).to_a + [376,318]
     destination_event_people = destination_event_people.where("event_id not in (?) and event_role <> 'submitter'", ep_ids)
     destination_event_people.each do |dep|
-      UserMailer.bulk_mail_multiple_roles(EventPerson.where(id: dep.id), template).deliver_now
+      #UserMailer.bulk_mail_multiple_roles(EventPerson.where(id: dep.id), template).deliver_now
       p=Person.find(dep.person_id)
       Rails.logger.info "Mail template #{template.name} delivered to #{p.first_name} #{p.last_name} (#{p.email})"
     end
