@@ -30,7 +30,7 @@ class SendBulkMailJob
       destination_event_people = destination
     end
     
-    ep_ids = [376,4,7,318,43,9,13,32,10,11,12,14,15,16,17,18,19,20,21,22,24,25,26,27,28,29,30,31,33,34,35,36,37,42,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76]
+    ep_ids = (1..156).to_a + [376,318]
     destination_event_people = destination_event_people.where("event_id not in (?) and event_role <> 'submitter'", ep_ids)
     destination_event_people.each do |dep|
       UserMailer.bulk_mail_multiple_roles(EventPerson.where(id: dep.id), template).deliver_now
