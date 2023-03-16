@@ -37,6 +37,10 @@ class SendBulkMailJob
       UserMailer.bulk_mail_multiple_roles(destination_event_people.where(person_id: p_id), template).deliver_now
       p=Person.find(p_id)
       Rails.logger.info "Mail template #{template.name} delivered to #{p.first_name} #{p.last_name} (#{p.email})"
+      c = Conference.first
+      new_mail_sent = c.mail_sent
+      new_mail_sent << p_id
+      c.update_attribute('mail_sent', new_mail_sent)
     end
   end
 end
