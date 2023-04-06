@@ -370,6 +370,15 @@ module EventModule
 
   def weird_rating
 
+    event_people_list = self.event_people
+
+    #user has paid
+    event_people_list.each do |event_person|
+      if event_person.person.has_paid?
+        return "has-paid"
+      end
+    end
+
     #divergent event rating - yellow
     if self.event_ratings.size > 1
       all_ratings = self.event_ratings.pluck(:rating)
@@ -383,7 +392,7 @@ module EventModule
     end
 
     #submitter has not finished peer review
-    self.event_people.where(event_role: "submitter").each do |event_person|
+    event_people_list.where(event_role: "submitter").each do |event_person|
       if event_person.person.event_ratings.where(peer: true).size < 3
         return "red-warning"
       else

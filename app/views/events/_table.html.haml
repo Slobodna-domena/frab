@@ -29,7 +29,7 @@
       %th.last
   %tbody
     - collection.each do |event|
-      %tr
+      %tr{ :class => ("#{event.weird_rating}") }
         %td= link_to (image_box event.logo, :small), event
         %td
           = link_to event.title, event
