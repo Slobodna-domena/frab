@@ -10,7 +10,7 @@ class Event < ApplicationRecord
 
   TYPES = %w(lecture workshop podium lightning_talk meeting film concert djset performance other).freeze
   ACCEPTED = %w(accepting unconfirmed confirmed scheduled).freeze
-
+  self.per_page = 500
   has_one :ticket, as: :object, dependent: :destroy
   has_many :event_attachments, dependent: :destroy
   has_many :event_feedbacks, dependent: :destroy
