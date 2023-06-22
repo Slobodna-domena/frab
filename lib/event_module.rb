@@ -392,7 +392,9 @@ module EventModule
     coauthors.each do |ca|
       person = Person.find_by(email: ca[:email])
       if person
-        person.update(first_name: ca[:first_name], last_name: ca[:last_name])
+        if person.email == person.public_name
+          person.update(public_name: "#{ca[:first_name]} #{ca[:last_name]}")
+        end
       end
     end
   end
