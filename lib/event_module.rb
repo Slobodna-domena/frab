@@ -380,6 +380,20 @@ module EventModule
   PRACTICAL_CONST = ["Non-academic Session"]
   ACADEMIC_CONST = ["Paper Presentation", "Special Session"]
 
+  def update_people
+    coauthors = [
+      {email: @event.coauthor_1, first_name: "#{@event.coauthor_1_name}", last_name: "#{@event.coauthor_1_last_name}"},
+      {email: @event.coauthor_2, first_name: "#{@event.coauthor_2_name}", last_name: "#{@event.coauthor_2_last_name}"},
+      {email: @event.coauthor_3, first_name: "#{@event.coauthor_3_name}", last_name: "#{@event.coauthor_3_last_name}"},
+      {email: @event.coauthor_4, first_name: "#{@event.coauthor_4_name}", last_name: "#{@event.coauthor_4_last_name}"},
+      {email: @event.coauthor_5, first_name: "#{@event.coauthor_5_name}", last_name: "#{@event.coauthor_5_last_name}"},
+      ].select{|a| !a[:email].blank? && a[:email] =~ URI::MailTo::EMAIL_REGEXP}
+
+    coauthors.each do |ca|
+    end
+  end
+
+
 
   def weird_rating
 
