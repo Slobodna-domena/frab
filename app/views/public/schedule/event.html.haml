@@ -2,7 +2,7 @@
   = "#{event_title} | #{schedule_title}"
 
 - event = @view_model.event
-%h2= event_title_with_type(event)
+%h2= event.title
 %h3.title= event.subtitle
 
 .column.left#basic
@@ -27,6 +27,8 @@
     %br/
     %b #{t '.room'}:
     = event.room.try(:name)
+    %b #{t '.type'}:
+    = event.event_type
     %br/
     - unless event.track.blank?
       %b #{t '.track'}:
