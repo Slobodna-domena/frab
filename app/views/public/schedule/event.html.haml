@@ -1,7 +1,7 @@
-- content_for :title do
-  = "#{event_title} | #{schedule_title}"
-
 - event = @view_model.event
+- content_for :title do
+  = event.title
+
 %h2= event.title
 %h3.title= event.subtitle
 
@@ -27,6 +27,7 @@
     %br/
     %b #{t '.room'}:
     = event.room.try(:name)
+    %br/
     %b #{t '.type'}:
     = event.event_type
     %br/
