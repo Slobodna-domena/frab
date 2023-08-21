@@ -17,7 +17,8 @@
       #header
         %h1= schedule_title
         #hambi
-          %i.fa.fa-bars
+          %a.icon{:href => "javascript:void(0);", :onclick => "myFunction()"}
+            %i.fa.fa-bars
       #navigation
         %ul
           - unless feedback_page?
