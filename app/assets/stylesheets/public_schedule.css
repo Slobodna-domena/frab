@@ -9,8 +9,14 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
 
 @media only screen and (max-width: 600px) {
    #main-content {
-   width: fit-content;
+    width: fit-content;
  }
+  #navigation {
+    display: flex;
+  }
+  p.tracks {
+    display: none;
+  }
 }
 
 * { margin: 0; padding: 0; }
