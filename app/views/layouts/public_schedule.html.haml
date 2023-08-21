@@ -10,11 +10,14 @@
     = stylesheet_link_tag 'public_schedule'
     = stylesheet_link_tag public_schedule_style_path(format: :css), media: "all"
     = stylesheet_link_tag 'public_schedule_print', media: 'print'
+    %link{:href => "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css", :rel => "stylesheet"}/
   %body
     #wrapper
       #banner
       #header
         %h1= schedule_title
+        #hambi
+          %i.fa.fa-bars
       #navigation
         %ul
           - unless feedback_page?
