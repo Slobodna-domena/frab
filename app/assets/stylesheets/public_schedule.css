@@ -28,6 +28,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
     position: sticky;  
     left: -10px;
     z-index: 99;
+    font-size: 14px;
+    font-weight: bold;
   }
   table.rooms-table td {
     padding: 5px;
