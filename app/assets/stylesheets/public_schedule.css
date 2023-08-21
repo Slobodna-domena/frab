@@ -46,9 +46,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
   }
 
   #navigation ul {
-    border-bottom: 1px solid;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
+    width: 100%;
+    padding-bottom: 15px;
   }
 
   #navigation ul.tracks li {
