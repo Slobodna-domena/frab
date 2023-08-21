@@ -18,12 +18,21 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
   #navigation {
     display: none;
     justify-content: space-between;
+    background-color: #f4f2f2;
+  }
+
+  li.selected {
+    font-weight: bold;
   }
   #navigation ul {
     font-size: 18px;
   }
   #hambi {
     display: block;
+  }
+
+  div.header h1 {
+    margin-left: 7px
   }
   #hambi i {
     font-size: 45px;
@@ -34,6 +43,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
   
   p.tracks {
     display: none;
+  }
+
+  #navigation ul {
+    border-bottom: 1px solid;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
   }
 
   #navigation ul.tracks li {
