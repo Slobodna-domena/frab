@@ -10,7 +10,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
 @media only screen and (max-width: 600px) {
    #main-content {
     width: fit-content;
-     overflow: auto;
+     overflow: clip;
  }
   #navigation {
     display: flex;
