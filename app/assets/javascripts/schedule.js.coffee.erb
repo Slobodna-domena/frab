@@ -17,14 +17,6 @@ update_unscheduled_events = () ->
   )
   return
 
-openHambi = ->
-  x = document.getElementById('hambi')
-  if x.style.display == 'block'
-    x.style.display = 'none'
-  else
-    x.style.display = 'block'
-  return
-
 add_event_to_slot = (event, td, update = true) ->
   event = $(event)
   td = $(td)
