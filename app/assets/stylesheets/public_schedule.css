@@ -7,14 +7,17 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
   display:block;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 480px) {
    #main-content {
-    width: fit-content;
-     overflow: clip;
- }
+    width: 95%;
+    overflow-x: auto; 
+  }
   #navigation {
     display: flex;
-    font-size: 16px;
+    justify-content: space-between;
+  }
+  #navigation ul {
+    font-size: 18px;
   }
   p.tracks {
     display: none;
