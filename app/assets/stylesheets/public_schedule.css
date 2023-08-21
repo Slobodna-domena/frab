@@ -7,6 +7,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
   display:block;
 }
 
+#hambi {
+  display: none;
+}
 @media only screen and (max-width: 550px) {
    #main-content {
     width: 95%;
@@ -18,6 +21,15 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
   }
   #navigation ul {
     font-size: 18px;
+  }
+  #hambi {
+    display: block;
+  }
+  #hambi i {
+    font-size: 45px;
+    margin-right: 15px;
+    color: white;
+    margin-top: 5px;
   }
   
   p.tracks {
