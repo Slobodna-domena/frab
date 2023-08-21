@@ -13,14 +13,22 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
     overflow-x: auto !important; 
   }
   #navigation {
-    display: flex;
+    display: none;
     justify-content: space-between;
   }
   #navigation ul {
     font-size: 18px;
   }
+  
   p.tracks {
     display: none;
+  }
+
+  #navigation ul.tracks li {
+    display: inline;
+  }
+  #navigation ul.tracks li div {
+    padding: 5px 0px 5px 5px;
   }
 }
 
