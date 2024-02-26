@@ -8,6 +8,11 @@ and to create a schedule.
 [![Code Climate](https://codeclimate.com/github/frab/frab.png)](https://codeclimate.com/github/frab/frab)
 [![Container image](https://github.com/frab/frab/actions/workflows/container-images.yml/badge.svg)](https://github.com/frab/frab/actions/workflows/container-images.yml)
 
+## Current FORK Status
+
+Do NOT merge this fork with master. The project has been developed with an older version of FRAB (2021) and has not been merged with master at any point during the development. Follow full FRAB documentation to setup the project.
+
+
 ## Current Status
 
 frab is not under heavy development anymore.
