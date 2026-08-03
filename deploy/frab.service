@@ -1,0 +1,18 @@
+[Unit]
+Description=frab (Puma) - scriptum.slobodnadomena.hr
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=stjepan
+WorkingDirectory=/home/stjepan/frab
+Environment=RAILS_ENV=production
+Environment=PORT=3020
+EnvironmentFile=/home/stjepan/frab/.env.production
+ExecStart=/usr/share/rvm/wrappers/ruby-2.7.6/puma -C config/puma.rb
+ExecReload=/bin/kill -USR1 $MAINPID
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

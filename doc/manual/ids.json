@@ -1,0 +1,15 @@
+{
+  "conference": "demo2025",
+  "event_id": 1088,
+  "event_title": "Refactoring legacy Rails",
+  "review_event_id": 1161,
+  "review_event_title": "Reproducibility in empirical software engineering",
+  "person_id": 361,
+  "person_name": "Marko Kovac",
+  "expenses_person_id": 376,
+  "mail_template_id": 125,
+  "mail_template_name": "Confirm your talk",
+  "day_index": 2,
+  "speaker_email": "speaker2@example.org",
+  "submitter_email": "speaker9@example.org"
+}

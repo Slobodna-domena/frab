@@ -1785,8 +1785,8 @@ en:
       one: Are you sure you want to send %{name} notifications for 1 session?
       other: Are you sure you want to send %{name} notifications for %{count} sessions?
     send_notification_to_subscribers:
-      one: Send %{name} notifications to 1 person involved in %{session}
-      other: Send %{name} notifications to %{count} people involved in %{session}
+      one: Send %{name} notifications to 1 person involved in %{event}
+      other: Send %{name} notifications to %{count} people involved in %{event}
     send_unspecified_notification_confirm:
       one: Are you sure you want to send e-mails for %{count} session?
       other: Are you sure you want to send e-mails for %{count} sessions?

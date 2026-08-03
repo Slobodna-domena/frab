@@ -25,6 +25,7 @@ admin = User.new(
 )
 admin.person = person
 admin.role = 'admin'
+admin.gdpr = true
 admin.confirmed_at = Time.now
 admin.save!
 

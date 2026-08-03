@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_20_141958) do
+ActiveRecord::Schema.define(version: 2026_07_30_080000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 2022_12_20_141958) do
     t.string "allowed_event_types", default: "lecture;workshop;podium;lightning_talk;meeting;film;concert;djset;performance;other"
     t.string "allowed_event_timeslots_csv", limit: 400
     t.string "bcc_address", limit: 255
+    t.integer "mail_sent", default: [], array: true
     t.index ["acronym"], name: "index_conferences_on_acronym"
     t.index ["parent_id"], name: "index_conferences_on_parent_id"
   end
@@ -494,6 +495,7 @@ ActiveRecord::Schema.define(version: 2022_12_20_141958) do
     t.integer "user_id"
     t.integer "skipped", default: [], array: true
     t.integer "accepted", default: [], array: true
+    t.boolean "paid", default: false
   end
 
   create_table "users", force: :cascade do |t|

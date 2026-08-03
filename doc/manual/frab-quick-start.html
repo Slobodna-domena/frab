@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>frab - Quick Start</title>
+<style>
+  @page { size: A4; margin: 15mm 15mm 15mm 15mm; }
+
+  :root {
+    --green: #1f9d55;
+    --green-dark: #14663a;
+    --ink: #1d2126;
+    --muted: #5d6672;
+    --line: #d8dde3;
+    --tint: #f4f7f9;
+    --warn: #b3541e;
+    --warn-bg: #fdf3e7;
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 10pt; }
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ---- header ---- */
+  header { border-bottom: 3px solid var(--green); padding-bottom: 12px; margin-bottom: 16px; }
+  header .rule { height: 5px; width: 64px; background: var(--green); margin-bottom: 14px; }
+  header h1 { font-size: 26pt; margin: 0 0 2px 0; letter-spacing: -0.4px; }
+  header p.sub { font-size: 11.5pt; color: var(--muted); margin: 0 0 10px 0; }
+  header p.note { font-size: 8.8pt; color: var(--muted); margin: 0; }
+
+  /* ---- phases ---- */
+  h2.phase {
+    font-size: 9pt;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 700;
+    margin: 22px 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--line);
+    page-break-after: avoid;
+  }
+  h2.phase span { color: var(--muted); letter-spacing: 0; text-transform: none; font-weight: 400; font-size: 9pt; }
+
+  /* ---- steps ---- */
+  .step {
+    position: relative;
+    padding-left: 38px;
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+  }
+  .step .n {
+    position: absolute; left: 0; top: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--green); color: #fff;
+    font-size: 11pt; font-weight: 700;
+    text-align: center; line-height: 26px;
+  }
+  .step h3 { font-size: 12pt; margin: 2px 0 3px 0; }
+  .step .where {
+    font-size: 8.6pt;
+    color: var(--muted);
+    margin: 0 0 6px 0;
+  }
+  .step .where b { color: var(--ink); font-weight: 600; }
+  .step ul { margin: 0 0 6px 0; padding-left: 17px; }
+  .step li { margin-bottom: 2px; }
+  .step p { margin: 0 0 6px 0; }
+
+  .ui {
+    font-weight: 600;
+    background: var(--tint);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0 3px;
+    white-space: nowrap;
+  }
+  code {
+    font-family: "DejaVu Sans Mono", "Liberation Mono", Menlo, Consolas, monospace;
+    font-size: 0.87em;
+    background: var(--tint);
+    border-radius: 3px;
+    padding: 1px 3px;
+  }
+
+  .shot { margin: 8px 0 4px 0; }
+  .shot img {
+    display: block;
+    width: 92%;
+    max-height: 74mm;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+  }
+  /* tall full-page screenshots would shrink to an unreadable strip, so they
+     are cropped to their top instead of scaled down */
+  .shot.crop img {
+    width: 92%;
+    height: 62mm;
+    max-height: none;
+    object-fit: cover;
+    object-position: top left;
+  }
+  .shot span {
+    display: block;
+    font-size: 8pt;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .tip {
+    border-left: 3px solid var(--green);
+    background: #edf6f0;
+    padding: 6px 10px;
+    margin: 7px 0 0 0;
+    font-size: 8.8pt;
+  }
+  .tip.warn { border-left-color: var(--warn); background: var(--warn-bg); }
+  .tip b { color: var(--green-dark); }
+  .tip.warn b { color: var(--warn); }
+
+  /* ---- checklist ---- */
+  .checklist { page-break-before: always; }
+  .checklist h1 { font-size: 18pt; margin: 0 0 3px 0; }
+  .checklist p.sub { color: var(--muted); margin: 0 0 12px 0; padding-bottom: 9px; border-bottom: 2px solid var(--green); font-size: 9.5pt; }
+  .checklist h2.phase { margin: 15px 0 7px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.8pt; line-height: 1.38; page-break-inside: avoid; }
+  th, td { text-align: left; vertical-align: top; padding: 3.5px 6px; border-bottom: 1px solid var(--line); }
+  thead th { background: var(--tint); font-size: 8pt; text-transform: uppercase; letter-spacing: 0.6px; }
+  td.box { width: 22px; text-align: center; color: var(--muted); font-size: 11pt; line-height: 1; }
+  tr.phase-row td { background: #eef4f0; font-weight: 700; font-size: 8pt; letter-spacing: 1.2px; text-transform: uppercase; color: var(--green-dark); padding: 3px 6px; }
+  footer { margin-top: 12px; font-size: 8.2pt; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="rule"></div>
+  <h1>Running a conference in frab</h1>
+  <p class="sub">The whole job in 12 steps, in the order you actually do them.</p>
+  <p class="note">This is the short version. For the detail behind any step - every field, every button, every screen - see the full <b>frab User Manual</b>; the chapter is named at the end of each step.</p>
+</header>
+
+<!-- ================= PHASE A ================= -->
+<h2 class="phase">Phase A - Set it up <span>&nbsp;&middot;&nbsp; once, before you tell anybody</span></h2>
+
+<div class="step">
+  <div class="n">1</div>
+  <h3>Create the conference</h3>
+  <p class="where"><b>Where:</b> Conferences &rarr; <span class="ui">New conference</span></p>
+  <ul>
+    <li>Give it a <b>title</b> (<i>DemoConf 2025</i>) and a short lower-case <b>acronym</b> (<code>demo2025</code>). The acronym ends up in every URL - pick it once and never change it.</li>
+    <li>Set the <b>time zone</b>, and the <b>timeslot duration</b> (15 minutes suits almost everyone) plus the default session length in timeslots (<code>4</code> = one hour).</li>
+    <li>Tick the <b>session durations</b> speakers may choose from, and add the <b>languages</b> sessions may be held in.</li>
+  </ul>
+  <div class="tip warn"><b>Careful:</b> the timeslot duration defines the entire schedule grid and is painful to change later. Decide it now. &nbsp;&rarr;&nbsp; <i>Manual, chapter 2.1</i></div>
+</div>
+
+<div class="step">
+  <div class="n">2</div>
+  <h3>Enter days, rooms and themes</h3>
+  <p class="where"><b>Where:</b> Settings &rarr; tabs <b>Days</b>, <b>Rooms</b>, <b>Themes</b></p>
+  <ul>
+    <li><b>Days</b> - one row per conference day, with the time the programme starts and ends.</li>
+    <li><b>Rooms</b> - one row per room, with its capacity. <b>Rank</b> sets the left-to-right order in the schedule; give the main stage rank 1.</li>
+    <li><b>Themes</b> - your subject areas (<i>Backend</i>, <i>Security</i>, <i>Community</i>...), each with a colour. Five to eight is plenty.</li>
+  </ul>
+  <div class="shot crop">
+    <img src="screenshots/01-04-settings-rooms.png" alt="Rooms tab">
+    <span>Settings &rarr; Rooms. Days and Themes work the same way: add a row, save. &nbsp;&rarr;&nbsp; <i>Manual, chapters 2.2-2.4</i></span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="n">3</div>
+  <h3>Decide how you will review</h3>
+  <p class="where"><b>Where:</b> Settings &rarr; <b>Reviewing</b></p>
+  <ul>
+    <li>Add the criteria reviewers will score each submission on - <i>Content quality</i>, <i>Speaker experience</i>, <i>Audience fit</i>. Three or four are enough.</li>
+    <li>Write the description as a question, because it appears next to the score buttons.</li>
+  </ul>
+  <div class="tip warn"><b>Do this before reviewing starts.</b> Reviews already written are not re-scored when you add a criterion later. &nbsp;&rarr;&nbsp; <i>Manual, chapter 2.6</i></div>
+</div>
+
+<div class="step">
+  <div class="n">4</div>
+  <h3>Add your team</h3>
+  <p class="where"><b>Where:</b> Account &rarr; <b>Conference users</b></p>
+  <ul>
+    <li>Each colleague needs a frab account first; then give them a role here.</li>
+    <li><b>Reviewer</b> - can only read submissions and score them. <b>Coordinator</b> - can also edit sessions and people and move them through the workflow. <b>Orga</b> - everything, including settings, mail and the schedule.</li>
+    <li>One role per person per conference.</li>
+  </ul>
+  <div class="tip">&rarr;&nbsp; <i>Manual, chapters 1.2 and 2.9</i></div>
+</div>
+
+<div class="step">
+  <div class="n">5</div>
+  <h3>Write the three decision letters</h3>
+  <p class="where"><b>Where:</b> Settings &rarr; <b>Notifications</b></p>
+  <ul>
+    <li>Fill in the <b>acceptance</b>, the <b>rejection</b> and the <b>schedule announcement</b>, each with a subject and a body.</li>
+    <li>The acceptance <u>must</u> contain <code>%{link}</code> - that is the personal link a speaker clicks to confirm. Without it nobody can confirm.</li>
+    <li>Add one language block per language your speakers use.</li>
+  </ul>
+  <div class="tip"><b>Placeholders</b> such as <code>%{public_name}</code>, <code>%{event}</code>, <code>%{room}</code>, <code>%{date}</code> are replaced per recipient. The full list is shown next to the form. &nbsp;&rarr;&nbsp; <i>Manual, chapter 9.6 and Appendix A</i></div>
+</div>
+
+<!-- ================= PHASE B ================= -->
+<h2 class="phase">Phase B - Collect and decide <span>&nbsp;&middot;&nbsp; the months before the event</span></h2>
+
+<div class="step">
+  <div class="n">6</div>
+  <h3>Open the call for participation</h3>
+  <p class="where"><b>Where:</b> Call for Participation &rarr; <span class="ui">Edit</span></p>
+  <ul>
+    <li>Set the <b>start</b> and <b>end date</b> of the submission window, plus the <b>hard deadline</b> you announce publicly.</li>
+    <li>Write the <b>welcome text</b>: what you are looking for, how long sessions may be, and when speakers will hear back.</li>
+    <li>Publish this address to your speakers: <code>&lt;your-frab&gt;/&lt;acronym&gt;/cfp</code>. People without an account can register there.</li>
+  </ul>
+  <div class="tip"><b>Test it yourself first.</b> Make a submitter test account, submit a session, and keep that account - use it whenever you change the call or a letter. &nbsp;&rarr;&nbsp; <i>Manual, chapter 3</i></div>
+</div>
+
+<div class="step">
+  <div class="n">7</div>
+  <h3>Watch the submissions arrive</h3>
+  <p class="where"><b>Where:</b> Sessions</p>
+  <ul>
+    <li>Every submission lands in the state <b>new</b>. Use the search box and the filter icons in the column headers to slice the list.</li>
+    <li>When you are ready to review, move them from <b>new</b> to <b>review</b> - one by one, or for a whole filtered list at once with <span class="ui">Edit these sessions</span>.</li>
+  </ul>
+  <div class="shot crop">
+    <img src="screenshots/04-01-session-list.png" alt="Session list">
+    <span>The session list is where you will spend most of your time. &nbsp;&rarr;&nbsp; <i>Manual, chapter 5</i></span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="n">8</div>
+  <h3>Review</h3>
+  <p class="where"><b>Where:</b> Sessions &rarr; <b>Session reviews</b></p>
+  <ul>
+    <li>Reviewers open a submission, score every criterion from 1 to 5 (or leave <b>N/A</b>), write a comment, and press <span class="ui">Create review</span>, then <span class="ui">Rate next session</span>.</li>
+    <li>You see the result as a table: the average per criterion, sortable by column.</li>
+    <li>Look for the two problem cases: submissions <b>nobody</b> reviewed, and submissions the reviewers <b>disagree</b> about (frab highlights those rows).</li>
+  </ul>
+  <div class="shot">
+    <img src="screenshots/07-02-review-form.png" alt="Review form">
+    <span>The review form: one row per criterion, plus a comment. &nbsp;&rarr;&nbsp; <i>Manual, chapter 8</i></span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="n">9</div>
+  <h3>Accept, reject, and send the decisions</h3>
+  <p class="where"><b>Where:</b> Sessions, then Settings &rarr; <b>Notifications</b></p>
+  <ul>
+    <li>Accept or reject each session on its own page, or in bulk from a filtered list.</li>
+    <li>With <b>bulk notification</b> on, nothing is mailed yet - decisions wait in the states <b>accepting</b> and <b>rejecting</b> until you are done with the whole programme.</li>
+    <li>Then open <b>Settings &rarr; Notifications</b> and press the <b>Send</b> buttons at the top. Each one tells you exactly how many people will get a mail.</li>
+  </ul>
+  <div class="tip warn"><b>No undo.</b> Read the counts on the buttons before you click, and set a <b>BCC address</b> in the conference settings so you keep a copy of everything that goes out. &nbsp;&rarr;&nbsp; <i>Manual, chapters 5.4 and 9.6</i></div>
+</div>
+
+<!-- ================= PHASE C ================= -->
+<h2 class="phase">Phase C - Schedule and run it <span>&nbsp;&middot;&nbsp; the weeks before and the days themselves</span></h2>
+
+<div class="step">
+  <div class="n">10</div>
+  <h3>Chase confirmations and availability</h3>
+  <p class="where"><b>Where:</b> Sessions &middot; Reports &middot; Mail Templates</p>
+  <ul>
+    <li>Accepted sessions sit in <b>unconfirmed</b> until the speaker clicks their confirmation link. Only <b>confirmed</b> sessions can be scheduled.</li>
+    <li>Remind the stragglers: filter the session list to the unconfirmed ones, then <span class="ui">Send mail to all these people &gt;&gt;</span> with a reminder template.</li>
+    <li>Run the report <b>speakers without availabilities</b> and chase everybody on it. Availability is what stops you from building a broken schedule.</li>
+  </ul>
+  <div class="tip">&rarr;&nbsp; <i>Manual, chapters 4.3, 6.3 and 9.5</i></div>
+</div>
+
+<div class="step">
+  <div class="n">11</div>
+  <h3>Build the schedule</h3>
+  <p class="where"><b>Where:</b> Schedule</p>
+  <ul>
+    <li>Pick a day, then drag sessions from the <b>unscheduled</b> box into a room column. Every move is saved immediately.</li>
+    <li>Watch the colours: <b>green</b> is fine, <b>orange</b> means a speaker is booked outside their availability or is on two stages at once, <b>red</b> means two sessions share a room and time.</li>
+    <li>Fix every red one. Aim for an empty unscheduled box.</li>
+  </ul>
+  <div class="shot">
+    <img src="screenshots/06-01-schedule-grid.png" alt="Schedule grid">
+    <span>One column per room, one tab per day. &nbsp;&rarr;&nbsp; <i>Manual, chapter 7</i></span>
+  </div>
+</div>
+
+<div class="step">
+  <div class="n">12</div>
+  <h3>Publish, announce, and run the event</h3>
+  <p class="where"><b>Where:</b> Settings &rarr; <b>Schedule</b>, then Notifications and Reports</p>
+  <ul>
+    <li>Raise the <b>schedule version</b> and tick <b>Schedule public</b>. Check the result with <span class="ui">Preview public schedule</span>.</li>
+    <li>Send the <b>scheduling notifications</b> from Settings &rarr; Notifications so every speaker learns their room and time.</li>
+    <li>Shortly before the event, mail a tech-check reminder and print what you need: the <b>tech riders</b>, the <b>transport needs</b>, the <b>speaker list</b>, and a PDF of the schedule.</li>
+    <li>Afterwards, read the audience feedback and ask for slides with one more mail template.</li>
+  </ul>
+  <div class="tip">Raise the schedule version on <b>every</b> later change - that is what tells apps, sponsors and the printer that something moved. &nbsp;&rarr;&nbsp; <i>Manual, chapters 7.4, 7.5 and 6</i></div>
+</div>
+
+<!-- ================= CHECKLIST ================= -->
+<div class="checklist">
+  <h1>One-page checklist</h1>
+  <p class="sub">Print this, tick it off, hand it to whoever takes over next year.</p>
+
+  <table>
+    <thead>
+      <tr><th class="box">&nbsp;</th><th style="width:34%">Step</th><th>Done when</th></tr>
+    </thead>
+    <tbody>
+      <tr class="phase-row"><td colspan="3">Phase A - set it up</td></tr>
+      <tr><td class="box">&#9744;</td><td>1. Conference created</td><td>Title, acronym, time zone, timeslot duration and session durations are set.</td></tr>
+      <tr><td class="box">&#9744;</td><td>2. Days, rooms, themes</td><td>Every conference day, every room with its capacity and rank, and your themes with colours.</td></tr>
+      <tr><td class="box">&#9744;</td><td>3. Review criteria</td><td>Three or four metrics agreed with the team and entered under Settings &rarr; Reviewing.</td></tr>
+      <tr><td class="box">&#9744;</td><td>4. Team</td><td>Reviewers, coordinators and organisers all have accounts and the right role.</td></tr>
+      <tr><td class="box">&#9744;</td><td>5. Decision letters</td><td>Acceptance (with <code>%{link}</code>), rejection and schedule announcement written, in every language you need.</td></tr>
+
+      <tr class="phase-row"><td colspan="3">Phase B - collect and decide</td></tr>
+      <tr><td class="box">&#9744;</td><td>6. Call for participation open</td><td>Dates and welcome text saved, the <code>/cfp</code> address announced, and you submitted a test session yourself.</td></tr>
+      <tr><td class="box">&#9744;</td><td>7. Submissions moved to review</td><td>Nothing important is still sitting in the state <i>new</i>.</td></tr>
+      <tr><td class="box">&#9744;</td><td>8. Reviewing finished</td><td>Every submission has at least one review; the disagreements have been discussed.</td></tr>
+      <tr><td class="box">&#9744;</td><td>9. Decisions sent</td><td>Acceptances and rejections released; the counts on the buttons matched what you expected.</td></tr>
+
+      <tr class="phase-row"><td colspan="3">Phase C - schedule and run</td></tr>
+      <tr><td class="box">&#9744;</td><td>10. Confirmations in</td><td>Nothing left in <i>unconfirmed</i>, and the "speakers without availabilities" report is empty.</td></tr>
+      <tr><td class="box">&#9744;</td><td>11. Schedule built</td><td>No red conflicts, orange warnings understood, unscheduled box empty.</td></tr>
+      <tr><td class="box">&#9744;</td><td>12. Published and announced</td><td>Schedule version raised, schedule public, scheduling notifications sent, exports printed.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="phase" style="margin-top:24px">If something goes wrong</h2>
+  <table>
+    <tbody>
+      <tr><td style="width:38%"><b>A session is missing from the schedule</b></td><td>It is probably not <i>confirmed</i> yet - only confirmed sessions appear in the unscheduled box.</td></tr>
+      <tr><td><b>A speaker says they never got the mail</b></td><td>Check the session state, then the BCC archive. Re-send with <span class="ui">Custom notification</span> on the session page.</td></tr>
+      <tr><td><b>A session is orange in the grid</b></td><td>The speaker is booked outside their stated availability, has stated none at all, or is on two stages at once.</td></tr>
+      <tr><td><b>A reviewer sees nothing to review</b></td><td>Their queue only contains submissions of type <i>Paper Presentation</i> and <i>Special Session</i>, and drops anything another reviewer already reviewed.</td></tr>
+      <tr><td><b>Somebody changed something</b></td><td>Home &rarr; <b>Recent changes</b> for the whole conference, or the <b>History</b> tab of a single session.</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    frab Quick Start &middot; companion to the full <b>frab User Manual</b> &middot; screenshots taken from the demo conference <code>demo2025</code>.
+  </footer>
+</div>
+
+</body>
+</html>

@@ -3,6 +3,7 @@
 .env.local
 .env.production
 .ruby-version
+DEPLOY_INSTRUCTIONS.txt
 config/database.yml
 db/*.sqlite3*
 log/*.log
@@ -21,7 +22,9 @@ gems/
 specifications/
 *~
 .vagrant
-doc/
+# doc/ holds generated yard output, but doc/manual is hand written
+doc/*
+!doc/manual/
 tags
 .DS_Store
 *.patch

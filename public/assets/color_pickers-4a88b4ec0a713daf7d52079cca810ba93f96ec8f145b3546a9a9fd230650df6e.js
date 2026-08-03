@@ -1,0 +1,1 @@
+(function(){var o;o=function(){return $("input.color").ColorPicker({onSubmit:function(o,r,n,t){return $(t).val(r),$(t).ColorPickerHide()},onBeforeShow:function(){return $(this).ColorPickerSetColor(this.value)}})},$(function(){return o()})}).call(this);

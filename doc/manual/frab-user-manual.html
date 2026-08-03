@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>frab - User Manual</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+  }
+
+  :root {
+    --green: #1f9d55;
+    --green-dark: #14663a;
+    --ink: #1d2126;
+    --muted: #5d6672;
+    --line: #d8dde3;
+    --tint: #f4f7f9;
+    --accent: #0b63ce;
+    --warn: #b3541e;
+    --warn-bg: #fdf3e7;
+    --tip-bg: #edf6f0;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { font-size: 10.5pt; }
+
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ---------- cover ---------- */
+
+  .cover {
+    height: 247mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    page-break-after: always;
+  }
+  .cover .rule { height: 6px; background: var(--green); width: 90px; margin-bottom: 26px; }
+  .cover h1 { font-size: 42pt; line-height: 1.05; margin: 0 0 8px 0; letter-spacing: -0.5px; }
+  .cover h2 { font-size: 17pt; font-weight: 400; color: var(--muted); margin: 0 0 40px 0; }
+  .cover .meta { font-size: 10pt; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+  .cover .meta b { color: var(--ink); font-weight: 600; }
+  .cover .meta p { margin: 3px 0; }
+
+  /* ---------- structure ---------- */
+
+  h1.chapter {
+    font-size: 24pt;
+    margin: 0 0 4px 0;
+    padding-top: 2px;
+    letter-spacing: -0.3px;
+  }
+  .chapter-no {
+    display: block;
+    font-size: 10pt;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .chapter-lede {
+    font-size: 12pt;
+    color: var(--muted);
+    margin: 0 0 22px 0;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--green);
+  }
+  section.chapter { page-break-before: always; }
+
+  h2 {
+    font-size: 14pt;
+    margin: 26px 0 8px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--line);
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 11.5pt;
+    margin: 18px 0 6px 0;
+    page-break-after: avoid;
+  }
+  p { margin: 0 0 9px 0; }
+  ul, ol { margin: 0 0 10px 0; padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  li > ul, li > ol { margin-top: 4px; }
+
+  /* ---------- inline bits ---------- */
+
+  .ui {
+    font-weight: 600;
+    background: var(--tint);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0 4px;
+    white-space: nowrap;
+  }
+  code, .path {
+    font-family: "DejaVu Sans Mono", "Liberation Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--tint);
+    border-radius: 3px;
+    padding: 1px 4px;
+  }
+  .crumb { color: var(--muted); white-space: nowrap; }
+
+  /* ---------- figures ---------- */
+
+  figure {
+    margin: 14px 0 20px 0;
+    page-break-inside: avoid;
+  }
+  figure img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    /* tall screenshots must still fit on one A4 page next to their caption */
+    max-height: 186mm;
+    width: auto;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  figure.narrow img { max-width: 78%; }
+  figcaption {
+    font-size: 8.6pt;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  figcaption b { color: var(--ink); }
+
+  /* ---------- callouts ---------- */
+
+  .box {
+    border-left: 4px solid var(--green);
+    background: var(--tip-bg);
+    padding: 10px 14px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+    font-size: 9.8pt;
+  }
+  .box.warn { border-left-color: var(--warn); background: var(--warn-bg); }
+  .box p:last-child { margin-bottom: 0; }
+  .box .label {
+    display: block;
+    font-size: 8.4pt;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 4px;
+  }
+  .box.warn .label { color: var(--warn); }
+
+  /* ---------- steps ---------- */
+
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; margin: 12px 0 16px 0; }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 8px;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-align: center;
+    line-height: 20px;
+  }
+
+  /* ---------- tables ---------- */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 18px 0;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  thead th {
+    background: var(--tint);
+    border-bottom: 2px solid var(--line);
+    font-size: 8.8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  td code { white-space: nowrap; }
+  table.compact td, table.compact th { padding: 4px 8px; }
+
+  /* ---------- table of contents ---------- */
+
+  .toc { page-break-after: always; }
+  .toc h1 { font-size: 20pt; margin: 0 0 18px 0; padding-bottom: 10px; border-bottom: 2px solid var(--green); }
+  .toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+  .toc > ol > li {
+    counter-increment: toc;
+    padding: 7px 0 7px 34px;
+    border-bottom: 1px dotted var(--line);
+    position: relative;
+    font-size: 11pt;
+    font-weight: 600;
+  }
+  .toc > ol > li::before {
+    content: counter(toc, decimal-leading-zero);
+    position: absolute; left: 0; top: 7px;
+    color: var(--green); font-weight: 700;
+  }
+  .toc li span { display: block; font-weight: 400; font-size: 9.4pt; color: var(--muted); }
+
+  .lead-in { font-size: 11pt; }
+  .kv { margin: 0 0 10px 0; }
+  .kv dt { font-weight: 600; }
+  .kv dd { margin: 0 0 7px 0; color: var(--muted); }
+  hr.soft { border: 0; border-top: 1px solid var(--line); margin: 22px 0; }
+</style>
+</head>
+<body>
+
+<!-- ============================ COVER ============================ -->
+<div class="cover">
+  <div class="rule"></div>
+  <h1>frab<br>User Manual</h1>
+  <h2>Running a conference from the call for participation to the printed schedule</h2>
+  <div class="meta">
+    <p><b>Audience:</b> conference organisers, programme coordinators and reviewers</p>
+    <p><b>Covers:</b> settings, call for participation, people, sessions, reports, schedule, reviews and e-mail</p>
+    <p><b>Examples in this manual</b> come from the demo conference <code>demo2025</code>, signed in as an <b>orga</b> user.</p>
+  </div>
+</div>
+
+<!-- ============================ TOC ============================ -->
+<div class="toc">
+  <h1>Contents</h1>
+  <ol>
+    <li>Getting started <span>Signing in, roles, the main navigation, switching between conferences</span></li>
+    <li>Settings <span>The conference itself: days, rooms, themes, keywords, review metrics, notification texts, team</span></li>
+    <li>Call for Participation <span>Opening the CfP and what a speaker sees when they submit</span></li>
+    <li>People <span>Speaker records, availability, expenses, travel, audience feedback</span></li>
+    <li>Sessions <span>The submission list, editing a session, the state workflow, bulk actions</span></li>
+    <li>Reports <span>Ready-made queries and statistics you will need before and during the event</span></li>
+    <li>Schedule <span>Placing sessions in the grid, availability conflicts, publishing and exports</span></li>
+    <li>Reviews <span>Review metrics, the reviewer's queue, reading the results</span></li>
+    <li>Mail templates <span>Writing a template, placeholders, sending it, and the automatic notifications</span></li>
+  </ol>
+  <p style="margin-top:18px;font-size:9.4pt;color:#5d6672">
+    Appendix A - Placeholder reference &middot; Appendix B - Session states &middot; Appendix C - Roles and permissions
+  </p>
+</div>
+
+<!-- ============================ 0 ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 1</span>
+  <h1 class="chapter">Getting started</h1>
+  <p class="chapter-lede">Everything in frab happens inside one conference. Before you touch any settings, it helps to know how you sign in, what your role allows you to do, and how to move around.</p>
+
+  <h2>1.1 Signing in</h2>
+  <p>Open the address of your frab installation and you land on the login page. Enter your e-mail address and password and press <span class="ui">Log in</span>.</p>
+
+  <figure>
+    <img src="screenshots/00-01-login.png" alt="frab login form">
+    <figcaption><b>Figure 1.1</b> - The login page. If you have never used frab, use <span class="ui">Sign Up</span> to create an account, or <span class="ui">Request a new password</span> if you forgot yours.</figcaption>
+  </figure>
+
+  <div class="box">
+    <span class="label">Demo credentials</span>
+    <p>In the demo installation every account uses the password <code>test123</code>. The examples in this manual use <code>orga@example.org</code> (an organiser) and <code>reviewer@example.org</code> (a reviewer).</p>
+  </div>
+
+  <h2>1.2 Roles: who can do what</h2>
+  <p>frab has two layers of permissions. Your <b>global role</b> decides whether you are a plain submitter or part of the crew. Your <b>conference role</b> decides what you may do inside one specific conference. A person can hold only one role per conference.</p>
+
+  <table>
+    <thead><tr><th style="width:22%">Role</th><th>What it means in practice</th></tr></thead>
+    <tbody>
+      <tr><td><b>Submitter</b></td><td>A speaker. Sees only the Call for Participation area: their own profile, availability and submissions.</td></tr>
+      <tr><td><b>Reviewer</b></td><td>Sees the list of submissions and can score them. Cannot change the schedule, the settings or send mail.</td></tr>
+      <tr><td><b>Coordinator</b></td><td>Everything a reviewer can do, plus editing sessions and people, and moving sessions through the workflow.</td></tr>
+      <tr><td><b>Orga</b></td><td>Full control of one conference: settings, call for participation, schedule, reports, mail templates, team members.</td></tr>
+      <tr><td><b>Admin</b></td><td>A global role. Same rights as orga, in every conference, plus deleting conferences.</td></tr>
+    </tbody>
+  </table>
+
+  <p>This manual is written for an <b>orga</b> user. Where a screen is only visible to a different role, it is called out.</p>
+
+  <h2>1.3 Choosing a conference</h2>
+  <p>The <span class="ui">Conferences</span> list shows every conference you have access to. Click one to enter it - from that moment on, every menu entry refers to that conference.</p>
+
+  <figure>
+    <img src="screenshots/00-02-conference-list.png" alt="List of conferences">
+    <figcaption><b>Figure 1.2</b> - The conference list. Use <span class="ui">New conference</span> to start a new edition; the fastest way is to copy the settings of last year's conference and then adjust the dates.</figcaption>
+  </figure>
+
+  <p>Once you are inside a conference you can jump to another one at any time with <span class="ui">Switch conference</span> in the top right corner.</p>
+
+  <figure>
+    <img src="screenshots/00-05-new-conference.png" alt="New conference form">
+    <figcaption><b>Figure 1.3</b> - Creating a conference. Only the title, the acronym and the time settings are required; everything else can be filled in later. A conference can also have a parent, which is how sub-conferences and devrooms are modelled.</figcaption>
+  </figure>
+
+  <h2>1.4 The dashboard and the main menu</h2>
+  <p>The first page of a conference is a dashboard: recent changes made by your team, and live statistics about the submissions.</p>
+
+  <figure>
+    <img src="screenshots/00-03-conference-dashboard.png" alt="Conference dashboard with recent changes and statistics">
+    <figcaption><b>Figure 1.4</b> - The conference dashboard. The <b>Recent changes</b> box is the quickest way to see what your colleagues did since you last looked; <span class="ui">More &gt;&gt;</span> opens the full history.</figcaption>
+  </figure>
+
+  <p>The green bar at the top is the main menu. It is the same on every page:</p>
+  <dl class="kv">
+    <dt>Home</dt><dd>The dashboard you see above.</dd>
+    <dt>People</dt><dd>Everyone involved in this conference: speakers, submitters and crew.</dd>
+    <dt>Sessions</dt><dd>All submissions, in every state. This is where you spend most of your time.</dd>
+    <dt>Reports</dt><dd>Ready-made lists and statistics.</dd>
+    <dt>Call for Participation</dt><dd>The submission window and the welcome text speakers read.</dd>
+    <dt>Schedule</dt><dd>The grid where sessions get a room and a time.</dd>
+    <dt>Mail Templates</dt><dd>Reusable e-mails and the tool that sends them.</dd>
+    <dt>Settings</dt><dd>Everything about the conference itself.</dd>
+  </dl>
+
+  <div class="box">
+    <span class="label">Vocabulary</span>
+    <p>frab calls a submission a <b>session</b> (a talk, a workshop, a lightning talk...). A subject area is a <b>theme</b> (elsewhere called a track), and a free-form label you can attach to sessions is a <b>keyword</b>. This manual uses the words as they appear on screen.</p>
+  </div>
+</section>
+
+<!-- ============================ 1 SETTINGS ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 2</span>
+  <h1 class="chapter">Settings</h1>
+  <p class="chapter-lede">Set the conference up once, properly, and everything that follows - submissions, the schedule, the exports - falls into place. This is the first thing to do for a new conference.</p>
+
+  <p>Open <span class="crumb">Settings</span> in the main menu. The page is split into tabs; each tab is saved separately with its own <span class="ui">Save</span> button at the bottom.</p>
+
+  <figure>
+    <img src="screenshots/01-01-settings-tabs.png" alt="Settings tabs">
+    <figcaption><b>Figure 2.1</b> - The settings tabs: <b>Settings</b>, <b>Days</b>, <b>Themes</b>, <b>Rooms</b>, <b>Schedule</b>, <b>Keywords</b>, <b>Reviewing</b>, <b>Notifications</b>.</figcaption>
+  </figure>
+
+  <h2>2.1 Basic settings</h2>
+  <p>The first tab holds the identity of the conference and the time grid everything else is built on.</p>
+
+  <figure>
+    <img src="screenshots/01-02-settings-general.png" alt="General conference settings">
+    <figcaption><b>Figure 2.2</b> - The <b>Settings</b> tab. Each field has an explanation underneath it; the ones that matter most are described below.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th style="width:26%">Field</th><th>What to enter</th></tr></thead>
+    <tbody>
+      <tr><td><b>Title</b></td><td>The full name of the conference as the public will see it, e.g. <i>DemoConf 2025</i>.</td></tr>
+      <tr><td><b>Acronym</b></td><td>A short, unique, lower-case handle - it becomes part of every URL (<code>/demo2025/...</code>). Choose it once and do not change it afterwards.</td></tr>
+      <tr><td><b>E-Mail</b></td><td>The address speakers should reply to. frab uses it as the reply-to of every mail it sends.</td></tr>
+      <tr><td><b>BCC address</b></td><td>Optional. Every mail frab sends is copied here, which gives you a complete archive of what went out.</td></tr>
+      <tr><td><b>Color</b></td><td>A hex colour used to tint the conference in the interface.</td></tr>
+      <tr><td><b>Timezone</b></td><td>The time zone the conference takes place in. All times you see and enter are in this zone.</td></tr>
+      <tr><td><b>Timeslot duration</b></td><td>The smallest step of the schedule grid, usually 15 minutes.</td></tr>
+      <tr><td><b>Default / Max. timeslots</b></td><td>The default and maximum length of a session, counted in timeslots. With 15-minute slots, <code>4</code> means one hour.</td></tr>
+      <tr><td><b>Accepted session durations</b></td><td>The durations a speaker may pick from in the submission form. As crew you can always set any duration later.</td></tr>
+      <tr><td><b>Session languages</b></td><td>The languages a session may be held in. Add one row per language.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box warn">
+    <span class="label">Decide the timeslot duration early</span>
+    <p>The timeslot duration defines the whole grid. You can make it <i>smaller</i> later only if the old value is a multiple of the new one (15 &rarr; 5 is fine, 15 &rarr; 10 is not). Fifteen minutes suits almost every conference.</p>
+  </div>
+
+  <h2>2.2 Days</h2>
+  <p>Add one row per conference day, with the time the programme starts and the time it ends. These rows create the columns of the schedule grid and the day tabs on the public schedule.</p>
+
+  <figure>
+    <img src="screenshots/01-03-settings-days.png" alt="Conference days">
+    <figcaption><b>Figure 2.3</b> - Three conference days. A day may run past midnight - just set the end time accordingly.</figcaption>
+  </figure>
+
+  <h2>2.3 Rooms</h2>
+  <p>Every room you want to schedule sessions in needs a row here. <b>Size</b> is the seating capacity, and <b>Rank</b> decides the left-to-right order of the columns in the schedule and on the public page.</p>
+
+  <figure>
+    <img src="screenshots/01-04-settings-rooms.png" alt="Conference rooms">
+    <figcaption><b>Figure 2.4</b> - Rooms. Give the main stage rank 1 so it appears first everywhere.</figcaption>
+  </figure>
+
+  <h2>2.4 Themes</h2>
+  <p>A theme is the subject area of a session (<i>Backend</i>, <i>Security</i>, <i>Community</i>...). Each theme gets a colour, which is used for the small square in front of every session in the schedule grid and on the public schedule.</p>
+
+  <figure>
+    <img src="screenshots/01-05-settings-tracks.png" alt="Themes with colours">
+    <figcaption><b>Figure 2.5</b> - Themes and their colours. Keep the list short - five to eight themes is usually enough to be useful for the audience.</figcaption>
+  </figure>
+
+  <h2>2.5 Keywords</h2>
+  <p>Keywords are your own labels for internal use, for example <i>Needs translation</i>, <i>Streaming ok</i> or <i>Beginner friendly</i>. Each keyword you define here can be set per session, and you can then filter and sort the session list by it.</p>
+
+  <figure>
+    <img src="screenshots/01-07-settings-classifiers.png" alt="Keywords">
+    <figcaption><b>Figure 2.6</b> - Keywords. The description is shown to the crew as a hint, so write it as a question you can answer with yes or no.</figcaption>
+  </figure>
+
+  <h2>2.6 Reviewing</h2>
+  <p>Here you define the criteria your reviewers score a submission on. Every criterion you add becomes a row in the review form and a sortable column in the review overview.</p>
+
+  <figure>
+    <img src="screenshots/01-08-settings-review-metrics.png" alt="Review metrics">
+    <figcaption><b>Figure 2.7</b> - Review metrics. The description appears next to the score buttons, so phrase it as a question ("Does this match the audience we expect?").</figcaption>
+  </figure>
+
+  <div class="box warn">
+    <span class="label">Set the metrics before reviewing starts</span>
+    <p>Reviews already given are not re-scored when you add a metric later - those older reviews will simply have no value for the new criterion. Agree on the criteria with your team before you open the review phase.</p>
+  </div>
+
+  <h2>2.7 Schedule settings</h2>
+  <p>The <b>Schedule</b> tab controls what the public sees: whether the schedule is published at all, the version number of the current release, an intro text shown above the schedule, and custom CSS if you want the published pages to match your website.</p>
+
+  <figure>
+    <img src="screenshots/01-06-settings-schedule.png" alt="Schedule settings">
+    <figcaption><b>Figure 2.8</b> - Schedule settings. Keep <b>Schedule public</b> switched off until you are happy with the programme.</figcaption>
+  </figure>
+
+  <h2>2.8 Notification texts</h2>
+  <p>The <b>Notifications</b> tab holds the three standard letters that go to speakers - the acceptance, the rejection and the schedule announcement - and the buttons that release them to everybody at once. Because this is where most of your speaker communication happens, it is described in detail in <b>chapter 9.6</b> rather than here.</p>
+
+  <h2>2.9 The team</h2>
+  <p>Open <span class="crumb">Account &rarr; Conference users</span> to see who works on this conference and in which role, and to add colleagues.</p>
+
+  <figure>
+    <img src="screenshots/01-11-conference-users.png" alt="Conference users">
+    <figcaption><b>Figure 2.9</b> - The crew of the conference. To add someone, they need a frab account first; then assign them a role here.</figcaption>
+  </figure>
+</section>
+
+<!-- ============================ 2 CFP ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 3</span>
+  <h1 class="chapter">Call for Participation</h1>
+  <p class="chapter-lede">The call for participation is the public front door of your conference. It defines when people may submit, what they read before they do, and it is the only part of frab most of your speakers will ever see.</p>
+
+  <h2>3.1 Opening the call</h2>
+  <p>Choose <span class="crumb">Call for Participation</span> in the main menu and then <span class="ui">Edit</span>.</p>
+
+  <figure>
+    <img src="screenshots/02-01-cfp-settings.png" alt="Call for participation settings">
+    <figcaption><b>Figure 3.1</b> - The call for participation form.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th style="width:26%">Field</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><b>Start date</b></td><td>The day the submission form opens.</td></tr>
+      <tr><td><b>End date</b></td><td>The day it closes. After this date submitters can still sign in and see their submissions, but not create new ones.</td></tr>
+      <tr><td><b>Hard deadline</b></td><td>The date you communicate as final. Useful when you announce a deadline and then quietly keep the form open a few days longer.</td></tr>
+      <tr><td><b>Info URL</b></td><td>A link to your own website with the long version of the call.</td></tr>
+      <tr><td><b>Contact email</b></td><td>Where questions about the call should go.</td></tr>
+      <tr><td><b>Welcome text</b></td><td>The text shown on the first page a speaker sees. Explain what you are looking for, how long sessions may be, and when they will hear back from you.</td></tr>
+    </tbody>
+  </table>
+
+  <figure>
+    <img src="screenshots/02-02-cfp-overview.png" alt="Call for participation overview">
+    <figcaption><b>Figure 3.2</b> - The saved call, as the crew sees it.</figcaption>
+  </figure>
+
+  <div class="box">
+    <span class="label">The address to publish</span>
+    <p>Send speakers to <code>&lt;your-frab&gt;/&lt;acronym&gt;/cfp</code> - for the demo conference that is <code>/demo2025/cfp</code>. People who do not have an account yet can register straight from there.</p>
+  </div>
+
+  <h2>3.2 What a speaker sees</h2>
+  <p>It is worth walking through the submission once yourself, with a test account, before you announce the call. This is the path a speaker takes.</p>
+
+  <h3>Step 1 - the welcome page</h3>
+  <figure>
+    <img src="screenshots/02-03-cfp-submitter-welcome.png" alt="CfP welcome page for submitters">
+    <figcaption><b>Figure 3.3</b> - The welcome page shows exactly the text you entered in the <b>Welcome text</b> field.</figcaption>
+  </figure>
+
+  <h3>Step 2 - the speaker profile</h3>
+  <p>Before submitting, the speaker fills in their profile: public name, a short biography, a photo, links and contact details. Everything marked as public ends up on the speaker page of the published schedule.</p>
+  <figure>
+    <img src="screenshots/02-04-cfp-submitter-profile.png" alt="Speaker profile form">
+    <figcaption><b>Figure 3.4</b> - The speaker profile. The <b>public name</b> is the name that appears in the programme.</figcaption>
+  </figure>
+
+  <h3>Step 3 - availability</h3>
+  <p>The speaker states, per conference day, when they can be on stage. This is the information your schedule later warns you about, so encourage people to fill it in - it saves a lot of e-mail.</p>
+  <figure>
+    <img src="screenshots/02-05-cfp-submitter-availability.png" alt="Availability sliders">
+    <figcaption><b>Figure 3.5</b> - One row per conference day. Drag the two handles to the first and last hour the speaker is available, or clear the <b>Available</b> checkbox for a day they cannot attend at all. Finish with <span class="ui">Save availability</span>.</figcaption>
+  </figure>
+
+  <h3>Step 4 - the submission</h3>
+  <figure>
+    <img src="screenshots/02-07-cfp-submitter-new-session.png" alt="New session form for submitters">
+    <figcaption><b>Figure 3.6</b> - The submission form. Title, subtitle, session type, duration, language, abstract and description; the durations offered here are the ones you ticked in <b>Accepted session durations</b> (chapter 2.1).</figcaption>
+  </figure>
+
+  <h3>Step 5 - following the submission</h3>
+  <figure>
+    <img src="screenshots/02-06-cfp-submitter-my-sessions.png" alt="Submitter's own session list">
+    <figcaption><b>Figure 3.7</b> - The speaker's own list. Once you accept a session, this is also where they confirm it (or withdraw).</figcaption>
+  </figure>
+
+  <div class="box">
+    <span class="label">Tip</span>
+    <p>Keep one submitter test account for yourself. Whenever you change the call, the accepted durations or a notification text, log in with it and check what a speaker actually sees.</p>
+  </div>
+</section>
+
+<!-- ============================ 3 PEOPLE ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 4</span>
+  <h1 class="chapter">People</h1>
+  <p class="chapter-lede">Every speaker, co-speaker and crew member is a person record. It is the place where you find contact details, when someone is available, what they need reimbursed and how the audience rated them.</p>
+
+  <h2>4.1 Finding people</h2>
+  <p><span class="crumb">People</span> in the main menu opens the list of everybody involved in the current conference. The tabs above the table narrow it down.</p>
+
+  <figure>
+    <img src="screenshots/03-01-people-list.png" alt="People list">
+    <figcaption><b>Figure 4.1</b> - The people list. Use the search box for a name or an e-mail address; click a column header to sort.</figcaption>
+  </figure>
+
+  <ul>
+    <li><b>People</b> - everyone involved in this conference.</li>
+    <li><b>All people</b> - the whole database, including people from other conferences. Use this before creating someone by hand, so you do not end up with duplicates.</li>
+    <li><b>Speakers</b> - only those actually speaking here.</li>
+  </ul>
+
+  <figure>
+    <img src="screenshots/03-02-people-all.png" alt="All people in the database">
+    <figcaption><b>Figure 4.2</b> - <b>All people</b> searches the whole database, across conferences. Always look here before you create a person by hand.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/03-03-people-speakers.png" alt="Speakers list">
+    <figcaption><b>Figure 4.3</b> - The speaker list is the one to use for badges, for the info desk and for last-minute phone calls.</figcaption>
+  </figure>
+
+  <h2>4.2 The person page</h2>
+  <p>Clicking a name opens their page. The tabs at the top - <b>Profile</b>, <b>User account</b>, <b>Availability</b>, <b>Expenses</b>, <b>Transport needs</b>, <b>Feedback</b> - hold everything frab knows about them.</p>
+
+  <figure>
+    <img src="screenshots/03-04-person-show.png" alt="Person page">
+    <figcaption><b>Figure 4.4</b> - A speaker page: contact details, the sessions they are in for this conference, and the audience feedback per session.</figcaption>
+  </figure>
+
+  <p>Use <span class="ui">Edit person</span> to correct names, the public biography, links or the internal note. The <b>note</b> is only visible to the crew - it is the right place for "invited speaker, travel is paid by us" or "asked not to be scheduled before noon".</p>
+
+  <figure>
+    <img src="screenshots/03-05-person-edit.png" alt="Edit person">
+    <figcaption><b>Figure 4.5</b> - Editing a person.</figcaption>
+  </figure>
+
+  <h2>4.3 Availability</h2>
+  <p>Speakers normally fill their availability in themselves (chapter 3.2), but you can enter or correct it for them - for instance after a phone call. Open the person and choose the <b>Availability</b> tab.</p>
+
+  <figure>
+    <img src="screenshots/03-06-person-availability.png" alt="Availability of a person, crew view">
+    <figcaption><b>Figure 4.6</b> - The same slider the speaker uses, in the crew interface. One row per conference day.</figcaption>
+  </figure>
+
+  <div class="box">
+    <span class="label">Why this matters</span>
+    <p>The schedule grid marks a session orange as soon as one of its speakers is scheduled outside their availability, or has not stated any availability at all. Getting this data in early is the cheapest way to avoid a broken programme. The report <b>speakers without availabilities</b> (chapter 7) lists everyone you still need to chase.</p>
+  </div>
+
+  <h2>4.4 Expenses and travel</h2>
+  <p>If you reimburse speakers, record each cost on the <b>Expenses</b> tab and tick it off once it has been paid. The report <b>people with non-reimbursed expenses</b> then gives you the outstanding list with a total.</p>
+
+  <figure>
+    <img src="screenshots/03-07-person-expenses.png" alt="Expenses of a speaker">
+    <figcaption><b>Figure 4.7</b> - Expenses. Each row has a description, an amount and a <b>reimbursed</b> flag.</figcaption>
+  </figure>
+
+  <p>The <b>Transport needs</b> tab records arrivals and departures: the time, the means of transport, how many seats are needed, and whether the trip has already been booked.</p>
+
+  <figure>
+    <img src="screenshots/03-08-person-transport-needs.png" alt="Transport needs">
+    <figcaption><b>Figure 4.8</b> - Transport needs. Everything entered here shows up in the transport report used by the drivers on site.</figcaption>
+  </figure>
+
+  <div class="box warn">
+    <span class="label">These tabs can be switched off</span>
+    <p>Expenses and transport needs only appear if they are enabled in the conference settings. If you do not reimburse anybody, leave them off and the interface stays simpler.</p>
+  </div>
+
+  <h2>4.5 Feedback about a speaker</h2>
+  <p>The <b>Feedback</b> tab collects everything the audience wrote about the sessions of that person, with the star ratings.</p>
+
+  <figure>
+    <img src="screenshots/03-09-person-feedback.png" alt="Feedback for one speaker">
+    <figcaption><b>Figure 4.9</b> - Audience feedback per session, including the average and the number of votes.</figcaption>
+  </figure>
+</section>
+
+<!-- ============================ 4 SESSIONS ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 5</span>
+  <h1 class="chapter">Sessions</h1>
+  <p class="chapter-lede">The session list is the heart of frab. Every submission lives here and moves through a fixed workflow, from a fresh proposal to a confirmed slot in the programme.</p>
+
+  <h2>5.1 The session list</h2>
+  <p>Open <span class="crumb">Sessions</span>. The list shows every submission with its theme, type, state and submission date.</p>
+
+  <figure>
+    <img src="screenshots/04-01-session-list.png" alt="Session list">
+    <figcaption><b>Figure 5.1</b> - The session list. A coloured row is a hint, not an error: red means the submitter still owes peer reviews, yellow means the reviewers disagree strongly about this session.</figcaption>
+  </figure>
+
+  <p>The tabs above the table switch between views of the same data:</p>
+  <ul>
+    <li><b>All sessions</b> - everything.</li>
+    <li><b>My Sessions</b> - the ones you are involved in.</li>
+    <li><b>Attachments</b> - every file speakers uploaded, in one list.</li>
+    <li><b>Session reviews</b> - the review overview (chapter 8).</li>
+    <li><b>Session Feedbacks</b> - what the audience wrote.</li>
+  </ul>
+
+  <h3>Searching and filtering</h3>
+  <p>The <b>Search</b> box does a full-text search over titles, subtitles and abstracts. For anything more precise, click the small filter icon in a column header: it opens a dialog where you tick the values you want to keep.</p>
+
+  <figure>
+    <img src="screenshots/04-03-session-filter-modal.png" alt="Filter dialog">
+    <figcaption><b>Figure 5.2</b> - Filtering by column. Filters combine, so you can ask for "all workshops in the DevOps theme that are still unconfirmed"; active filters appear as removable chips above the table.</figcaption>
+  </figure>
+
+  <div class="box">
+    <span class="label">Filters carry over</span>
+    <p>The filter you set is part of the address of the page. That means you can bookmark a filtered list, share the link with a colleague, and - most usefully - send an e-mail to exactly the people in that filtered list (chapter 9.5).</p>
+  </div>
+
+  <h2>5.2 Looking at one session</h2>
+  <p>Click a title to open the session.</p>
+
+  <figure>
+    <img src="screenshots/04-04-session-show.png" alt="Session detail page">
+    <figcaption><b>Figure 5.3</b> - A session page: the basics on the left, people and scheduling in the middle, and the buttons for the next step in the top right.</figcaption>
+  </figure>
+
+  <p>The tabs are <b>Session Details</b>, <b>People</b>, <b>History</b>, <b>Ratings</b> and <b>Feedbacks</b>. The buttons in the top right change with the state of the session - <span class="ui">Edit session</span>, <span class="ui">Edit people</span>, the next workflow step, and <span class="ui">Custom notification</span> for a one-off e-mail to this speaker (chapter 9.4).</p>
+
+  <h2>5.3 Editing a session</h2>
+  <figure>
+    <img src="screenshots/04-05-session-edit.png" alt="Edit session form">
+    <figcaption><b>Figure 5.4</b> - The edit form. Fields worth knowing are listed below.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th style="width:26%">Field</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><b>Title / Subtitle</b></td><td>Exactly as they will appear in the programme. Fix typos here, not by asking the speaker.</td></tr>
+      <tr><td><b>Theme</b></td><td>From the list you defined in the settings. Drives the colour in the schedule.</td></tr>
+      <tr><td><b>Session type</b></td><td>Lecture, workshop, lightning talk, podium, meeting, other - plus the academic types <b>Paper Presentation</b>, <b>Special Session</b> and <b>Non-academic Session</b>. The type is not cosmetic: only the two academic types are offered to reviewers (chapter 8.3), and the three "Accepted ..." reports look for them by name.</td></tr>
+      <tr><td><b>Duration</b></td><td>In timeslots. As crew you are not limited to the durations offered to submitters.</td></tr>
+      <tr><td><b>Public</b></td><td>Untick to keep a session out of the published schedule (internal meetings, crew briefings).</td></tr>
+      <tr><td><b>Do not record</b></td><td>Marks the session for the video team.</td></tr>
+      <tr><td><b>Keywords</b></td><td>Your own labels from the settings.</td></tr>
+      <tr><td><b>Note (admin)</b></td><td>Internal, crew only.</td></tr>
+      <tr><td><b>Submission notes</b></td><td>Written by the speaker, visible to both sides - this is where "I can only attend on the last day" ends up.</td></tr>
+      <tr><td><b>Tech rider</b></td><td>Technical requirements: microphones, adapters, a second screen.</td></tr>
+      <tr><td><b>Coauthors</b></td><td>Up to five co-authors, entered by e-mail address plus first and last name. People who already have an account are attached to the session automatically; the others get an account linked to their address. Use valid addresses - this is how co-authors receive the mails you send from the session list.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Adding a session by hand</h3>
+  <p>Not every session comes through the call for participation - keynotes you invited, sponsor slots and crew meetings are usually entered by you. Use <span class="ui">Add session</span> at the top of the session list; the form is the same as in figure 5.4.</p>
+
+  <figure>
+    <img src="screenshots/04-10-session-new.png" alt="New session form">
+    <figcaption><b>Figure 5.5</b> - Creating a session yourself. Remember to attach the speaker afterwards with <span class="ui">Edit people</span>, otherwise the session will show up in the "sessions without speaker" report.</figcaption>
+  </figure>
+
+  <h3>People on a session</h3>
+  <p><span class="ui">Edit people</span> manages who is attached to the session and in which role - submitter, speaker, moderator or coordinator - and the state of each of them.</p>
+
+  <figure>
+    <img src="screenshots/04-06-session-people.png" alt="Edit the people of a session">
+    <figcaption><b>Figure 5.6</b> - Adding a co-speaker. The role state (<i>offer</i>, <i>confirmed</i>, <i>declined</i>, <i>attending</i>, ...) tracks each person separately; setting a speaker to <i>attending</i> is how the info desk marks that someone has arrived.</figcaption>
+  </figure>
+
+  <h2>5.4 The workflow</h2>
+  <p>Every session has a state. You never edit the state directly - you press the button for the next step, and frab does the rest (creating confirmation links, sending the notification, assigning a coordinator).</p>
+
+  <table class="compact">
+    <thead><tr><th style="width:20%">State</th><th>Meaning</th><th style="width:30%">Usual next step</th></tr></thead>
+    <tbody>
+      <tr><td><b>New</b></td><td>Just submitted, nobody has looked at it yet.</td><td>Start review</td></tr>
+      <tr><td><b>Review</b></td><td>In the review phase, reviewers are scoring it.</td><td>Accept or Reject</td></tr>
+      <tr><td><b>Unconfirmed</b></td><td>Accepted; the speaker has been told and now has to confirm.</td><td>Wait, or Confirm on their behalf</td></tr>
+      <tr><td><b>Confirmed</b></td><td>The speaker confirmed. Ready to be scheduled.</td><td>Place it in the schedule</td></tr>
+      <tr><td><b>Scheduled</b></td><td>Confirmed and the schedule announcement has gone out.</td><td>-</td></tr>
+      <tr><td><b>Rejected</b></td><td>Not part of the programme; the speaker has been told.</td><td>-</td></tr>
+      <tr><td><b>Withdrawn</b></td><td>The speaker pulled the submission back.</td><td>-</td></tr>
+      <tr><td><b>Canceled</b></td><td>Dropped after it had already been accepted or confirmed.</td><td>Fill the gap in the schedule</td></tr>
+      <tr><td><b>Accepting / Rejecting</b></td><td>Decided, but the mail has not been sent yet. Only used when bulk notification is switched on.</td><td>Release the letters from Settings &rarr; Notifications</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box">
+    <span class="label">Sending all decisions at once</span>
+    <p>With <b>bulk notification</b> enabled in the settings, accepting a session parks it in <i>accepting</i> instead of mailing the speaker immediately. You work through the whole programme in peace and then release every acceptance and rejection together from <span class="crumb">Settings &rarr; Notifications</span> (chapter 9.6). Without it, each decision mails the speaker the moment you press the button.</p>
+  </div>
+
+  <h2>5.5 Working on many sessions at once</h2>
+  <p>Filter the list down to the sessions you mean, then use the two links under the table.</p>
+
+  <figure>
+    <img src="screenshots/04-09-session-bulk-edit.png" alt="Bulk edit dialog">
+    <figcaption><b>Figure 5.7</b> - <span class="ui">Edit these sessions</span> applies one change - a theme, a state, a duration - to every session currently in the list. The dialog tells you how many sessions are affected.</figcaption>
+  </figure>
+
+  <div class="box warn">
+    <span class="label">Check the count first</span>
+    <p>A bulk edit acts on the <i>filtered</i> list, not on a selection of rows. Read the "Edit N sessions" heading before you confirm - if N is larger than you expected, close the dialog and narrow the filter.</p>
+  </div>
+
+  <h2>5.6 Attachments, history and feedback</h2>
+  <p>The <b>Attachments</b> tab of the session list gathers every file speakers uploaded - proposals, slides, posters - in one place, so you do not have to open sessions one by one.</p>
+
+  <figure>
+    <img src="screenshots/04-07-session-attachments.png" alt="All attachments">
+    <figcaption><b>Figure 5.8</b> - All uploads of the conference.</figcaption>
+  </figure>
+
+  <p>Every change to a session is recorded. The <b>History</b> tab of a session shows who changed what and when; <span class="crumb">Home &rarr; Recent changes</span> shows the same information for the whole conference.</p>
+
+  <figure>
+    <img src="screenshots/04-08-session-history.png" alt="History of one session">
+    <figcaption><b>Figure 5.9</b> - The history of a single session: every field that changed, with the old and the new value.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/04-12-recent-changes.png" alt="Recent changes">
+    <figcaption><b>Figure 5.10</b> - The change log. Invaluable when two coordinators work on the programme at the same time.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/04-11-session-feedback.png" alt="Session feedback">
+    <figcaption><b>Figure 5.11</b> - Audience feedback per session, if feedback is enabled for the conference.</figcaption>
+  </figure>
+</section>
+
+<!-- ============================ 5 REPORTS ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 6</span>
+  <h1 class="chapter">Reports</h1>
+  <p class="chapter-lede">Reports are ready-made questions about your data. Most of them exist to catch problems before the audience does - a session without a speaker, a speaker without availability, a bill nobody paid.</p>
+
+  <h2>6.1 The report index</h2>
+  <p><span class="crumb">Reports</span> in the main menu lists everything available, grouped into <b>Query events</b>, <b>Query speakers</b>, <b>Statistics</b> and <b>Transport needs</b>.</p>
+
+  <figure>
+    <img src="screenshots/05-01-reports-index.png" alt="Report index">
+    <figcaption><b>Figure 6.1</b> - The available reports.</figcaption>
+  </figure>
+
+  <h2>6.2 Reports about sessions</h2>
+  <table class="compact">
+    <thead><tr><th style="width:42%">Report</th><th>Use it to</th></tr></thead>
+    <tbody>
+      <tr><td>sessions without speaker</td><td>Find submissions where nobody is actually going to be on stage.</td></tr>
+      <tr><td>sessions without abstract / without subtitle</td><td>Find the gaps before the programme goes to print.</td></tr>
+      <tr><td>sessions that are not public</td><td>Check that nothing was hidden from the schedule by accident.</td></tr>
+      <tr><td>sessions with a note</td><td>Work through everything you or the speakers flagged.</td></tr>
+      <tr><td>sessions with speakers in a problematic state</td><td>Catch sessions whose speaker declined or never answered.</td></tr>
+      <tr><td>sessions with more than one speaker</td><td>Plan microphones and stage setup.</td></tr>
+      <tr><td>list all scheduled sessions with tech riders</td><td>Hand the technical requirements to the AV team.</td></tr>
+      <tr><td>sessions with 'do not record' flag set</td><td>Tell the video team which rooms to skip.</td></tr>
+      <tr><td>lectures that are new or review, unconfirmed lectures</td><td>See what is still undecided or still waiting for a confirmation.</td></tr>
+      <tr><td>list all lectures with non default timeslots</td><td>Spot the sessions that break your standard grid.</td></tr>
+      <tr><td>Accepted Paper Presentations<br>Accepted Special Sessions<br>Accepted Non-Academic Sessions</td><td>The accepted programme per academic session type. These three look for sessions in the state <b>accepting</b>, i.e. decided but not yet announced - so they are the lists to check just before you release the decisions.</td></tr>
+    </tbody>
+  </table>
+
+  <figure>
+    <img src="screenshots/05-09-report-accepted-papers.png" alt="Accepted paper presentations report">
+    <figcaption><b>Figure 6.2</b> - "Accepted Paper Presentations". Read this list once more before you press <span class="ui">Notify</span>.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/05-02-report-events-example.png" alt="Example report about sessions">
+    <figcaption><b>Figure 6.3</b> - A report is a normal, sortable, searchable list; every row links to the session itself.</figcaption>
+  </figure>
+
+  <h2>6.3 Reports about speakers</h2>
+  <table class="compact">
+    <thead><tr><th style="width:42%">Report</th><th>Use it to</th></tr></thead>
+    <tbody>
+      <tr><td>speakers without availabilities</td><td>Chase everyone who never filled the availability form in. Run this before you start scheduling.</td></tr>
+      <tr><td>confirmed people speaking at conference</td><td>Get the definitive speaker list for badges and the info desk.</td></tr>
+      <tr><td>people with more than one submission</td><td>Notice that someone submitted three talks before you accept all of them.</td></tr>
+      <tr><td>people with a note in their submission</td><td>Work through special requests.</td></tr>
+      <tr><td>people with non-reimbursed expenses</td><td>See what still has to be paid, with a total.</td></tr>
+      <tr><td>missing speakers for the next 4 hours</td><td>During the event: who is expected on stage shortly.</td></tr>
+      <tr><td>non-attending speakers for the next 2 hours</td><td>During the event: who has not checked in at the info desk yet.</td></tr>
+    </tbody>
+  </table>
+
+  <figure>
+    <img src="screenshots/05-03-report-people-example.png" alt="Speakers without availabilities">
+    <figcaption><b>Figure 6.4</b> - "Speakers without availabilities". Each name links to the person page, where you can enter the availability for them.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/05-04-report-expenses.png" alt="People with non-reimbursed expenses">
+    <figcaption><b>Figure 6.5</b> - Outstanding expenses, with the sum at the bottom.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/05-05-report-transport.png" alt="Transport needs report">
+    <figcaption><b>Figure 6.6</b> - All arrivals and departures in one list - the report the drivers print out.</figcaption>
+  </figure>
+
+  <h2>6.4 Statistics</h2>
+  <p>The statistics reports answer planning questions: how many hours of programme you have, and how the sessions spread over your themes and days.</p>
+
+  <figure>
+    <img src="screenshots/05-06-report-statistics.png" alt="Sessions by theme">
+    <figcaption><b>Figure 6.7</b> - Session numbers by theme. Compare it with <b>confirmed session numbers by theme</b> to see whether one theme lost too many speakers.</figcaption>
+  </figure>
+
+  <p>Live charts are on the conference dashboard (<span class="crumb">Home</span>): the state of all submissions, and the language and gender breakdown.</p>
+
+  <figure>
+    <img src="screenshots/05-07-statistics-sessions-by-state.png" alt="Sessions by state chart">
+    <figcaption><b>Figure 6.8</b> - Sessions by state, with the exact numbers in the table underneath. The links above the chart limit it to lectures, workshops or everything else.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/05-08-statistics-language-and-gender.png" alt="Language and gender charts">
+    <figcaption><b>Figure 6.9</b> - Language and gender breakdown, either for all submissions or for the accepted ones only.</figcaption>
+  </figure>
+</section>
+
+<!-- ============================ 6 SCHEDULE ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 7</span>
+  <h1 class="chapter">Schedule</h1>
+  <p class="chapter-lede">The schedule is a grid: one column per room, one row per timeslot, one tab per day. You drag confirmed sessions into it, frab warns you when something does not fit, and then you publish it.</p>
+
+  <h2>7.1 The grid</h2>
+  <p>Open <span class="crumb">Schedule</span>. Pick the day with the tabs at the top; use <b>Toggle rooms</b> to hide rooms you are not working on right now.</p>
+
+  <figure>
+    <img src="screenshots/06-01-schedule-grid.png" alt="Schedule grid">
+    <figcaption><b>Figure 7.1</b> - The schedule grid. The small coloured square on each session is its theme colour.</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>Choose the day.</li>
+    <li>Drag a session from the <b>unscheduled sessions</b> box into a free spot in a room column, or move an already placed session.</li>
+    <li>Drop it. The change is saved immediately - there is no separate save button.</li>
+    <li>Check the colour of the session you just moved (see below) and fix anything that turned orange or red.</li>
+  </ol>
+
+  <div class="box warn">
+    <span class="label">Only confirmed sessions can be scheduled</span>
+    <p>A session appears in the unscheduled box once it is <b>confirmed</b>. If a session you expect is missing, its speaker has probably not confirmed yet - check the session list for <i>unconfirmed</i> entries.</p>
+  </div>
+
+  <h2>7.2 Reading the warnings</h2>
+  <p>frab colours every placed session, and this is the single most useful feature of the grid:</p>
+
+  <table class="compact">
+    <thead><tr><th style="width:20%">Colour</th><th>Meaning</th><th style="width:34%">What to do</th></tr></thead>
+    <tbody>
+      <tr><td><b>Green</b></td><td>No problem found.</td><td>Nothing.</td></tr>
+      <tr><td><b>Orange</b></td><td>A warning: a speaker is scheduled outside the availability they stated, a speaker has stated no availability at all, or a speaker is on stage in two sessions at the same time.</td><td>Move the session, or agree a new availability with the speaker and correct it on their person page.</td></tr>
+      <tr><td><b>Red</b></td><td>A hard conflict: two sessions use the same room at the same time.</td><td>Move one of them - this must be fixed before you publish.</td></tr>
+    </tbody>
+  </table>
+
+  <p>Hover a warning to see which person it is about.</p>
+
+  <h2>7.3 Unscheduled sessions</h2>
+  <figure>
+    <img src="screenshots/06-02-schedule-unscheduled.png" alt="Unscheduled sessions box">
+    <figcaption><b>Figure 7.2</b> - Everything confirmed but not yet placed. Your goal is an empty box here.</figcaption>
+  </figure>
+
+  <h2>7.4 Publishing</h2>
+  <ol class="steps">
+    <li>Fix every red conflict and as many orange warnings as you can.</li>
+    <li>Open <span class="crumb">Settings &rarr; Schedule</span>, raise the <b>schedule version</b> (for example from <code>1.3</code> to <code>1.4</code>) and tick <b>Schedule public</b>.</li>
+    <li>Use <span class="ui">Preview public schedule</span> in the schedule toolbar to check the result.</li>
+    <li>Tell the speakers with the <b>Schedule announcement</b> mail (chapter 9).</li>
+  </ol>
+
+  <figure>
+    <img src="screenshots/06-05-public-schedule.png" alt="Public schedule">
+    <figcaption><b>Figure 7.3</b> - The published schedule as the audience sees it, at <code>/&lt;acronym&gt;/public/schedule</code>.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/06-06-public-schedule-day.png" alt="Public schedule of one day">
+    <figcaption><b>Figure 7.4</b> - One day of the published schedule. Visitors switch days with the tabs and click a session for the details.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/06-07-public-event.png" alt="Public session page">
+    <figcaption><b>Figure 7.5</b> - A public session page: abstract, description, speakers, room and time, plus the audience feedback form if feedback is enabled.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/06-08-public-speakers.png" alt="Public speaker list">
+    <figcaption><b>Figure 7.6</b> - The public speaker list, built from the public part of the speaker profiles.</figcaption>
+  </figure>
+
+  <div class="box">
+    <span class="label">Raise the version on every change</span>
+    <p>The schedule version is what tells apps, sponsors and the printer that something moved. Increase it every time you publish a change, and mention what changed in your announcement.</p>
+  </div>
+
+  <h2>7.5 Exports</h2>
+  <p>The toolbar above the grid has the export tools.</p>
+
+  <figure>
+    <img src="screenshots/06-03-schedule-pdf-export.png" alt="PDF export options">
+    <figcaption><b>Figure 7.7</b> - <span class="ui">Create custom PDF export</span> builds a printable schedule; choose the days, rooms and paper format, then download the file.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="screenshots/06-04-schedule-html-export.png" alt="HTML export">
+    <figcaption><b>Figure 7.8</b> - <span class="ui">Publish HTML export</span> writes a static copy of the whole schedule that you can host anywhere - useful as a backup on the day itself.</figcaption>
+  </figure>
+
+  <p>The public pages also offer the schedule as iCal and XML/JSON, so mobile apps and your website can pick it up automatically.</p>
+</section>
+
+<!-- ============================ 7 REVIEWS ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 8</span>
+  <h1 class="chapter">Reviews</h1>
+  <p class="chapter-lede">Reviewing turns a pile of submissions into a decision you can defend. Reviewers score each submission against the criteria you defined, and the programme team selects on the result.</p>
+
+  <h2>8.1 Two kinds of review</h2>
+  <p>This installation distinguishes between them, and it is worth knowing which is which before you set the process up:</p>
+  <ul>
+    <li><b>Expert reviews</b> are written by the people you gave the <b>reviewer</b> role. They are the reviews the programme decision is based on, and they are the ones counted in the <b>Number of expert reviews</b> column.</li>
+    <li><b>Peer reviews</b> are written by the authors themselves about other people's submissions - the usual "review three papers to have yours reviewed" arrangement. A session row in the session list stays highlighted red until its submitter has finished their peer reviews.</li>
+  </ul>
+
+  <h2>8.2 Preparing</h2>
+  <ol class="steps">
+    <li>Define your criteria in <span class="crumb">Settings &rarr; Reviewing</span> (chapter 2.6). Three or four are plenty.</li>
+    <li>Add your reviewers under <span class="crumb">Account &rarr; Conference users</span> with the role <b>reviewer</b>.</li>
+    <li>Move the submissions you want reviewed from <i>new</i> to <i>review</i> - individually on the session page, or for many at once with a bulk edit.</li>
+  </ol>
+
+  <h2>8.3 What a reviewer sees</h2>
+  <p>A reviewer has a much smaller interface than you do: their menu contains only <b>Sessions</b> and <b>Call for Participation</b>. No settings, no schedule, no mail, no reports.</p>
+
+  <figure>
+    <img src="screenshots/07-00-reviewer-session-list.png" alt="Session list as a reviewer sees it">
+    <figcaption><b>Figure 8.1</b> - The session list for a reviewer: every submission, read-only, with a single <span class="ui">Show</span> button and no state column.</figcaption>
+  </figure>
+
+  <p>Their actual work happens on the <b>Session reviews</b> tab, which is their personal queue.</p>
+
+  <figure>
+    <img src="screenshots/07-03-review-ratings-overview.png" alt="Reviewer's review queue">
+    <figcaption><b>Figure 8.2</b> - The reviewer's queue, with the average rating so far, the number of expert reviews, and a note on the ones they have already done.</figcaption>
+  </figure>
+
+  <div class="box warn">
+    <span class="label">What lands in a reviewer's queue</span>
+    <p>The queue is filtered, and the rules surprise people:</p>
+    <ul style="margin-bottom:0">
+      <li>only sessions of type <b>Paper Presentation</b> and <b>Special Session</b> appear - lectures, workshops and lightning talks are never offered to reviewers;</li>
+      <li>rejected sessions are left out;</li>
+      <li>a reviewer never sees their own submissions or the ones they are a co-author of;</li>
+      <li>once an expert review exists, the session disappears from everybody else's queue - it stays visible only to the reviewer who wrote it.</li>
+    </ul>
+  </div>
+
+  <p>The <b>Filter by average rating</b> box above the list narrows the queue down to a score range, which is how you find the borderline submissions quickly.</p>
+
+  <h2>8.4 Writing a review</h2>
+  <p>Clicking <span class="ui">Show Ratings</span> - or the <b>Ratings</b> tab of a session - opens the review form.</p>
+
+  <figure>
+    <img src="screenshots/07-01-review-queue.png" alt="Empty review form">
+    <figcaption><b>Figure 8.3</b> - A submission that has not been reviewed yet: an empty comment, every criterion on <b>N/A</b>, and <span class="ui">Create review</span> at the bottom.</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>Read the abstract; <span class="ui">Toggle Description &gt;&gt;</span> shows the full description as well.</li>
+    <li>Pick a score from 1 to 5 for every criterion you can judge, and leave the rest on <b>N/A</b>. An <b>N/A</b> is not counted as a zero - it is simply left out of the average.</li>
+    <li>Write a comment. One honest sentence is worth more to the programme team than the numbers.</li>
+    <li>Press <span class="ui">Create review</span>.</li>
+    <li>Press <span class="ui">Rate next session</span> in the <b>Actions</b> box to jump straight to the next submission in your queue - this is the fastest way to work through a stack of papers.</li>
+  </ol>
+
+  <figure>
+    <img src="screenshots/07-02-review-form.png" alt="Review form with an existing review">
+    <figcaption><b>Figure 8.4</b> - A review that already exists. The buttons change to <span class="ui">Update review</span> and <span class="ui">Delete rating</span>; a reviewer may change their mind at any time.</figcaption>
+  </figure>
+
+  <h2>8.5 Reading the result</h2>
+  <p>As an orga or coordinator, the same <b>Session reviews</b> tab shows the full picture instead of a personal queue: every submission, the average per criterion and the overall average.</p>
+
+  <figure>
+    <img src="screenshots/07-04-review-metrics-columns.png" alt="Review overview for the programme team">
+    <figcaption><b>Figure 8.5</b> - Each review metric is its own sortable column, so you can rank by "audience fit" alone when you are filling a specific slot.</figcaption>
+  </figure>
+
+  <p>Two things are worth looking for besides the averages:</p>
+  <ul>
+    <li><b>Sessions nobody reviewed.</b> An empty average is not a bad score - decide those separately instead of letting them fall through.</li>
+    <li><b>Sessions the reviewers disagree about.</b> frab highlights a row when the scores are far apart. These are the interesting ones; read the comments before you decide.</li>
+  </ul>
+
+  <h2>8.6 From review to decision</h2>
+  <ol class="steps">
+    <li>Sort by the average, or by the criterion that matters most for the slot you are filling.</li>
+    <li>Accept or reject each session on its own page, or in bulk from a filtered list.</li>
+    <li>If bulk notification is switched on, decide the whole programme first and then release all letters at once from <span class="crumb">Settings &rarr; Notifications</span> (chapter 9.6).</li>
+    <li>Watch the state change: accepted sessions become <i>unconfirmed</i> until the speaker confirms.</li>
+  </ol>
+</section>
+
+<!-- ============================ 8 MAIL ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Chapter 9</span>
+  <h1 class="chapter">Mail templates</h1>
+  <p class="chapter-lede">Almost all communication with speakers goes through frab. A mail template is a letter you write once, with placeholders, and send to a whole group of people - each of them getting their own session title, room and time.</p>
+
+  <h2>9.1 The two kinds of e-mail in frab</h2>
+  <table>
+    <thead><tr><th style="width:30%">&nbsp;</th><th>Mail templates</th><th>Notifications</th></tr></thead>
+    <tbody>
+      <tr><td><b>Where</b></td><td><span class="crumb">Mail Templates</span></td><td><span class="crumb">Settings &rarr; Notifications</span></td></tr>
+      <tr><td><b>Sent</b></td><td>When you press <span class="ui">Send</span></td><td>Automatically, when a session changes state</td></tr>
+      <tr><td><b>How many</b></td><td>As many as you like</td><td>Exactly three: acceptance, rejection, schedule announcement</td></tr>
+      <tr><td><b>Typical use</b></td><td>Reminders, tech checks, "please send your slides"</td><td>The formal decision letters</td></tr>
+    </tbody>
+  </table>
+  <p>Both use the same placeholders (Appendix A). Sections 9.2 to 9.5 cover mail templates; section 9.6 covers the notifications.</p>
+
+  <h2>9.2 Creating a template</h2>
+  <p>Open <span class="crumb">Mail Templates</span>. The list shows every template of this conference.</p>
+
+  <figure>
+    <img src="screenshots/08-01-mail-templates-list.png" alt="Mail template list">
+    <figcaption><b>Figure 9.1</b> - The templates of the conference. Give them names you will recognise in a hurry.</figcaption>
+  </figure>
+
+  <p>Press <span class="ui">Add mail template</span> and fill in three fields.</p>
+
+  <figure>
+    <img src="screenshots/08-02-mail-template-new.png" alt="New mail template form">
+    <figcaption><b>Figure 9.2</b> - The template form: <b>Name</b> (internal only), <b>Subject</b> and <b>Content</b>.</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li><b>Name</b> - what you will look for in the list later, e.g. <i>Technical check reminder</i>. Recipients never see it.</li>
+    <li><b>Subject</b> - the subject line. Placeholders work here too; prefixing it with <code>[%{conference}]</code> makes your mails easy to filter for the recipient.</li>
+    <li><b>Content</b> - the body, plain text. Write it as a real letter, and put the placeholders where the personal details belong.</li>
+    <li>Press <span class="ui">Create mail template</span>.</li>
+  </ol>
+
+  <p>An existing template is changed the same way: open it from the list and press <span class="ui">Edit mail template</span>. Editing a template does not change any mail that has already been sent.</p>
+
+  <figure>
+    <img src="screenshots/08-06-mail-template-edit.png" alt="Editing a mail template">
+    <figcaption><b>Figure 9.3</b> - Editing an existing template.</figcaption>
+  </figure>
+
+  <h3>Placeholders</h3>
+  <p>A placeholder is replaced per recipient. <code>%{public_name}</code> becomes the name of the person the mail goes to, <code>%{event}</code> the title of their session, and so on. The full list is shown next to the form, and repeated in <b>Appendix A</b>.</p>
+
+  <figure>
+    <img src="screenshots/08-03-mail-template-placeholders.png" alt="Placeholder help next to the form">
+    <figcaption><b>Figure 9.4</b> - The placeholder help sits next to the form while you write, so you never have to guess a name.</figcaption>
+  </figure>
+
+  <div class="box warn">
+    <span class="label">Type placeholders exactly</span>
+    <p>The syntax is <code>%{name}</code> - percent sign, curly braces, no spaces, all lower case. A misspelled placeholder is <i>not</i> an error: it is simply sent as-is, and your speakers receive a letter that says "Hi %{public_naem}". Always send one test mail to yourself first.</p>
+  </div>
+
+  <h3>A template that works</h3>
+  <table class="compact">
+    <thead><tr><th style="width:16%">Field</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><b>Name</b></td><td>Technical check reminder</td></tr>
+      <tr><td><b>Subject</b></td><td><code>[%{conference}] Tech check for "%{event}"</code></td></tr>
+      <tr><td><b>Content</b></td><td style="white-space:pre-wrap"><code>Hi %{forename},
+
+please come to %{room} on %{date} at least 30 minutes before %{time}
+for a short technical check (audio, video, your laptop).
+
+If you need an adapter, tell us now and we will bring one.
+
+The %{conference} tech team</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="box">
+    <span class="label">Only use placeholders that exist for the recipient</span>
+    <p><code>%{room}</code>, <code>%{date}</code> and <code>%{time}</code> are only filled in once the session actually has a slot in the schedule. Do not use them in a template you send to people whose sessions are not scheduled yet.</p>
+  </div>
+
+  <h2>9.3 Sending a template</h2>
+  <p>Click a template in the list to open it. The page shows the letter and, underneath, the <b>Send Mail</b> form.</p>
+
+  <figure>
+    <img src="screenshots/08-04-mail-template-show.png" alt="Mail template with send form">
+    <figcaption><b>Figure 9.5</b> - The template page. The text at the top is exactly what will be sent, with the placeholders still visible.</figcaption>
+  </figure>
+
+  <ol class="steps">
+    <li>Read the subject and the body once more.</li>
+    <li>Choose the recipient group in the dropdown.</li>
+    <li>Press <span class="ui">Send</span> and confirm.</li>
+  </ol>
+
+  <figure>
+    <img src="screenshots/08-05-mail-template-send.png" alt="Recipient selection">
+    <figcaption><b>Figure 9.6</b> - The recipient group decides who gets the letter.</figcaption>
+  </figure>
+
+  <table class="compact">
+    <thead><tr><th style="width:44%">Group</th><th>Who receives the mail</th></tr></thead>
+    <tbody>
+      <tr><td>All speakers involved in all confirmed sessions</td><td>Speakers whose session is confirmed but not yet scheduled. The right group for "please confirm your details".</td></tr>
+      <tr><td>All speakers involved in all unconfirmed sessions</td><td>Speakers who were accepted but have not confirmed yet. The right group for a reminder.</td></tr>
+      <tr><td>All speakers involved in all scheduled sessions</td><td>Speakers who have a slot in the published schedule. The right group for tech checks and room information.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box warn">
+    <span class="label">There is no undo</span>
+    <p>Once you press <span class="ui">Send</span> the mails go out. Before a big send: create a copy of the template, set the recipient group to the smallest one you can, and send it to yourself first. Setting a <b>BCC address</b> in the conference settings (chapter 2.1) also gives you a copy of everything that leaves the system.</p>
+  </div>
+
+  <h2>9.4 Writing to one speaker</h2>
+  <p>For a single person, open their session and press <span class="ui">Custom notification</span>. You get the same kind of form, prefilled, for one recipient - and the text you send is stored on the session, so your colleagues can see what was said.</p>
+
+  <figure>
+    <img src="screenshots/08-09-session-custom-notification.png" alt="Custom notification on a session">
+    <figcaption><b>Figure 9.7</b> - A one-off mail about one session.</figcaption>
+  </figure>
+
+  <h2>9.5 Writing to exactly the people in a list</h2>
+  <p>This is the most flexible way to send mail, and the reason filters are worth learning. Anything you can filter for in the session list, you can write to.</p>
+
+  <ol class="steps">
+    <li>Open <span class="crumb">Sessions</span> and filter the list until it contains exactly the sessions you mean - for example all workshops in one theme, or everything still unconfirmed.</li>
+    <li>Under the table, click <span class="ui">Send mail to all these people &gt;&gt;</span>.</li>
+    <li>Choose the recipient group: <b>Everyone on the list</b>, <b>Only submitters</b> or <b>Only coauthors</b>.</li>
+    <li>Choose the template.</li>
+    <li>Press <span class="ui">Send</span> and confirm. The confirmation dialog names the number of sessions - check it.</li>
+  </ol>
+
+  <figure>
+    <img src="screenshots/08-08-bulk-mail-from-list.png" alt="Bulk mail from the session list">
+    <figcaption><b>Figure 9.8</b> - Sending a template to the people behind a filtered session list. The line above the form ("Listing 4 of 74 sessions") tells you how large the filtered set is.</figcaption>
+  </figure>
+
+  <h2>9.6 The automatic notifications</h2>
+  <p>The three decision letters live in <span class="crumb">Settings &rarr; Notifications</span> and are sent by frab itself when a session changes state.</p>
+
+  <figure>
+    <img src="screenshots/08-07-notification-templates.png" alt="Edit and send notifications">
+    <figcaption><b>Figure 9.9</b> - <b>Edit and send notifications</b>. The <b>Send</b> block at the top releases the decisions you queued up; the <b>edit</b> block underneath holds the three texts, one set per language.</figcaption>
+  </figure>
+
+  <h3>The three texts</h3>
+  <table class="compact">
+    <thead><tr><th style="width:24%">Notification</th><th>Goes to</th><th style="width:28%">Must contain</th></tr></thead>
+    <tbody>
+      <tr><td><b>Accept subject / body</b></td><td>Speakers of the sessions you accepted.</td><td><code>%{link}</code> - the personal link the speaker uses to confirm. Without it they cannot confirm.</td></tr>
+      <tr><td><b>Reject subject / body</b></td><td>Speakers of the sessions you rejected.</td><td>-</td></tr>
+      <tr><td><b>Schedule subject / body</b></td><td>Speakers of confirmed sessions, once the schedule stands.</td><td><code>%{date}</code>, <code>%{time}</code>, <code>%{room}</code></td></tr>
+    </tbody>
+  </table>
+
+  <p>Add one <b>Language</b> block per language your speakers use - everyone receives the version matching the language in their profile. <span class="ui">default text</span> fills a block with a reasonable starting text you can then edit.</p>
+
+  <h3>Releasing the decisions</h3>
+  <p>The <b>Send</b> block at the top of this page is the control desk for the whole conference. It counts the sessions waiting in each state and offers one button per group:</p>
+
+  <table class="compact">
+    <thead><tr><th style="width:38%">Button</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><b>Send acceptance notifications to N people involved in N sessions</b></td><td>Mails every speaker of a session in the state <i>accepting</i>, and moves those sessions to <i>unconfirmed</i>.</td></tr>
+      <tr><td><b>Send rejection notifications to N people involved in N sessions</b></td><td>Mails every speaker of a session in the state <i>rejecting</i>, and moves those sessions to <i>rejected</i>.</td></tr>
+      <tr><td><b>Send scheduling notifications to N people involved in N sessions</b></td><td>Mails every speaker of a <i>confirmed</i> session their date, time and room, and moves those sessions to <i>scheduled</i>.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box warn">
+    <span class="label">Read the counts before you click</span>
+    <p>Each button states exactly how many people will receive a mail. These are the largest sends in the system and they cannot be undone - if a number looks wrong, leave the page and check the session list first.</p>
+  </div>
+
+  <ol class="steps">
+    <li>Write the three texts before you accept your first session.</li>
+    <li>Make sure the acceptance contains <code>%{link}</code> and says by when you need an answer.</li>
+    <li>Decide the whole programme, so that everything sits in <i>accepting</i> or <i>rejecting</i>.</li>
+    <li>Come back here and release the acceptances and the rejections.</li>
+    <li>Later, once the schedule is fixed and public, release the scheduling notifications from the same page.</li>
+    <li>Test the whole path once with your submitter test account: submit, accept, read the mail, click the link, confirm.</li>
+  </ol>
+
+  <div class="box">
+    <span class="label">A working order of operations</span>
+    <p>1. Write the notification texts. 2. Review and decide. 3. Send acceptances and rejections. 4. Wait for confirmations, reminding the stragglers with a mail template. 5. Build the schedule. 6. Publish it. 7. Send the schedule announcement. 8. Send a tech-check reminder shortly before the event. 9. After the conference, ask for slides with one more template.</p>
+  </div>
+</section>
+
+<!-- ============================ APPENDIX ============================ -->
+<section class="chapter">
+  <span class="chapter-no">Appendix A</span>
+  <h1 class="chapter">Placeholder reference</h1>
+  <p class="chapter-lede">These placeholders work in the subject and the body of mail templates and of the automatic notifications. They are replaced per recipient.</p>
+
+  <table class="compact">
+    <thead><tr><th style="width:26%">Placeholder</th><th>Replaced with</th></tr></thead>
+    <tbody>
+      <tr><td><code>%{conference}</code></td><td>The title of the conference.</td></tr>
+      <tr><td><code>%{event}</code></td><td>The title of the session.</td></tr>
+      <tr><td><code>%{subtitle}</code></td><td>The subtitle of the session.</td></tr>
+      <tr><td><code>%{event_id}</code></td><td>The internal number of the session - handy when you ask people to quote it.</td></tr>
+      <tr><td><code>%{type}</code></td><td>The session type (lecture, workshop, ...).</td></tr>
+      <tr><td><code>%{track}</code></td><td>The theme of the session.</td></tr>
+      <tr><td><code>%{duration}</code></td><td>The length of the session.</td></tr>
+      <tr><td><code>%{public_name}</code></td><td>The public name of the recipient.</td></tr>
+      <tr><td><code>%{forename}</code></td><td>Their first name.</td></tr>
+      <tr><td><code>%{surname}</code></td><td>Their last name.</td></tr>
+      <tr><td><code>%{date}</code></td><td>The date of the session. Only once it is scheduled.</td></tr>
+      <tr><td><code>%{time}</code></td><td>The start time. Only once it is scheduled.</td></tr>
+      <tr><td><code>%{room}</code></td><td>The room. Only once it is scheduled.</td></tr>
+      <tr><td><code>%{link}</code></td><td>The personal confirmation link. Use it in the acceptance notification.</td></tr>
+      <tr><td><code>%{joinlink}</code></td><td>A link that lets somebody join the session as a co-speaker.</td></tr>
+      <tr><td><code>%{user_id}</code></td><td>The internal number of the recipient's account.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Appendix B - Session states at a glance</h2>
+  <table class="compact">
+    <thead><tr><th style="width:20%">State</th><th>In the workflow</th></tr></thead>
+    <tbody>
+      <tr><td>new</td><td>Submitted, untouched.</td></tr>
+      <tr><td>review</td><td>Being reviewed.</td></tr>
+      <tr><td>accepting</td><td>Accepted, letter not sent yet (bulk notification only).</td></tr>
+      <tr><td>unconfirmed</td><td>Accepted, speaker informed, waiting for their confirmation.</td></tr>
+      <tr><td>confirmed</td><td>Confirmed by the speaker, ready to be scheduled.</td></tr>
+      <tr><td>scheduled</td><td>In the schedule and announced.</td></tr>
+      <tr><td>rejecting</td><td>Rejected, letter not sent yet (bulk notification only).</td></tr>
+      <tr><td>rejected</td><td>Rejected and the speaker has been told.</td></tr>
+      <tr><td>withdrawn</td><td>Taken back by the speaker.</td></tr>
+      <tr><td>canceled</td><td>Dropped after acceptance.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Appendix C - Who may do what</h2>
+  <table class="compact">
+    <thead><tr><th style="width:34%">Task</th><th>Submitter</th><th>Reviewer</th><th>Coordinator</th><th>Orga</th></tr></thead>
+    <tbody>
+      <tr><td>Submit and edit own session</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+      <tr><td>See all submissions</td><td>-</td><td>yes</td><td>yes</td><td>yes</td></tr>
+      <tr><td>Write reviews</td><td>-</td><td>yes</td><td>yes</td><td>yes</td></tr>
+      <tr><td>Edit any session and any person</td><td>-</td><td>-</td><td>yes</td><td>yes</td></tr>
+      <tr><td>Accept, reject, schedule</td><td>-</td><td>-</td><td>yes</td><td>yes</td></tr>
+      <tr><td>Conference settings, CfP, mail, reports</td><td>-</td><td>-</td><td>-</td><td>yes</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="soft">
+  <p style="font-size:9pt;color:#5d6672">
+    All screenshots in this manual were taken from the demo conference <code>demo2025</code>. Your own installation may show slightly different fields depending on which features (feedback, expenses, transport needs, ticket server) are switched on for your conference.
+  </p>
+</section>
+
+</body>
+</html>
