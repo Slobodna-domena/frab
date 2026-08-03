@@ -10,7 +10,7 @@ end
 
 
 
-ruby '2.7.6'
+ruby '~> 2.7.5'
 
 
 gem 'rails', '~> 6.1'
