@@ -518,6 +518,7 @@ DEPENDENCIES
   exception_notification
   factory_bot_rails
   faker
+  ffi (~> 1.15)
   github-markdown
   gitlab_omniauth-ldap
   haml
@@ -570,7 +571,7 @@ DEPENDENCIES
   yard
 
 RUBY VERSION
-   ruby 2.7.6p219
+   ruby 2.7.0p0
 
 BUNDLED WITH
    2.2.22
