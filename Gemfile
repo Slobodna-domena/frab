@@ -10,7 +10,7 @@ end
 
 
 
-ruby '~> 2.7.5'
+ruby '2.7.0'
 
 
 gem 'rails', '~> 6.1'
@@ -25,6 +25,8 @@ gem 'coffee-rails'
 gem 'mysql2', group: :mysql
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'sqlite3', group: :sqlite3
+
+gem 'ffi', '~> 1.15'
 
 # Use Puma as the app server
 gem 'puma'
