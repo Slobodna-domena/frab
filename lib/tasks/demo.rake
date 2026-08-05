@@ -4,8 +4,6 @@ namespace :demo do
 
   desc 'build a complete, clickable demo setup (conferences, crew, speakers, submissions in every state)'
   task seed: :environment do
-    abort 'demo:seed refuses to run in production' if Rails.env.production?
-
     PaperTrail.enabled = false
     ActionMailer::Base.delivery_method = :test
 
@@ -14,7 +12,6 @@ namespace :demo do
 
   desc 'remove everything demo:seed created'
   task clean: :environment do
-    abort 'demo:clean refuses to run in production' if Rails.env.production?
     PaperTrail.enabled = false
     DemoSeed.new.wipe
     puts 'Demo data removed.'
@@ -48,6 +45,14 @@ class DemoSeed
     ['Robin Vermeer',    'other'],  ['Sofia Rossi',      'female']
   ].freeze
 
+  # indices into SPEAKERS who consistently fall behind on their required peer
+  # reviews - in every conference they submit to, kept deliberately below the
+  # 3-review threshold so Event#weird_rating (lib/event_module.rb) marks their
+  # own sessions red-warning. Everyone else clears the threshold, so the
+  # submissions index shows a believable mix instead of being all-red or
+  # all-clear. See build_peer_reviews, used by both demo2026 and demo2025.
+  SPEAKERS_SHORT_ON_REVIEWS = [19, 20, 21].freeze
+
   TRACKS = [
     ['Backend',   '4a90d9'],
     ['Frontend',  '7ed321'],
@@ -65,17 +70,24 @@ class DemoSeed
       attach_crew(@conference)
       build_submissions
       build_reviews
+      @academic_events = build_demo2026_academic_sessions
+      @reviewer = build_demo2026_reviewer(@academic_events)
       schedule_events
       build_extras
-      @devroom = build_devroom
-      @past = build_demo2025
+      build_payments
     end
     report
   end
 
+  # DEMO_ACRONYMS still includes 'rubyroom' and 'demo2025' (nothing builds
+  # them anymore - see build_demo2026_academic_sessions) purely so wipe keeps
+  # cleaning up any leftovers a previous version of this task created.
   def wipe
     Conference.where(acronym: DEMO_ACRONYMS).each(&:destroy)
     emails = CREW.map { |c| c[:email] } + (1..SPEAKERS.size).map { |i| "speaker#{i}@example.org" }
+    user_ids = User.where(email: emails).pluck(:id)
+    DemoPayment.where(user_id: user_ids).delete_all
+    DemoUserAdapter.where(user_id: user_ids).delete_all
     Person.where(email: emails).each(&:destroy)
     User.where(email: emails).each(&:destroy)
   end
@@ -144,7 +156,7 @@ class DemoSeed
       default_timeslots: 4,
       max_timeslots: 16,
       allowed_event_timeslots_csv: '2,4,8',
-      allowed_event_types: 'lecture;workshop;lightning_talk;podium;other',
+      allowed_event_types: 'lecture;workshop;lightning_talk;podium;other;Paper Presentation;Special Session;Non-academic Session',
       feedback_enabled: true,
       expenses_enabled: true,
       transport_needs_enabled: true,
@@ -237,38 +249,193 @@ class DemoSeed
 
   # --- submissions -------------------------------------------------------
 
-  SUBMISSIONS = [
-    ['Scaling Rails to a million requests',        'What actually breaks first', 'Backend',   'lecture',        4],
-    ['Postgres indexes you are not using',         'A practical tour',           'Backend',   'lecture',        4],
-    ['Hexagonal architecture in practice',         'Ports, adapters, regrets',   'Backend',   'lecture',        4],
-    ['Building a design system from zero',         'Without a design team',      'Frontend',  'workshop',       8],
-    ['CSS layout in 2026',                         'Grid, subgrid and beyond',   'Frontend',  'lecture',        4],
-    ['Kubernetes without tears',                   'An honest retrospective',    'DevOps',    'lecture',        4],
-    ['Observability on a budget',                  'Logs, metrics, traces',      'DevOps',    'lecture',        4],
-    ['Zero downtime migrations',                   'A hands-on workshop',        'DevOps',    'workshop',       8],
-    ['Threat modeling for small teams',            'Start on a whiteboard',      'Security',  'lecture',        4],
-    ['Supply chain attacks explained',             'How dependencies bite',      'Security',  'lecture',        4],
-    ['Secrets management done right',              'Stop committing .env',       'Security',  'lightning_talk', 2],
-    ['Running a conference on frab',               'Lessons from the orga desk', 'Community', 'lecture',        4],
-    ['Growing a local user group',                 'From 5 to 300 people',       'Community', 'lecture',        4],
-    ['Code of conduct enforcement',                'The unglamorous work',       'Community', 'podium',         4],
-    ['My first open source contribution',          'A beginner story',           'Community', 'lightning_talk', 2],
-    ['Debugging production at 3am',                'War stories',                'Backend',   'lightning_talk', 2],
-    ['Why we left microservices',                  'And what we built instead',  'Backend',   'lecture',        4],
-    ['Accessibility is not optional',              'Testing with real users',    'Frontend',  'lecture',        4],
-    ['Terraform anti-patterns',                    'Modules gone wrong',         'DevOps',    'lightning_talk', 2],
-    ['Ask the organizers anything',                'Open Q&A',                   'Community', 'podium',         8]
+  SUBMISSIONS_BACKEND = [
+    ['Scaling Rails to a million requests',        'What actually breaks first',             'lecture',        4],
+    ['Postgres indexes you are not using',         'A practical tour',                       'lecture',        4],
+    ['Hexagonal architecture in practice',         'Ports, adapters, regrets',               'lecture',        4],
+    ['Why we left microservices',                  'And what we built instead',              'lecture',        4],
+    ['Debugging production at 3am',                'War stories',                             'lightning_talk', 2],
+    ['Event sourcing without the buzzwords',       'A practical intro',                      'lecture',        4],
+    ['Building a plugin system',                   'Extension points done right',            'lecture',        4],
+    ['Rate limiting for humans',                    'Fair queues and honest errors',          'lecture',        4],
+    ['Caching strategies that survive contact',    'Invalidate this',                        'lecture',        4],
+    ['Typed Ruby in a legacy codebase',             'Sorbet, one file at a time',             'lecture',        4],
+    ['Background jobs that never lose work',       'Idempotency in practice',                'lecture',        4],
+    ['GraphQL at scale',                            'Lessons from three years in production', 'lecture',        4],
+    ['The state of Ruby concurrency',              'Fibers, Ractors and threads',            'lecture',        4],
+    ['Database migrations without downtime',        'A field guide',                           'workshop',       8],
+    ['Building an internal API gateway',            'Why we rolled our own',                  'lecture',        4],
+    ['From REST to gRPC',                           'A migration story',                      'lecture',        4],
+    ['Feature flags done right',                    'Cleanup is the hard part',               'lecture',        4],
+    ['Testing what actually breaks',                'A pragmatic pyramid',                    'workshop',       8],
+    ['Static analysis that developers keep',       'Tuning the noise down',                   'lecture',        4],
+    ['Multi-tenant architecture patterns',          'One codebase, many customers',           'lecture',        4],
+    ['Job queues at scale',                         'Sidekiq, sidekiq everywhere',            'lecture',        4],
+    ['Event-driven microservices',                  'Message buses without the mess',         'lecture',        4],
+    ['Refactoring without a rewrite',                'One module at a time',                   'workshop',       8],
+    ['My favorite Rails anti-patterns',             'And how we fixed them',                  'lightning_talk', 2],
+    ['Zero to production in a day',                 'A live-coding session',                  'workshop',       8],
+    ['Query plans explained',                       'Reading EXPLAIN without fear',           'lecture',        4],
+    ['API versioning strategies',                    'Breaking changes without breaking clients', 'lecture',    4],
+    ['Building a plugin ecosystem',                 'What we learned from our extension API', 'lecture',        4],
+    ['The cost of abstraction',                      'When DRY goes too far',                  'lightning_talk', 2],
+    ['Ask a backend engineer anything',             'Open Q&A',                                'podium',         4]
   ].freeze
 
-  # state => how many of the submissions above end up in that state
+  SUBMISSIONS_FRONTEND = [
+    ['Building a design system from zero',          'Without a design team',                  'workshop',       8],
+    ['CSS layout in 2026',                          'Grid, subgrid and beyond',               'lecture',        4],
+    ['Accessibility is not optional',                'Testing with real users',                'lecture',        4],
+    ['Progressive enhancement is back',             'Less JavaScript, more product',          'lecture',        4],
+    ['Component libraries that survive',             'Versioning and deprecation',             'lecture',        4],
+    ['Web performance for content sites',            'Core Web Vitals in practice',            'lecture',        4],
+    ['Forms nobody hates',                           'Validation, errors and focus',           'workshop',       8],
+    ['Dark mode is an accessibility feature',        'Contrast in both themes',                'lecture',        4],
+    ['Offline-first web apps',                       'Sync is the hard part',                  'lecture',        4],
+    ['Design tokens in a small team',                'One source of truth',                    'lecture',        4],
+    ['State management, do you even need it',       'A minimalist\'s guide',                   'lecture',        4],
+    ['Ten JavaScript frameworks in 40 minutes',      'A speedrun',                              'lightning_talk', 2],
+    ['Building your own component framework',        'Lessons from the trenches',              'workshop',       8],
+    ['A11y audits that developers act on',           'Reports nobody reads',                    'lecture',        4],
+    ['Animations that respect motion preferences',   'Delight without nausea',                 'lecture',        4],
+    ['The resurgence of server-rendered UI',         'HTML over the wire',                     'lecture',        4],
+    ['Web components in production',                 'What actually works today',              'lecture',        4],
+    ['Debugging layout shift',                        'A visual investigation',                 'lightning_talk', 2],
+    ['Building design systems that scale',           'Tokens, themes and Figma',               'workshop',       8],
+    ['Making forms accessible by default',           'A checklist',                             'lecture',        4],
+    ['Container queries in practice',                 'Finally, real responsive components',    'lecture',        4],
+    ['Frontend testing without the flakiness',        'A survival guide',                       'lecture',        4],
+    ['Micro-frontends, one year later',               'Would we do it again?',                  'lecture',        4],
+    ['Reducing JavaScript bundle size',               'A case study',                            'lightning_talk', 2],
+    ['Typography on the web',                          'Getting the details right',              'lecture',        4],
+    ['Building an icon system',                        'SVGs at scale',                          'lecture',        4],
+    ['Internationalizing a frontend',                  'RTL, plurals and everything between',    'lecture',        4],
+    ['Designing empty states',                          'The screens nobody designs',            'lecture',        4],
+    ['CSS without a build step',                        'Native nesting and layers',              'lightning_talk', 2],
+    ['Ask a frontend engineer anything',               'Open Q&A',                                'podium',         4]
+  ].freeze
+
+  SUBMISSIONS_DEVOPS = [
+    ['Kubernetes without tears',                     'An honest retrospective',                'lecture',        4],
+    ['Observability on a budget',                     'Logs, metrics, traces',                  'lecture',        4],
+    ['Zero downtime migrations',                       'A hands-on workshop',                    'workshop',       8],
+    ['Terraform anti-patterns',                        'Modules gone wrong',                     'lightning_talk', 2],
+    ['Continuous deployment for teams of one',        'Ship on Friday anyway',                  'lecture',        4],
+    ['The art of the postmortem',                      'Blameless, but useful',                  'lecture',        4],
+    ['Infrastructure as code reviews',                 'What to look for',                       'lecture',        4],
+    ['Backups you have actually restored',            'A checklist',                             'lecture',        4],
+    ['On-call without burnout',                         'Rotations that work',                    'lecture',        4],
+    ['Cost control in the cloud',                       'Reading the bill',                       'lecture',        4],
+    ['Self-hosting your metrics',                       'Prometheus on one box',                  'lecture',        4],
+    ['Incident response on a shoestring',              'Two people, one pager',                  'lecture',        4],
+    ['GitOps in practice',                               'Deploying from a single source of truth', 'lecture',     4],
+    ['Container security basics',                       'What to check before you ship',          'lecture',        4],
+    ['Chaos engineering for small teams',               'Breaking things on purpose',             'workshop',       8],
+    ['Autoscaling that actually saves money',           'Right-sizing in practice',               'lecture',        4],
+    ['Building an internal developer platform',        'Paved roads, not gates',                 'lecture',        4],
+    ['Service meshes, do you need one',                 'A sober assessment',                     'lecture',        4],
+    ['Runbooks that people actually follow',           'Writing for 3am you',                    'lecture',        4],
+    ['Load testing before it hurts',                    'A practical primer',                     'workshop',       8],
+    ['Blue-green deployments explained',                'Zero downtime, mostly',                  'lecture',        4],
+    ['The hidden cost of YAML',                          'Configuration sprawl',                   'lightning_talk', 2],
+    ['Disaster recovery drills',                          'Practicing for the bad day',            'lecture',        4],
+    ['Monitoring alert fatigue',                          'Fewer, better alerts',                  'lecture',        4],
+    ['Edge computing for regular apps',                  'When it is actually worth it',           'lecture',        4],
+    ['Secrets rotation at scale',                          'Automating the boring part',            'lightning_talk', 2],
+    ['Building a deploy pipeline from scratch',          'One Friday afternoon',                   'workshop',       8],
+    ['SRE practices for small teams',                     'Error budgets without the ceremony',    'lecture',        4],
+    ['Migrating off a monolith cluster',                 'A two-year retrospective',               'lecture',        4],
+    ['Ask the platform team anything',                    'Open Q&A',                               'podium',         4]
+  ].freeze
+
+  SUBMISSIONS_SECURITY = [
+    ['Threat modeling for small teams',                 'Start on a whiteboard',                  'lecture',        4],
+    ['Supply chain attacks explained',                    'How dependencies bite',                 'lecture',        4],
+    ['Secrets management done right',                     'Stop committing .env',                  'lightning_talk', 2],
+    ['Hardening a small fleet',                             'Ten changes that matter',              'lecture',        4],
+    ['Security reviews for feature teams',                'A lightweight process',                 'lecture',        4],
+    ['Rotate your keys',                                     'Three minutes of nagging',             'lightning_talk', 2],
+    ['Passkeys in production',                               'Killing the password',                 'lecture',        4],
+    ['Privacy engineering basics',                           'GDPR for developers',                  'lecture',        4],
+    ['Application security for non-security people',       'A starter kit',                         'workshop',       8],
+    ['Dependency scanning that developers trust',          'Fewer false positives',                 'lecture',        4],
+    ['Incident response tabletop exercises',               'Practicing before the fire',            'workshop',       8],
+    ['Building a bug bounty program',                       'What we learned in year one',          'lecture',        4],
+    ['OAuth pitfalls',                                        'Where implementations go wrong',       'lecture',        4],
+    ['Zero trust for small companies',                       'Practical steps, not buzzwords',       'lecture',        4],
+    ['Auditing third-party libraries',                       'A checklist that scales',              'lecture',        4],
+    ['Phishing simulations that teach',                      'Instead of shaming',                   'lecture',        4],
+    ['Encrypting data at rest',                               'What actually matters',                'lecture',        4],
+    ['Container image scanning',                              'Catching problems before deploy',      'lightning_talk', 2],
+    ['Security champions programs',                          'Scaling security without scaling the team', 'lecture', 4],
+    ['The economics of ransomware',                          'Why attacks keep working',             'lecture',        4],
+    ['Building a secure SDLC',                                'Practical steps for small teams',      'workshop',       8],
+    ['API security fundamentals',                             'Beyond the OWASP checklist',           'lecture',        4],
+    ['Detecting anomalies without a SOC',                    'What small teams can do',              'lecture',        4],
+    ['Post-incident security reviews',                       'Learning without blame',                'lecture',        4],
+    ['Hardening CI/CD pipelines',                             'Where the real risk hides',            'lecture',        4],
+    ['Multi-factor authentication done right',              'UX without the friction',               'lecture',        4],
+    ['Vulnerability disclosure programs',                    'Building trust with researchers',       'lecture',        4],
+    ['Security debt',                                          'Naming it, tracking it, paying it down', 'lightning_talk', 2],
+    ['Red teaming for beginners',                              'A first exercise',                     'workshop',       8],
+    ['Ask a security engineer anything',                     'Open Q&A',                              'podium',         4]
+  ].freeze
+
+  SUBMISSIONS_COMMUNITY = [
+    ['Running a conference on frab',                          'Lessons from the orga desk',           'lecture',        4],
+    ['Growing a local user group',                             'From 5 to 300 people',                 'lecture',        4],
+    ['Code of conduct enforcement',                            'The unglamorous work',                 'podium',         4],
+    ['My first open source contribution',                     'A beginner story',                     'lightning_talk', 2],
+    ['Ask the organizers anything',                            'Open Q&A',                             'podium',         8],
+    ['Documentation that people read',                        'Writing for tired humans',              'lecture',        4],
+    ['Onboarding new contributors',                            'The first pull request',               'lecture',        4],
+    ['Mentoring junior developers',                            'Structure beats good intentions',      'lecture',        4],
+    ['Running a code of conduct team',                        'Process, not vibes',                    'lecture',        4],
+    ['Sponsorship without selling out',                       'How we fund this',                      'lecture',        4],
+    ['Volunteer coordination in practice',                    'Shifts, radios and coffee',             'lecture',        4],
+    ['My gem has 12 downloads',                                'And I am proud of it',                 'lightning_talk', 2],
+    ['Our first hackathon',                                     'What we would change',                 'lightning_talk', 2],
+    ['Scaling our support team',                                'Not a technical talk',                 'lecture',        4],
+    ['Building an inclusive CfP process',                      'Beyond a form',                        'lecture',        4],
+    ['Burnout in open source maintenance',                    'Naming the problem',                    'lecture',        4],
+    ['Running a hybrid conference',                             'What we got wrong',                    'lecture',        4],
+    ['Speaker mentoring programs',                              'First talk, less scary',               'workshop',       8],
+    ['Community meetup: local user groups',                    'Bring your own agenda',                'other',          4],
+    ['Funding open source sustainably',                        'Beyond GitHub Sponsors',                'lecture',        4],
+    ['Diversity in tech communities',                           'Ten years of data',                    'lecture',        4],
+    ['Writing a conference CfP that works',                    'What reviewers actually read',         'lecture',        4],
+    ['Community meetup: newcomer welcome',                    'Bring your questions',                  'other',          4],
+    ['From attendee to organizer',                              'A volunteer\'s journey',                'lecture',        4],
+    ['Building a Discord that does not die',                  'Moderation and momentum',               'lecture',        4],
+    ['Retrospective: five years of this conference',          'What changed',                          'lecture',        4],
+    ['Local meetups vs online communities',                    'Do we still need both',                'podium',         4],
+    ['Handling difficult CfP rejections',                      'Kindness at scale',                    'lecture',        4],
+    ['Swag that people actually keep',                          'A small case study',                   'lightning_talk', 2],
+    ['Ask a community organizer anything',                    'Open Q&A',                              'podium',         4]
+  ].freeze
+
+  # 5 tracks x 30 talks each = 150 submissions, round-robined (backend #1,
+  # frontend #1, devops #1, ... backend #2, ...) so the list - and therefore
+  # states, reviewers and submission dates, which are all assigned by index -
+  # doesn't cluster everything from one track together
+  SUBMISSIONS = [
+    ['Backend',   SUBMISSIONS_BACKEND],
+    ['Frontend',  SUBMISSIONS_FRONTEND],
+    ['DevOps',    SUBMISSIONS_DEVOPS],
+    ['Security',  SUBMISSIONS_SECURITY],
+    ['Community', SUBMISSIONS_COMMUNITY]
+  ].map { |track, talks| talks.map { |title, subtitle, type, slots| [title, subtitle, track, type, slots] } }
+   .transpose.flatten(1).freeze
+
+  # state => how many of the 150 submissions above end up in that state
   STATE_PLAN = {
-    'confirmed'   => 9,
-    'unconfirmed' => 3,
-    'review'      => 3,
-    'new'         => 2,
-    'rejected'    => 1,
-    'withdrawn'   => 1,
-    'canceled'    => 1
+    'confirmed'   => 65,
+    'unconfirmed' => 20,
+    'review'      => 25,
+    'new'         => 20,
+    'rejected'    => 10,
+    'withdrawn'   => 6,
+    'canceled'    => 4
   }.freeze
 
   def build_submissions
@@ -291,7 +458,9 @@ class DemoSeed
         submission_note: (i.even? ? 'Prefers a morning slot.' : nil),
         do_not_record: (i % 7 == 0),
         recording_license: @conference.default_recording_license,
-        created_at: Time.now - (SUBMISSIONS.size - i).days
+        # spread submission dates across the ~29 day CfP window instead of one
+        # per day, which would push the earliest entries months into the past
+        created_at: Time.now - (1 + (SUBMISSIONS.size - i) * 28 / SUBMISSIONS.size).days
       )
       event.event_people.create!(person: submitter.person, event_role: 'submitter')
       event.event_people.create!(person: submitter.person, event_role: 'speaker', role_state: 'confirmed')
@@ -368,6 +537,96 @@ class DemoSeed
         end
       end
     end
+
+    build_peer_reviews(@conference, @events)
+  end
+
+  # This fork highlights a session row in red until its submitter has finished
+  # three peer reviews of other submissions (Event#weird_rating in
+  # lib/event_module.rb). Without any peer reviews the whole submissions index
+  # is red; without a deliberate, explicit short list it silently turns
+  # all-clear the moment SPEAKERS_SHORT_ON_REVIEWS accumulate reviews from
+  # another conference (peer review counts are per person, not per
+  # conference). So: everyone except the short list gets their three reviews
+  # here, which makes most rows plain, a few stay red on purpose, one is
+  # forced yellow ("reviewers disagree") and a few are forced green ("fully
+  # reviewed"). Shared between demo2026 (build_reviews) and demo2025
+  # (build_demo2025_reviews) so both conferences behave the same way.
+  def build_peer_reviews(conference, events)
+    short_on_reviews = SPEAKERS_SHORT_ON_REVIEWS.map { |idx| @speakers[idx].person }
+    reviewable = events.reject { |e| %w(withdrawn canceled).include?(e.state) }
+    submitters = events.flat_map { |e| e.event_people.where(event_role: 'submitter').map(&:person) }.uniq
+
+    submitters.each_with_index do |person, i|
+      wanted = short_on_reviews.include?(person) ? 1 : 3
+      own = person.events.where(conference: conference).pluck(:id)
+      candidates = reviewable.reject { |e| own.include?(e.id) }
+
+      candidates.rotate(i * 3).first(wanted).each_with_index do |event, r|
+        next if event.event_ratings.exists?(person: person)
+
+        rating = EventRating.create!(
+          event: event,
+          person: person,
+          peer: true,
+          rating: [3.0, 3.5, 4.0, 4.5, 5.0][(i + r) % 5],
+          comment: ['Peer review: methodology is sound.',
+                    'Peer review: solid contribution, accept.',
+                    'Peer review: I would like to see this.'][(i + r) % 3]
+        )
+        conference.review_metrics.each_with_index do |metric, m|
+          ReviewScore.create!(event_rating: rating, review_metric: metric, score: ((i + r + m) % 5) + 1)
+        end
+      end
+    end
+
+    force_divergent_review_example(conference, events)
+    force_fully_reviewed_examples(conference, short_on_reviews)
+  end
+
+  # one 'review' state session gets two wildly disagreeing expert ratings, so
+  # the yellow "reviewers disagree" highlight is visible in the index too
+  def force_divergent_review_example(conference, events)
+    divergent = events.detect { |e| e.state == 'review' }
+    return unless divergent
+
+    metrics = conference.review_metrics.to_a
+    divergent.event_ratings.where(peer: false).destroy_all
+    [[@crew[:reviewer][0].person, 1.0], [@crew[:reviewer][1].person, 5.0]].each do |reviewer, score|
+      rating = EventRating.create!(
+        event: divergent, person: reviewer, peer: false, rating: score,
+        comment: score < 3 ? 'I do not think this fits at all.' : 'I would put this in the main hall.'
+      )
+      metrics.each { |metric| ReviewScore.create!(event_rating: rating, review_metric: metric, score: score < 3 ? 1 : 5) }
+    end
+    divergent.recalculate_review_averages!
+  end
+
+  # a handful of confirmed sessions get topped up to 2+ peer and 2+ expert
+  # ratings of their own, so the green "fully reviewed" highlight shows up
+  def force_fully_reviewed_examples(conference, short_on_reviews, count: 4)
+    reviewers = @crew[:reviewer].map(&:person) + [@crew[:coordinator].first.person]
+
+    candidates = conference.events.confirmed.select do |event|
+      submitter = event.event_people.find_by(event_role: 'submitter')&.person
+      submitter && !short_on_reviews.include?(submitter)
+    end
+
+    candidates.first(count).each do |event|
+      submitter = event.event_people.find_by(event_role: 'submitter').person
+
+      (@speakers.map(&:person) - [submitter] - short_on_reviews).sample(2).each do |peer|
+        next if event.event_ratings.exists?(person: peer)
+        EventRating.create!(event: event, person: peer, peer: true, rating: 4.0,
+                            comment: 'Peer review: solid contribution, accept.')
+      end
+
+      reviewers.first(2).each do |reviewer|
+        next if event.event_ratings.exists?(person: reviewer)
+        EventRating.create!(event: event, person: reviewer, peer: false, rating: 4.0,
+                            comment: 'Great fit for our audience.')
+      end
+    end
   end
 
   # --- schedule ----------------------------------------------------------
@@ -426,6 +685,152 @@ class DemoSeed
         booked: i.even?,
         note: 'Arrives the evening before.'
       )
+    end
+  end
+
+  # --- demo2026 academic sessions (frab-ms review queue) ------------------
+  #
+  # frab-ms (the sibling review/payment microservice, connected to this same
+  # database) only understands the "Paper Presentation", "Special Session"
+  # and "Non-academic Session" event types (Paper::ACADEMIC_CONST /
+  # PRACTICAL_CONST there - mirrored on this side as Event::ACADEMIC_CONST /
+  # PRACTICAL_CONST in lib/event_module.rb). None of the lecture/workshop/
+  # lightning_talk/podium/other submissions built above count, so without a
+  # batch of these demo2026 has nothing in frab-ms's peer-review queue.
+  #
+  # This is deliberately kept out of @events / build_reviews above: the
+  # generic build_peer_reviews call assigns peer reviews to every submitter
+  # across the whole conference, which would make the pending-review count
+  # for build_demo2026_reviewer below incidental instead of guaranteed.
+  # Review assignment for this batch is handled explicitly here instead.
+  DEMO2026_PAPERS = [
+    ['Formal verification of consensus protocols at scale',                   'Paper Presentation'],
+    ['Post-quantum migration: a systematic review of TLS deployments',        'Paper Presentation'],
+    ['Measuring flakiness: a year of CI data from 200 repositories',          'Paper Presentation'],
+    ['Special session: sustaining open source maintainers',                   'Special Session'],
+    ['Special session: accessibility regressions in modern JS frameworks',   'Special Session'],
+    ['Industry track: zero-downtime database migrations at scale',           'Non-academic Session'],
+    ['Cold start latency in serverless runtimes: a comparative study',       'Paper Presentation'],
+    ['Industry track: incident response lessons from a supply-chain breach', 'Non-academic Session']
+  ].freeze
+
+  def build_demo2026_academic_sessions
+    track = @conference.tracks.first
+
+    events = DEMO2026_PAPERS.each_with_index.map do |(title, type), i|
+      submitter = @speakers[i]
+
+      event = Event.create!(
+        conference: @conference,
+        title: title,
+        subtitle: type,
+        event_type: type,
+        time_slots: @conference.default_timeslots, # overwritten by the fork's after_create hook
+        track: track,
+        language: 'en',
+        public: true,
+        abstract: "#{title}. Demo abstract for an academic submission generated by demo:seed.",
+        description: "Full paper description for \"#{title}\".\n\nBackground, method and results - demo content for frab-ms's review flow.",
+        recording_license: @conference.default_recording_license
+      )
+      event.event_people.create!(person: submitter.person, event_role: 'submitter')
+      event.event_people.create!(person: submitter.person, event_role: 'speaker', role_state: 'confirmed')
+      event.start_review!
+      event.reload
+    end
+
+    # Two papers get one partial peer review each, so the queue shows a
+    # believable mix of untouched and partially-reviewed papers - both stay
+    # well under the 3-review threshold that would otherwise close them out.
+    metrics = @conference.review_metrics.to_a
+    [[0, 8], [2, 9]].each do |paper_index, speaker_index|
+      rating = EventRating.create!(
+        event: events[paper_index], person: @speakers[speaker_index].person, peer: true,
+        rating: 8.0,
+        comment: 'Peer review: solid methodology, would like more detail on the evaluation.'
+      )
+      metrics.each { |metric| ReviewScore.create!(event_rating: rating, review_metric: metric, score: 4) }
+      events[paper_index].recalculate_review_averages!
+    end
+
+    events
+  end
+
+  # A speaker with genuine, guaranteed pending review work. They submit 2
+  # papers rather than 1 on purpose: frab-ms's User#get_related_papers caps a
+  # reviewer's queue at (their own submitted papers in the conference) * 3 -
+  # a single submission would cap the queue at 3 and undercut "sees at least
+  # 5 papers to review". With 2 submissions (cap 6), no peer reviews of their
+  # own, and no overlap with the DEMO2026_PAPERS submitters above, all 8 of
+  # those papers are open to them - the queue fills to the cap of 6.
+  DEMO2026_REVIEWER_PAPERS = [
+    ['Reproducible benchmarking harness for distributed systems papers', 'Paper Presentation'],
+    ['Special session: writing program-committee reviews that authors can act on', 'Special Session']
+  ].freeze
+
+  def build_demo2026_reviewer(academic_events)
+    reviewer = @speakers[10] # speaker11@example.org - not a submitter in DEMO2026_PAPERS above
+    track = @conference.tracks.first
+
+    DEMO2026_REVIEWER_PAPERS.each do |title, type|
+      event = Event.create!(
+        conference: @conference,
+        title: title,
+        subtitle: type,
+        event_type: type,
+        time_slots: @conference.default_timeslots,
+        track: track,
+        language: 'en',
+        public: true,
+        abstract: "#{title}. Demo abstract for an academic submission generated by demo:seed.",
+        description: "Full paper description for \"#{title}\".\n\nDemo content for frab-ms's review flow.",
+        recording_license: @conference.default_recording_license
+      )
+      event.event_people.create!(person: reviewer.person, event_role: 'submitter')
+      event.event_people.create!(person: reviewer.person, event_role: 'speaker', role_state: 'confirmed')
+      event.start_review!
+    end
+
+    reviewer
+  end
+
+  # --- payments (frab-ms) --------------------------------------------------
+  #
+  # `payments` and `user_adapters` are tables owned by frab-ms, not this app
+  # (there is no Payment/UserAdapter model here) - these are plain
+  # ActiveRecord classes pointed at the same physical tables in the shared
+  # database, so demo:seed can leave a realistic mix of paid/unpaid
+  # solidarity-fee state without depending on frab-ms's codebase.
+  class DemoPayment < ActiveRecord::Base
+    self.table_name = 'payments'
+  end
+
+  class DemoUserAdapter < ActiveRecord::Base
+    self.table_name = 'user_adapters'
+  end
+
+  def build_payments
+    plan = {
+      'speaker1@example.org'  => { country: 'HR',  request_date: 5.days.ago,  solidarity_fee: false, paid: true },
+      'speaker2@example.org'  => { country: 'DE',  request_date: 2.days.ago,  solidarity_fee: false, paid: false },
+      'speaker3@example.org'  => { country: 'KSO', request_date: 10.days.ago, solidarity_fee: true,  paid: true },
+      'speaker4@example.org'  => { country: 'ES',  request_date: nil,        solidarity_fee: false, paid: false },
+      'speaker5@example.org'  => { country: 'FR',  request_date: 1.day.ago,   solidarity_fee: false, paid: false },
+      'speaker6@example.org'  => { country: 'IT',  request_date: 20.days.ago, solidarity_fee: false, paid: true },
+      'orga@example.org'      => { country: 'HR',  request_date: nil,        solidarity_fee: false, paid: true },
+      'reviewer@example.org'  => { country: 'HR',  request_date: 3.days.ago,  solidarity_fee: false, paid: false },
+      'speaker11@example.org' => { country: 'NL',  request_date: 6.days.ago,  solidarity_fee: false, paid: true }
+    }
+
+    plan.each do |email, attrs|
+      user = User.find_by(email: email)
+      next unless user
+
+      payment = DemoPayment.find_or_initialize_by(user_id: user.id)
+      payment.update!(country: attrs[:country], request_date: attrs[:request_date], solidarity_fee: attrs[:solidarity_fee])
+
+      adapter = DemoUserAdapter.find_or_initialize_by(user_id: user.id)
+      adapter.update!(paid: attrs[:paid])
     end
   end
 
@@ -855,52 +1260,9 @@ class DemoSeed
       event.recalculate_review_averages!
     end
 
-    build_demo2025_peer_reviews(conference, events)
-  end
-
-  # This fork highlights a session row in red until its submitter has finished
-  # three peer reviews (Event#weird_rating in lib/event_module.rb). Without
-  # peer reviews the whole session list is red, which is not what the demo
-  # should look like - so most submitters get their three reviews here, and a
-  # few are left short on purpose so the highlight is still visible.
-  def build_demo2025_peer_reviews(conference, events)
-    submitters = conference.events.flat_map { |e| e.event_people.where(event_role: 'submitter').map(&:person) }.uniq
-    reviewable = events.reject { |e| %w(withdrawn canceled).include?(e.state) }
-
-    submitters.each_with_index do |person, i|
-      wanted = i >= submitters.size - 3 ? 1 : 3 # last three stay flagged
-      own = person.events.pluck(:id)
-      candidates = reviewable.reject { |e| own.include?(e.id) }
-      candidates.rotate(i * 3).first(wanted).each_with_index do |event, r|
-        next if event.event_ratings.exists?(person: person)
-
-        EventRating.create!(
-          event: event,
-          person: person,
-          peer: true,
-          rating: [3.0, 3.5, 4.0, 4.5, 5.0][(i + r) % 5],
-          comment: ['Peer review: methodology is sound.',
-                    'Peer review: the argument holds, minor wording issues.',
-                    'Peer review: solid contribution, accept.'][(i + r) % 3]
-        )
-      end
-    end
-
-    # one session gets a deliberately divergent set of ratings, so the yellow
-    # "reviewers disagree" highlight shows up in the list as well
-    divergent = events.detect { |e| e.state == 'review' }
-    return unless divergent
-
-    metrics = conference.review_metrics.to_a
-    divergent.event_ratings.destroy_all
-    [[@crew[:reviewer][0].person, 1.0, 1], [@crew[:reviewer][1].person, 5.0, 5]].each do |reviewer, score, metric_score|
-      rating = EventRating.create!(
-        event: divergent, person: reviewer, rating: score,
-        comment: score < 3 ? 'I do not think this fits at all.' : 'I would put this in the main hall.'
-      )
-      metrics.each { |metric| ReviewScore.create!(event_rating: rating, review_metric: metric, score: metric_score) }
-    end
-    divergent.recalculate_review_averages!
+    # peer reviews, the red/yellow/green submission-index highlight and its
+    # short-on-reviews list are shared with demo2026 - see build_peer_reviews
+    build_peer_reviews(conference, events)
   end
 
   # --- demo2025 academic sessions ----------------------------------------
@@ -946,6 +1308,7 @@ class DemoSeed
 
     reviewers = @crew[:reviewer].map(&:person)
     metrics = conference.review_metrics.to_a
+    short_on_reviews = SPEAKERS_SHORT_ON_REVIEWS.map { |idx| @speakers[idx].person }
 
     events = DEMO2025_PAPERS.each_with_index.map do |(title, type, state, expert_reviewed), i|
       submitter = @speakers[(i * 3) % @speakers.size]
@@ -972,10 +1335,13 @@ class DemoSeed
       event.event_people.create!(person: submitter.person, event_role: 'submitter')
       event.event_people.create!(person: submitter.person, event_role: 'speaker', role_state: 'confirmed')
 
-      # peer reviews - written by other submitters, as the academic workflow expects
+      # peer reviews - written by other submitters, as the academic workflow expects.
+      # short_on_reviews speakers are skipped here too, otherwise this loop
+      # quietly tops them up past the 3-review threshold that keeps their own
+      # sessions flagged red-warning (see SPEAKERS_SHORT_ON_REVIEWS)
       3.times do |p|
         peer = @speakers[(i + p * 4 + 1) % @speakers.size].person
-        next if peer == submitter.person || event.event_ratings.exists?(person: peer)
+        next if peer == submitter.person || short_on_reviews.include?(peer) || event.event_ratings.exists?(person: peer)
 
         rating = EventRating.create!(event: event, person: peer, peer: true,
                                      rating: [3.0, 3.5, 4.0, 4.5, 5.0][(i + p) % 5],
@@ -1203,32 +1569,26 @@ class DemoSeed
     puts '=' * 72
     puts
     puts "Conferences:"
-    [@conference, @devroom, @past].each do |c|
-      puts format('  %-12s %-32s %s', c.acronym, c.title, "#{c.events.count} events")
-    end
+    puts format('  %-12s %-32s %s', @conference.acronym, @conference.title, "#{@conference.events.count} events")
     puts
     puts "Login (password for everyone: #{DEMO_PASSWORD})"
     puts '  admin@example.org        global admin'
-    CREW.each { |c| puts format('  %-24s %s of demo2025 and demo2026', c[:email], c[:role]) }
+    CREW.each { |c| puts format('  %-24s %s of demo2026', c[:email], c[:role]) }
     puts format('  speaker1@example.org     submitter (CfP view), speaker1..speaker%d', SPEAKERS.size)
     puts
-    [@conference, @past].each do |c|
-      puts "Events per state in #{c.acronym}:"
-      c.events.group(:state).count.sort.each { |state, count| puts format('  %-14s %d', state, count) }
-      puts
-    end
-    puts format('demo2025: %d review ratings, %d availabilities, %d feedbacks, %d mail templates',
-                EventRating.joins(:event).where(events: { conference_id: @past.id }).count,
-                @past.availabilities.count,
-                EventFeedback.joins(:event).where(events: { conference_id: @past.id }).count,
-                @past.mail_templates.count)
+    puts "Events per state in #{@conference.acronym}:"
+    @conference.events.group(:state).count.sort.each { |state, count| puts format('  %-14s %d', state, count) }
+    puts
+    puts 'frab-ms review queue (Paper Presentation / Special Session / Non-academic Session):'
+    puts format('  %d academic sessions submitted by speaker1..speaker%d', @academic_events.size, DEMO2026_PAPERS.size)
+    puts format('  %s submitted %d more and has no reviews of their own on the batch above -',
+                @reviewer.email, DEMO2026_REVIEWER_PAPERS.size)
+    puts '  their frab-ms review queue for demo2026 is guaranteed to show at least 5 papers.'
     puts
     puts 'Try:'
-    puts '  http://localhost:3000/demo2025                   crew / management (the manual is written against this one)'
-    puts '  http://localhost:3000/demo2025/public/schedule   public schedule + feedback'
-    puts '  http://localhost:3000/demo2025/cfp               submitter view'
-    puts '  http://localhost:3000/demo2026                   second conference, open CfP'
-    puts '  http://localhost:3000/rubyroom                   devroom with queued (bulk) notifications'
+    puts '  http://localhost:3000/demo2026                   open CfP, crew / management'
+    puts '  http://localhost:3000/demo2026/public/schedule   public schedule + feedback'
+    puts '  http://localhost:3000/demo2026/cfp               submitter view'
     puts
   end
 end

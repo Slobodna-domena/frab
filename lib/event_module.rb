@@ -425,12 +425,9 @@ module EventModule
     end
 
     #submitter has not finished peer review
-    event_people_list.where(event_role: "submitter").each do |event_person|
-      if event_person.person.event_ratings.where(peer: true).size < 3
-        return "red-warning"
-      else
-        return ""
-      end
+    submitter = event_people_list.where(event_role: "submitter").first
+    if submitter && submitter.person.event_ratings.where(peer: true).size < 3
+      return "red-warning"
     end
 
     #paper doesnt have at least 1 peer and 1 expert review

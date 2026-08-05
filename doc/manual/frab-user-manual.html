@@ -267,7 +267,7 @@
     <li>Mail templates <span>Writing a template, placeholders, sending it, and the automatic notifications</span></li>
   </ol>
   <p style="margin-top:18px;font-size:9.4pt;color:#5d6672">
-    Appendix A - Placeholder reference &middot; Appendix B - Session states &middot; Appendix C - Roles and permissions
+    Appendix A - Placeholder reference &middot; Appendix B - Session states &middot; Appendix C - Roles and permissions &middot; Appendix D - Session types explained
   </p>
 </div>
 
@@ -675,7 +675,7 @@
     <tbody>
       <tr><td><b>Title / Subtitle</b></td><td>Exactly as they will appear in the programme. Fix typos here, not by asking the speaker.</td></tr>
       <tr><td><b>Theme</b></td><td>From the list you defined in the settings. Drives the colour in the schedule.</td></tr>
-      <tr><td><b>Session type</b></td><td>Lecture, workshop, lightning talk, podium, meeting, other - plus the academic types <b>Paper Presentation</b>, <b>Special Session</b> and <b>Non-academic Session</b>. The type is not cosmetic: only the two academic types are offered to reviewers (chapter 8.3), and the three "Accepted ..." reports look for them by name.</td></tr>
+      <tr><td><b>Session type</b></td><td>Lecture, workshop, lightning talk, podium, meeting, other - plus the academic types <b>Paper Presentation</b>, <b>Special Session</b> and <b>Non-academic Session</b>. The type is not cosmetic: only the two academic types are offered to reviewers (chapter 8.3), and the three "Accepted ..." reports look for them by name. Full mechanics in <b>Appendix D</b>.</td></tr>
       <tr><td><b>Duration</b></td><td>In timeslots. As crew you are not limited to the durations offered to submitters.</td></tr>
       <tr><td><b>Public</b></td><td>Untick to keep a session out of the published schedule (internal meetings, crew briefings).</td></tr>
       <tr><td><b>Do not record</b></td><td>Marks the session for the video team.</td></tr>
@@ -996,6 +996,7 @@
       <li>a reviewer never sees their own submissions or the ones they are a co-author of;</li>
       <li>once an expert review exists, the session disappears from everybody else's queue - it stays visible only to the reviewer who wrote it.</li>
     </ul>
+    <p style="margin-top:6px;margin-bottom:0">See <b>Appendix D</b> for why these two types specifically, and what else changes because of them.</p>
   </div>
 
   <p>The <b>Filter by average rating</b> box above the list narrows the queue down to a score range, which is how you find the borderline submissions quickly.</p>
@@ -1292,6 +1293,43 @@ The %{conference} tech team</code></td></tr>
       <tr><td>Conference settings, CfP, mail, reports</td><td>-</td><td>-</td><td>-</td><td>yes</td></tr>
     </tbody>
   </table>
+
+  <h2>Appendix D - Session types explained</h2>
+  <p><b>Session type</b> (5.3) looks like an ordinary dropdown, but it is really two mechanisms stacked on top of each other: a fully configurable per-conference list, and a small set of exact spellings that this installation treats specially. This appendix is the complete reference for both, and the background for the shorter notes in 5.3, 6.2 and 8.3.</p>
+
+  <h3>D.1 The field is per-conference and free-form</h3>
+  <p>Every conference has its own list of allowed session types, set in <span class="crumb">Settings &rarr; Basic settings</span> as <b>Allowed session types</b>. It has two parts: a set of built-in presets you tick (lecture, workshop, podium, lightning talk, meeting, film, concert, DJ set, performance, other), and a free-text box for anything else you want to add. Whatever ends up in that list is exactly what appears in the <b>Session type</b> dropdown for that conference - there is no single, fixed set of types shared by every conference on the installation. A brand-new conference starts from the built-in presets only.</p>
+
+  <h3>D.2 Three of those strings are wired into behaviour</h3>
+  <p>The demo conference <code>demo2025</code> - and any conference set up the same way - adds three extra entries to that list: <b>Paper Presentation</b>, <b>Special Session</b> and <b>Non-academic Session</b>. To the <b>Allowed session types</b> setting these look like any other typed-in value. To the rest of frab, however, a session whose type matches one of these three strings <i>exactly</i> triggers behaviour that no other type gets:</p>
+
+  <table class="compact">
+    <thead><tr><th style="width:24%">Session type</th><th style="width:14%">Group</th><th>What is different</th></tr></thead>
+    <tbody>
+      <tr><td><b>Paper Presentation</b></td><td>academic</td><td>Set to 1 timeslot automatically when created (D.4). Offered to reviewers (8.3). Rated with the peer/expert blend in D.3, not a plain average. Has its own "Accepted Paper Presentations" report (6.2).</td></tr>
+      <tr><td><b>Special Session</b></td><td>academic</td><td>Set to 6 timeslots automatically when created. Offered to reviewers. Same peer/expert blend as Paper Presentation. Has its own "Accepted Special Sessions" report.</td></tr>
+      <tr><td><b>Non-academic Session</b></td><td>practical</td><td>Set to 6 timeslots automatically when created. <i>Not</i> offered to reviewers - the queue only ever contains the two academic types above. Rated with a plain average, like an ordinary lecture. Has its own "Accepted Non-academic Sessions" report.</td></tr>
+    </tbody>
+  </table>
+
+  <p>Every other session type - lecture, workshop, podium, lightning talk, meeting, film, concert, DJ set, performance, other, or anything you add yourself in D.1's free-text box - gets none of this: it keeps whatever duration you give it, it is never offered to reviewers, and it is rated with a plain average.</p>
+
+  <h3>D.3 How the rating differs for the two academic types</h3>
+  <p>An ordinary session's score is a plain average of whatever ratings it has. A <b>Paper Presentation</b> or <b>Special Session</b> is scored differently: its peer reviews (written by other submitters, 8.1) and its expert reviews (written by reviewers) are averaged <i>separately</i> first, and the two averages are then combined into one overall score. That keeps an author who happened to draw five generous peers but one strict expert from being skewed as far as a single plain average would push them - and it is why the review overview (8.5) is worth reading criterion by criterion, not just by the headline number, for these two types.</p>
+
+  <h3>D.4 Timeslots are set once, not kept in sync</h3>
+  <div class="box">
+    <span class="label">Set at creation only</span>
+    <p>The 1-timeslot / 6-timeslot defaults in D.2 are applied once, when the session is first created. Changing a session's type afterwards - say from <b>Paper Presentation</b> to <b>Special Session</b> - does not update its duration automatically. If the new type needs a different slot count, change <b>Duration</b> by hand on the edit form (5.3).</p>
+  </div>
+
+  <h3>D.5 The names have to match exactly</h3>
+  <div class="box warn">
+    <span class="label">Nothing links the settings list to this behaviour</span>
+    <p>The three names in D.2 only trigger it when typed <i>exactly</i> as shown - same spelling, same capitalisation, same hyphen in "Non-academic". <b>Allowed session types</b> (D.1) has no idea these three strings are special: it will accept "paper presentation" or "Paper  Presentation" (two spaces) just as happily as any other new type - and a session using a variant like that quietly gets none of D.2's behaviour. There is no error and no warning; it simply never appears in a reviewer's queue or in its report, and its rating is a plain average instead of the D.3 blend. If you retype or rename one of these three types in the settings, check that reviewers' queues and the three "Accepted ..." reports still show what you expect afterwards.</p>
+  </div>
+
+  <p>If your conference runs this academic workflow, add the three types once, spelled exactly as in D.2, and treat them as fixed afterwards. If you run an ordinary conference, you can ignore this appendix entirely: leave the three academic types out of <b>Allowed session types</b> and every session behaves as described in the last paragraph of D.2.</p>
 
   <hr class="soft">
   <p style="font-size:9pt;color:#5d6672">
