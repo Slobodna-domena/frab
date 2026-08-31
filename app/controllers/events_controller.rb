@@ -1,6 +1,10 @@
 class EventsController < BaseConferenceController
   include Searchable
 
+  # Conference reviewers only ever work from the ratings queue; keep them off
+  # the management event listings (see also _navi_conference / _event_list_tabs).
+  before_action :redirect_reviewers_to_ratings, only: %i(index my attachments feedbacks)
+
   # GET /events
   # GET /events.json
   def index
@@ -407,6 +411,13 @@ class EventsController < BaseConferenceController
   end
 
   private
+
+  def redirect_reviewers_to_ratings
+    return if policy(@conference).manage?
+
+    conference_user = current_user.conference_users.find_by(conference_id: @conference.id)
+    redirect_to ratings_events_path if conference_user&.role == 'reviewer'
+  end
 
   def clean_events_attributes
     return if policy(@conference).manage?
