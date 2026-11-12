@@ -16,6 +16,7 @@ FactoryBot.define do
     email { generate(:email) }
     password { 'frab123' }
     confirmed_at { Time.now }
+    gdpr { true }
 
     factory :admin_user, traits: [:admin_role]
     factory :crew_user, traits: [:crew_role]

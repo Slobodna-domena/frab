@@ -121,7 +121,7 @@ class ConferencesController < BaseConferenceController
     end
 
     respond_to do |format|
-      if @conference.save
+      if save_conference_with_creator_as_orga
         format.html { redirect_to(conference_path(conference_acronym: @conference.acronym), notice: t('conferences_module.notice_conference_created')) }
       else
         @possible_parents = Conference.where(parent: nil)
@@ -164,6 +164,20 @@ class ConferencesController < BaseConferenceController
   end
 
   private
+
+  # A non-admin orga may create conferences (ConferencePolicy#new?), but
+  # access to a conference comes only from a ConferenceUser row. Without one
+  # the creator is locked out of the conference they just made, so make them
+  # its orga in the same transaction.
+  def save_conference_with_creator_as_orga
+    Conference.transaction do
+      next false unless @conference.save
+      unless current_user.is_admin?
+        @conference.conference_users.create!(user: current_user, role: 'orga')
+      end
+      true
+    end
+  end
 
   # find the nested form which was used for the update, by looking at nested
   # attributes

@@ -47,6 +47,28 @@ class ConferencesControllerTest < ActionController::TestCase
     end
   end
 
+  test 'orga creating a conference becomes its orga and can open it' do
+    log_out
+    orga = create(:conference_orga, conference: @conference).user
+    sign_in(orga)
+
+    assert_difference('Conference.count') do
+      post :create, params: { conference: conference_attributes }
+    end
+    created = Conference.last
+    assert orga.is_orga_of?(created)
+    assert_redirected_to conference_path(conference_acronym: created.acronym)
+
+    get :show, params: { conference_acronym: created.acronym }
+    assert_response :success
+  end
+
+  test 'admin creating a conference gets no conference role' do
+    assert_no_difference('ConferenceUser.count') do
+      post :create, params: { conference: conference_attributes }
+    end
+  end
+
   test 'should create conference without parent' do
     assert_difference('Conference.count') do
       post :create, params: { conference: conference_attributes }
