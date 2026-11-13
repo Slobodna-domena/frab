@@ -430,8 +430,8 @@ module EventModule
       return "red-warning"
     end
 
-    #paper doesnt have at least 1 peer and 1 expert review
-    return "green-warning" if self.event_ratings.where(peer: false).size > 1 && self.event_ratings.where(peer: true).size > 1
+    #paper has at least 1 peer and 1 expert review
+    return "green-warning" if self.event_ratings.where(peer: false).size >= 1 && self.event_ratings.where(peer: true).size >= 1
 
 
     return ""
